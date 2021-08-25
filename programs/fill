@@ -1,0 +1,14 @@
+LOAD Num
+STORE (CurCell)
+LOAD CurCell
+ADDI 1
+STORE CurCell
+JMP 0
+HOLD
+
+
+CurCell: 	word 	16
+Num:	     word 	522
+
+
+

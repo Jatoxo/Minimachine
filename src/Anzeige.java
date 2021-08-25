@@ -13,6 +13,9 @@ import com.apple.eawt.AppEvent.AboutEvent;
 import com.apple.eawt.AppEvent.OpenFilesEvent;
 import com.apple.eawt.AppEvent.QuitEvent;
  */
+import com.formdev.flatlaf.FlatDarkLaf;
+import com.formdev.flatlaf.FlatLightLaf;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -83,7 +86,7 @@ abstract class Anzeige {
 			}
 
 			try {
-				UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+				UIManager.setLookAndFeel(new FlatLightLaf());
 			} catch (Exception var3) {
 			}
 		}
