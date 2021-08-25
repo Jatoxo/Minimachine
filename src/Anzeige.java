@@ -19,6 +19,7 @@ import res.R;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.net.URL;
 import javax.swing.*;
 
 abstract class Anzeige {
@@ -92,6 +93,12 @@ abstract class Anzeige {
 
 		this.initMenus();
 		this.initLayout();
+
+		URL iconURL = getClass().getResource("/res/img/icon.png");
+		System.out.println(iconURL);
+		ImageIcon icon = new ImageIcon(iconURL);
+		this.window.setIconImage(icon.getImage());
+
 		//this.window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		if (isMac) {
 		}
