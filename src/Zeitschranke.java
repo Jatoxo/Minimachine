@@ -3,6 +3,8 @@
 // (powered by Fernflower decompiler)
 //
 
+import res.R;
+
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -14,56 +16,63 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.border.EmptyBorder;
 
 class Zeitschranke {
 	private JDialog dialog;
-	private static Zeitschranke schranke = null;
+	private static Zeitschranke timeoutDialog = null;
 	private KontrolleurInterface kontrolleur;
 
-	private Zeitschranke(KontrolleurInterface var1) {
-		this.kontrolleur = var1;
+	private Zeitschranke(KontrolleurInterface controller) {
+		this.kontrolleur = controller;
 		this.dialog = new JDialog((JFrame)null);
-		this.dialog.setTitle("Prozessorzeitschranke");
-		JPanel var2 = (JPanel)this.dialog.getContentPane();
-		var2.setLayout(new BorderLayout());
-		JPanel var6 = new JPanel();
-		var6.setVisible(true);
-		var2.add(var6, "Center");
-		var6.setLayout(new FlowLayout(0));
-		JLabel var3 = new JLabel("Geben Sie die Zeitschranke in Sekunden ein");
-		var6.add(var3);
-		final JTextField var4 = new JTextField("     ");
-		var4.setMinimumSize(new Dimension(80, 30));
-		var6.add(var4);
-		var6 = new JPanel();
-		var6.setVisible(true);
-		var2.add(var6, "South");
-		var6.setLayout(new FlowLayout(1));
-		JButton var5 = new JButton("Ok");
-		var6.add(var5);
-		var5.addActionListener(new ActionListener() {
+		this.dialog.setTitle(R.getResources().getString("dialog_timeout_title"));
+
+		JPanel contentPane = (JPanel) this.dialog.getContentPane();
+		contentPane.setLayout(new BorderLayout());
+
+		JPanel panel = new JPanel();
+		panel.setVisible(true);
+		panel.setLayout(new FlowLayout(0));
+		panel.setBorder(new EmptyBorder(10, 20, 10, 20));
+		contentPane.add(panel, "Center");
+
+		JLabel label = new JLabel(R.getResources().getString("dialog_timeout_prompt"));
+		panel.add(label);
+		final JTextField inputField = new JTextField();
+		inputField.setMinimumSize(new Dimension(80, 30));
+		panel.add(inputField);
+
+		panel = new JPanel();
+		panel.setVisible(true);
+		contentPane.add(panel, "South");
+		panel.setLayout(new FlowLayout(FlowLayout.CENTER));
+		JButton button = new JButton("Ok");
+		panel.add(button);
+		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent var1) {
 				try {
-					int var2 = Integer.parseInt(var4.getText());
+					int var2 = Integer.parseInt(inputField.getText());
 					Zeitschranke.this.kontrolleur.ZeitschrankeSetzen(var2);
 					Zeitschranke.this.dialog.setVisible(false);
 				} catch (Exception var3) {
-					var4.selectAll();
+					inputField.selectAll();
 				}
 
 			}
 		});
+
 		this.dialog.setModal(true);
 		this.dialog.setResizable(false);
 		this.dialog.pack();
 		this.dialog.setVisible(false);
 	}
 
-	static void Zeigen(KontrolleurInterface var0) {
-		if (schranke == null) {
-			schranke = new Zeitschranke(var0);
+	static void show(KontrolleurInterface controller) {
+		if (timeoutDialog == null) {
+			timeoutDialog = new Zeitschranke(controller);
 		}
-
-		schranke.dialog.setVisible(true);
+		timeoutDialog.dialog.setLocationRelativeTo(null);
+		timeoutDialog.dialog.setVisible(true);
 	}
 }

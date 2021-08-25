@@ -12,15 +12,15 @@ class Minimaschine {
 
 		Kontrolleur kontrolleur = new Kontrolleur(cpuEinfach, cpuDetail);
 		CpuAnzeige cpuAnzeige = new CpuAnzeige(kontrolleur);
-		CpuAnzeige2 cpuAnzeige2 = new CpuAnzeige2(kontrolleur);
+		CpuAnzeigeDetail cpuAnzeigeDetail = new CpuAnzeigeDetail(kontrolleur);
 		CpuAnzeigeErweitert cpuAnzeigeErweitert = new CpuAnzeigeErweitert(kontrolleur);
 		SpeicherAnzeige speicherAnzeige = new SpeicherAnzeige(kontrolleur);
 
-		FensterVerwaltung windowManagement = new FensterVerwaltung(cpuAnzeige, cpuAnzeige2, cpuAnzeigeErweitert, speicherAnzeige);
+		FensterVerwaltung windowManagement = new FensterVerwaltung(cpuAnzeige, cpuAnzeigeDetail, cpuAnzeigeErweitert, speicherAnzeige);
 		kontrolleur.VerwaltungSetzen(windowManagement);
 
 		cpuEinfach.Registrieren(cpuAnzeige);
-		cpuDetail.Registrieren(cpuAnzeige2);
+		cpuDetail.Registrieren(cpuAnzeigeDetail);
 
 		cpuEinfach.Registrieren(cpuAnzeigeErweitert);
 		cpuEinfach.SpeicherbeobachterSetzen(speicherAnzeige);

@@ -14,12 +14,12 @@ class CpuAnzeigeErweitert extends CpuAnzeige {
 	private JLabel labelMem5;
 	private JLabel spLabel;
 
-	CpuAnzeigeErweitert(KontrolleurInterface var1) {
-		super(var1);
+	CpuAnzeigeErweitert(KontrolleurInterface controller) {
+		super(controller);
 	}
 
-	protected void OberflächeAufbauen() {
-		super.OberflächeAufbauen();
+	protected void initLayout() {
+		super.initLayout();
 		this.ausfuehrenButton.setLocation(100, 190);
 		this.einzelButton.setLocation(350, 190);
 		this.registerpanel.setSize(200, 140);
@@ -86,7 +86,7 @@ class CpuAnzeigeErweitert extends CpuAnzeige {
 			this.labelMem5.setLocation(150, 180);
 			this.ausfuehrenButton.setLocation(150, 280);
 			this.einzelButton.setLocation(525, 280);
-			this.fenster.setSize(900, 375);
+			this.window.setSize(900, 375);
 		} else {
 			this.registerpanel.setSize(200, 140);
 			this.registerpanel.setLocation(10, 20);
@@ -112,7 +112,7 @@ class CpuAnzeigeErweitert extends CpuAnzeige {
 			this.labelMem5.setLocation(100, 120);
 			this.ausfuehrenButton.setLocation(100, 190);
 			this.einzelButton.setLocation(350, 190);
-			this.fenster.setSize(600, 250);
+			this.window.setSize(600, 250);
 		}
 
 	}

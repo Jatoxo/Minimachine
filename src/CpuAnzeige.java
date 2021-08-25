@@ -4,18 +4,13 @@
 //
 
 import model.CpuBeobachter;
+import res.R;
+
 import java.awt.Font;
 import java.awt.LayoutManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.JButton;
-import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.KeyStroke;
+import javax.swing.*;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 
@@ -52,11 +47,11 @@ class CpuAnzeige extends Anzeige implements CpuBeobachter {
 		super(var1);
 	}
 
-	protected void OberflächeAufbauen() {
-		this.fenster = new JFrame("CPU-Kontrolle");
-		this.fenster.setJMenuBar(this.menüZeile);
-		this.fenster.setLayout((LayoutManager)null);
-		JPanel var1 = (JPanel)this.fenster.getContentPane();
+	protected void initLayout() {
+		this.window = new JFrame(R.getResources().getString("window_cpu_title"));
+		this.window.setJMenuBar(this.menuBar);
+		this.window.setLayout((LayoutManager)null);
+		JPanel var1 = (JPanel)this.window.getContentPane();
 		var1.setLayout((LayoutManager)null);
 		this.f = var1.getFont();
 		this.fgross = new Font(this.f.getName(), this.f.getStyle(), 24);
@@ -189,24 +184,27 @@ class CpuAnzeige extends Anzeige implements CpuBeobachter {
 		this.ausfuehrenButton = new JButton("Ausführen");
 		this.ausfuehrenButton.setSize(150, 30);
 		this.ausfuehrenButton.setLocation(100, 150);
-		this.fenster.add(this.ausfuehrenButton);
+		this.window.add(this.ausfuehrenButton);
 		this.ausfuehrenButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent var1) {
-				CpuAnzeige.this.kontrolleur.Ausführen();
+				CpuAnzeige.this.controller.Ausführen();
 			}
 		});
 		this.einzelButton = new JButton("Einzelschritt");
 		this.einzelButton.setSize(150, 30);
 		this.einzelButton.setLocation(350, 150);
-		this.fenster.add(this.einzelButton);
+		this.window.add(this.einzelButton);
 		this.einzelButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent var1) {
-				CpuAnzeige.this.kontrolleur.EinzelSchritt();
+				CpuAnzeige.this.controller.EinzelSchritt();
 			}
 		});
-		this.fenster.setSize(600, 250);
-		this.fenster.setVisible(true);
-		this.fenster.setResizable(false);
+
+		this.window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+		this.window.setSize(600, 250);
+		this.window.setLocationRelativeTo(null);
+		this.window.setVisible(true);
+		this.window.setResizable(false);
 	}
 
 	protected void AnzeigegrößeSetzen(boolean var1) {
@@ -279,7 +277,7 @@ class CpuAnzeige extends Anzeige implements CpuBeobachter {
 			this.labelMem3.setLocation(150, 105);
 			this.ausfuehrenButton.setLocation(150, 225);
 			this.einzelButton.setLocation(525, 225);
-			this.fenster.setSize(900, 375);
+			this.window.setSize(900, 375);
 		} else {
 			((TitledBorder)this.registerpanel.getBorder()).setTitleFont(this.f);
 			this.registerpanel.setSize(200, 110);
@@ -349,7 +347,7 @@ class CpuAnzeige extends Anzeige implements CpuBeobachter {
 			this.labelMem3.setLocation(100, 70);
 			this.ausfuehrenButton.setLocation(100, 150);
 			this.einzelButton.setLocation(350, 150);
-			this.fenster.setSize(600, 250);
+			this.window.setSize(600, 250);
 		}
 
 	}
@@ -371,88 +369,88 @@ class CpuAnzeige extends Anzeige implements CpuBeobachter {
 	}
 
 	public void Fehlermeldung(String var1) {
-		JOptionPane.showMessageDialog(this.fenster, var1, "CPU-Fehler", 0);
+		JOptionPane.showMessageDialog(this.window, var1, "CPU-Fehler", 0);
 	}
 
-	protected void MenüsErzeugen() {
-		super.MenüsErzeugen();
-		this.schließenItem.setEnabled(false);
-		this.sichernItem.setEnabled(false);
-		this.sichernUnterItem.setEnabled(false);
-		this.druckenItem.setEnabled(false);
-		JMenuItem var1 = new JMenuItem("Widerrufen", 90);
+	protected void initMenus() {
+		super.initMenus();
+		this.closeMenuItem.setEnabled(false);
+		this.saveMenuItem.setEnabled(false);
+		this.saveAsMenuItem.setEnabled(false);
+		this.printMenuItem.setEnabled(false);
+		JMenuItem var1 = new JMenuItem(R.getResources().getString("edit_menu_undo"), 90);
 		var1.setAccelerator(KeyStroke.getKeyStroke(90, kommando));
 		var1.setEnabled(false);
-		this.bearbeitenMenü.add(var1);
-		var1 = new JMenuItem("Wiederholen");
+		this.editMenu.add(var1);
+		var1 = new JMenuItem(R.getResources().getString("edit_menu_redo"));
 		var1.setAccelerator(KeyStroke.getKeyStroke(90, 64 + kommando));
 		var1.setEnabled(false);
-		this.bearbeitenMenü.add(var1);
-		this.bearbeitenMenü.addSeparator();
-		var1 = new JMenuItem("Ausschneiden", 88);
+		this.editMenu.add(var1);
+		this.editMenu.addSeparator();
+		var1 = new JMenuItem(R.getResources().getString("edit_menu_cut"), 88);
 		var1.setAccelerator(KeyStroke.getKeyStroke(88, kommando));
 		var1.setEnabled(false);
-		this.bearbeitenMenü.add(var1);
-		var1 = new JMenuItem("Kopieren", 67);
+		this.editMenu.add(var1);
+		var1 = new JMenuItem(R.getResources().getString("edit_menu_copy"), 67);
 		var1.setAccelerator(KeyStroke.getKeyStroke(67, kommando));
 		var1.setEnabled(false);
-		this.bearbeitenMenü.add(var1);
-		var1 = new JMenuItem("Einfügen", 86);
+		this.editMenu.add(var1);
+		var1 = new JMenuItem(R.getResources().getString("edit_menu_paste"), 86);
 		var1.setAccelerator(KeyStroke.getKeyStroke(86, kommando));
 		var1.setEnabled(false);
-		this.bearbeitenMenü.add(var1);
-		var1 = new JMenuItem("Alles auswählen", 65);
+		this.editMenu.add(var1);
+		var1 = new JMenuItem(R.getResources().getString("edit_menu_select_all"), 65);
 		var1.setAccelerator(KeyStroke.getKeyStroke(65, kommando));
 		var1.setEnabled(false);
-		this.bearbeitenMenü.add(var1);
-		this.werkzeugMenü.addSeparator();
-		var1 = new JMenuItem("Einfache Darstellung");
+		this.editMenu.add(var1);
+		this.toolsMenu.addSeparator();
+		var1 = new JMenuItem(R.getResources().getString("tools_menu_simple_view"));
 		var1.setAccelerator(KeyStroke.getKeyStroke(69, kommando + 512));
 		var1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent var1) {
-				CpuAnzeige.this.kontrolleur.EinfacheDarstellungAnzeigen();
+				CpuAnzeige.this.controller.EinfacheDarstellungAnzeigen();
 			}
 		});
-		this.werkzeugMenü.add(var1);
-		var1 = new JMenuItem("Detaildarstellung");
+		this.toolsMenu.add(var1);
+		var1 = new JMenuItem(R.getResources().getString("tools_menu_graphical_view"));
 		var1.setAccelerator(KeyStroke.getKeyStroke(68, kommando + 512));
 		var1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent var1) {
-				CpuAnzeige.this.kontrolleur.DetailDarstellungAnzeigen();
+				CpuAnzeige.this.controller.DetailDarstellungAnzeigen();
 			}
 		});
-		this.werkzeugMenü.add(var1);
-		this.werkzeugMenü.addSeparator();
-		var1 = new JMenuItem("Abbruchschranke setzen");
+		this.toolsMenu.add(var1);
+		this.toolsMenu.addSeparator();
+		var1 = new JMenuItem(R.getResources().getString("tools_menu_set_timeout"));
 		var1.setAccelerator(KeyStroke.getKeyStroke(65, kommando + 512));
 		var1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent var1) {
-				Zeitschranke.Zeigen(CpuAnzeige.this.kontrolleur);
+				Zeitschranke.show(CpuAnzeige.this.controller);
 			}
 		});
-		this.werkzeugMenü.add(var1);
-		this.werkzeugMenü.addSeparator();
-		var1 = new JMenuItem("CPU rücksetzen");
+		this.toolsMenu.add(var1);
+		this.toolsMenu.addSeparator();
+		var1 = new JMenuItem(R.getResources().getString("tools_menu_reset_cpu"));
 		var1.setAccelerator(KeyStroke.getKeyStroke(82, kommando + 512));
 		var1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent var1) {
-				CpuAnzeige.this.kontrolleur.ZurückSetzen();
+				CpuAnzeige.this.controller.ZurückSetzen();
 			}
 		});
-		this.werkzeugMenü.add(var1);
-		this.werkzeugMenü.addSeparator();
-		this.erweiterungenItem = new JCheckBoxMenuItem("Erweiterungen");
+		this.toolsMenu.add(var1);
+		this.toolsMenu.addSeparator();
+		this.erweiterungenItem = new JCheckBoxMenuItem(R.getResources().getString("tools_menu_extended"));
 		this.erweiterungenItem.setEnabled(true);
 		this.erweiterungenItem.setSelected(false);
 		this.erweiterungenItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent var1) {
-				CpuAnzeige.this.kontrolleur.ErweiterungenEinschalten(CpuAnzeige.this.erweiterungenItem.isSelected());
+				CpuAnzeige.this.controller.ErweiterungenEinschalten(CpuAnzeige.this.erweiterungenItem.isSelected());
 			}
 		});
-		this.werkzeugMenü.add(this.erweiterungenItem);
+		this.toolsMenu.add(this.erweiterungenItem);
 	}
 
-	protected void DarstellungsgrößeSetzen(boolean var1) {
+	protected void resetDisplaySize(boolean var1) {
 		this.AnzeigegrößeSetzen(var1);
 	}
 }

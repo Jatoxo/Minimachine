@@ -38,16 +38,18 @@ class Kontrolleur implements KontrolleurInterface {
 		this.cpu.AnzeigeWiederholen();
 	}
 
-	public boolean Assemblieren(String var1, Editor var2) {
-		FehlerVerwaltung var3 = new FehlerVerwaltung();
-		this.cpu.Assemblieren(var1, var3);
-		if (var3.FehlerAufgetreten()) {
-			var2.FehlerAnzeigen(var3.FehlertextMelden(), var3.FehlerpositionMelden());
+	public boolean assemble(String assemblyText, Editor editor) {
+		FehlerVerwaltung fehlerVerwaltung = new FehlerVerwaltung();
+
+		this.cpu.Assemblieren(assemblyText, fehlerVerwaltung);
+
+		if (fehlerVerwaltung.FehlerAufgetreten()) {
+			editor.FehlerAnzeigen(fehlerVerwaltung.FehlertextMelden(), fehlerVerwaltung.FehlerpositionMelden());
 		} else {
 			this.cpu.ZurückSetzen();
 		}
 
-		return !var3.FehlerAufgetreten();
+		return !fehlerVerwaltung.FehlerAufgetreten();
 	}
 
 	public boolean Übersetzen(String var1, Editor var2) {
@@ -114,9 +116,9 @@ class Kontrolleur implements KontrolleurInterface {
 	}
 
 	public void ÖffnenAusführen(String path) {
-		Editor var2 = new Editor(this);
-		this.verwaltung.EditorEintragen(var2);
-		var2.DateiLesen(path);
+		Editor editor = new Editor(this);
+		this.verwaltung.EditorEintragen(editor);
+		editor.DateiLesen(path);
 	}
 
 	public void SchließenAusführen(Anzeige var1) {

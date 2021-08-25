@@ -6,6 +6,8 @@
 import model.AssemblerBefehle;
 import model.SpeicherBeobachter;
 import model.SpeicherLesen;
+import res.R;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -44,11 +46,11 @@ class SpeicherAnzeige extends Anzeige implements SpeicherBeobachter {
 		super(var1);
 	}
 
-	protected void OberflächeAufbauen() {
-		this.fenster = new JFrame("Speicheranzeige");
-		this.fenster.setJMenuBar(this.menüZeile);
-		this.fenster.setVisible(true);
-		this.content = (JPanel)this.fenster.getContentPane();
+	protected void initLayout() {
+		this.window = new JFrame(R.getResources().getString("window_memory_title"));
+		this.window.setJMenuBar(this.menuBar);
+		this.window.setVisible(true);
+		this.content = (JPanel)this.window.getContentPane();
 		this.content.setLayout(new BorderLayout());
 		this.dataModel = new AbstractTableModel() {
 			public String getColumnName(int var1) {
@@ -197,51 +199,51 @@ class SpeicherAnzeige extends Anzeige implements SpeicherBeobachter {
 		this.tableGross.getTableHeader().setFont(new Font(var2.getName(), 1, 24));
 		this.scrollpaneGross = new JScrollPane(this.tableGross);
 		this.content.add(this.scrollpane, "Center");
-		this.fenster.setSize(new Dimension(800, 500));
-		this.fenster.setLocation(600, 50);
+		this.window.setSize(new Dimension(800, 500));
+		this.window.setLocation(600, 50);
 	}
 
-	protected void MenüsErzeugen() {
-		super.MenüsErzeugen();
-		this.schließenItem.setEnabled(false);
-		this.sichernItem.setEnabled(false);
-		this.sichernUnterItem.setEnabled(false);
-		this.druckenItem.setEnabled(false);
+	protected void initMenus() {
+		super.initMenus();
+		this.closeMenuItem.setEnabled(false);
+		this.saveMenuItem.setEnabled(false);
+		this.saveAsMenuItem.setEnabled(false);
+		this.printMenuItem.setEnabled(false);
 		JMenuItem var1 = new JMenuItem("Widerrufen", 90);
 		var1.setAccelerator(KeyStroke.getKeyStroke(90, kommando));
 		var1.setEnabled(false);
-		this.bearbeitenMenü.add(var1);
+		this.editMenu.add(var1);
 		var1 = new JMenuItem("Wiederholen");
 		var1.setAccelerator(KeyStroke.getKeyStroke(90, 64 + kommando));
 		var1.setEnabled(false);
-		this.bearbeitenMenü.add(var1);
-		this.bearbeitenMenü.addSeparator();
+		this.editMenu.add(var1);
+		this.editMenu.addSeparator();
 		var1 = new JMenuItem("Ausschneiden", 88);
 		var1.setAccelerator(KeyStroke.getKeyStroke(88, kommando));
 		var1.setEnabled(false);
-		this.bearbeitenMenü.add(var1);
+		this.editMenu.add(var1);
 		var1 = new JMenuItem("Kopieren", 67);
 		var1.setAccelerator(KeyStroke.getKeyStroke(67, kommando));
 		var1.setEnabled(false);
-		this.bearbeitenMenü.add(var1);
+		this.editMenu.add(var1);
 		var1 = new JMenuItem("Einfügen", 86);
 		var1.setAccelerator(KeyStroke.getKeyStroke(86, kommando));
 		var1.setEnabled(false);
-		this.bearbeitenMenü.add(var1);
+		this.editMenu.add(var1);
 		var1 = new JMenuItem("Alles auswählen", 65);
 		var1.setAccelerator(KeyStroke.getKeyStroke(65, kommando));
 		var1.setEnabled(false);
-		this.bearbeitenMenü.add(var1);
-		this.werkzeugMenü.addSeparator();
+		this.editMenu.add(var1);
+		this.toolsMenu.addSeparator();
 		var1 = new JMenuItem("Speicher löschen", 65);
 		var1.setEnabled(true);
 		var1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent var1) {
-				SpeicherAnzeige.this.kontrolleur.SpeicherLöschen();
+				SpeicherAnzeige.this.controller.SpeicherLöschen();
 			}
 		});
-		this.werkzeugMenü.add(var1);
-		this.werkzeugMenü.addSeparator();
+		this.toolsMenu.add(var1);
+		this.toolsMenu.addSeparator();
 		this.hexaItem = new JCheckBoxMenuItem("Darstellung hexadezimal");
 		this.hexaItem.setEnabled(true);
 		this.hexaItem.setSelected(false);
@@ -252,8 +254,8 @@ class SpeicherAnzeige extends Anzeige implements SpeicherBeobachter {
 				SpeicherAnzeige.this.scrollpane.repaint();
 				SpeicherAnzeige.this.scrollpaneGross.invalidate();
 				SpeicherAnzeige.this.scrollpaneGross.repaint();
-				SpeicherAnzeige.this.kontrolleur.CpuHexaSetzen(SpeicherAnzeige.this.hexaDarstellung);
-				SpeicherAnzeige.this.kontrolleur.CpuInvalidieren();
+				SpeicherAnzeige.this.controller.CpuHexaSetzen(SpeicherAnzeige.this.hexaDarstellung);
+				SpeicherAnzeige.this.controller.CpuInvalidieren();
 			}
 		});
 		this.opcodeItem = new JCheckBoxMenuItem("Opcodes anzeigen");
@@ -268,9 +270,9 @@ class SpeicherAnzeige extends Anzeige implements SpeicherBeobachter {
 				SpeicherAnzeige.this.scrollpaneGross.repaint();
 			}
 		});
-		this.werkzeugMenü.add(this.hexaItem);
-		this.werkzeugMenü.add(this.opcodeItem);
-		this.werkzeugMenü.addSeparator();
+		this.toolsMenu.add(this.hexaItem);
+		this.toolsMenu.add(this.opcodeItem);
+		this.toolsMenu.addSeparator();
 		this.editItem = new JCheckBoxMenuItem("Speicher editieren");
 		this.editItem.setEnabled(true);
 		this.editItem.setSelected(false);
@@ -279,10 +281,10 @@ class SpeicherAnzeige extends Anzeige implements SpeicherBeobachter {
 				SpeicherAnzeige.this.editierbar = SpeicherAnzeige.this.editItem.isSelected();
 			}
 		});
-		this.werkzeugMenü.add(this.editItem);
+		this.toolsMenu.add(this.editItem);
 	}
 
-	protected void DarstellungsgrößeSetzen(boolean var1) {
+	protected void resetDisplaySize(boolean var1) {
 		if (var1) {
 			this.content.remove(this.scrollpane);
 			this.content.add(this.scrollpaneGross, "Center");

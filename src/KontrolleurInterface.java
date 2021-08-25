@@ -8,7 +8,7 @@ interface KontrolleurInterface {
 
 	void CpuInvalidieren();
 
-	boolean Assemblieren(String var1, Editor var2);
+	boolean assemble(String assemblyText, Editor editor);
 
 	boolean Übersetzen(String var1, Editor var2);
 

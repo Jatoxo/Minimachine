@@ -3,13 +3,9 @@
 // (powered by Fernflower decompiler)
 //
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.GraphicsEnvironment;
-import java.awt.PrintJob;
+import res.R;
+
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
@@ -22,7 +18,6 @@ import java.io.FileWriter;
 import java.util.Properties;
 import java.util.prefs.Preferences;
 import javax.swing.JEditorPane;
-import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -34,7 +29,6 @@ import javax.swing.JTextArea;
 import javax.swing.KeyStroke;
 import javax.swing.border.LineBorder;
 import javax.swing.event.UndoableEditEvent;
-import javax.swing.filechooser.FileFilter;
 import javax.swing.undo.UndoManager;
 
 class Editor extends Anzeige {
@@ -46,7 +40,10 @@ class Editor extends Anzeige {
 	private JLabel status;
 	private JMenuItem undoItem;
 	private JMenuItem redoItem;
-	private JFileChooser fileChooser;
+
+	//private JFileChooser fileChooser;
+	private FileDialog fileDialog;
+
 	private File file;
 	private UndoManager undo;
 	private boolean istAssembler = true;
@@ -78,7 +75,7 @@ class Editor extends Anzeige {
 		this.zeilenNummern.setText(var3);
 	}
 
-	protected void OberflächeAufbauen() {
+	protected void initLayout() {
 		this.undo = new UndoManager() {
 			public void undoableEditHappened(UndoableEditEvent var1) {
 				super.undoableEditHappened(var1);
@@ -86,9 +83,9 @@ class Editor extends Anzeige {
 				Editor.this.redoItem.setEnabled(this.canRedo());
 			}
 		};
-		this.fenster = new JFrame("Editor");
-		this.fenster.setJMenuBar(this.menüZeile);
-		JPanel var1 = (JPanel)this.fenster.getContentPane();
+		this.window = new JFrame(R.getResources().getString("window_editor_title"));
+		this.window.setJMenuBar(this.menuBar);
+		JPanel var1 = (JPanel)this.window.getContentPane();
 		var1.setLayout(new BorderLayout());
 		this.editor = new JEditorPane("text/plain", (String)null) {
 			public void cut() {
@@ -122,14 +119,20 @@ class Editor extends Anzeige {
 		this.status.setBorder(LineBorder.createGrayLineBorder());
 		this.status.setBackground(Color.yellow);
 		var1.add(this.status, "South");
-		this.fenster.setSize(400, 200);
-		this.fenster.addWindowListener(new WindowAdapter() {
+		this.window.setSize(400, 200);
+		this.window.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent var1) {
 				Editor.this.SchließenAusführen(false);
 			}
 		});
-		this.fenster.setDefaultCloseOperation(2);
-		this.fileChooser = new JFileChooser();
+		this.window.setDefaultCloseOperation(2);
+
+		//this.fileChooser = new JFileChooser();
+		this.fileDialog = new FileDialog((Frame) null, R.getResources().getString("file_picker_open_title"));
+		this.fileDialog.setMultipleMode(false);
+
+
+		/*
 		this.fileChooser.addChoosableFileFilter(new FileFilter() {
 			public boolean accept(File var1) {
 				String var2 = var1.getName();
@@ -150,21 +153,40 @@ class Editor extends Anzeige {
 				return "Minimaschine Assembler";
 			}
 		});
+
+		 */
 	}
 
-	private void SichernAusführen(boolean var1) {
-		if (this.file == null || var1) {
+	private void SichernAusführen(boolean choosePath) {
+		if (this.file == null || choosePath) {
 			if (this.file != null) {
-				this.fileChooser.setSelectedFile(this.file);
+				fileDialog.setDirectory(this.file.getAbsolutePath());
+				//this.fileChooser.setSelectedFile(this.file);
 			} else {
-				this.fileChooser.setCurrentDirectory(lastFolder);
+				fileDialog.setDirectory(lastFolder.getAbsolutePath());
+				//this.fileChooser.setCurrentDirectory(lastFolder);
 			}
 
-			int var2 = this.fileChooser.showSaveDialog(this.fenster);
-			if (var2 != 0) {
+			fileDialog.setFile("");
+			fileDialog.setMode(FileDialog.SAVE);
+
+			fileDialog.setTitle(R.getResources().getString("file_picker_save_title"));
+			fileDialog.setVisible(true);
+
+
+			String newFile = fileDialog.getFile();
+
+			if (newFile == null) {
 				return;
 			}
 
+			if(!newFile.toLowerCase().endsWith(".mia") && !newFile.toLowerCase().endsWith(".mia")) {
+				newFile += (".mia");
+			}
+			newFile = fileDialog.getDirectory() + newFile;
+			this.file = new File(newFile);
+
+			/*
 			this.file = this.fileChooser.getSelectedFile();
 			if (this.fileChooser.getFileFilter().getDescription().equals("Minimaschine Assembler")) {
 				if (!this.file.getName().toLowerCase().endsWith(".mia")) {
@@ -179,6 +201,8 @@ class Editor extends Anzeige {
 
 				lastFolder = this.file;
 			}
+
+			 */
 		}
 
 		try {
@@ -186,31 +210,33 @@ class Editor extends Anzeige {
 			this.editor.write(var4);
 			var4.close();
 			this.sicherungsstand = this.editor.getText();
-			this.fenster.setTitle(this.file.getPath());
-			this.kontrolleur.FensterTitelÄndernWeitergeben(this.selbst);
+			this.window.setTitle(this.file.getPath());
+			this.controller.FensterTitelÄndernWeitergeben(this.self);
 		} catch (Exception var3) {
 			this.file = null;
 		}
 
+		controller.assemble(editor.getText(), this);
+
 	}
 
-	private void SchließenAusführen(boolean var1) {
+	private void SchließenAusführen(boolean cancelButton) {
 		if (!this.sicherungsstand.equals(this.editor.getText())) {
-			int var2 = JOptionPane.showConfirmDialog(this.fenster, new String[]{"Dieses Fenster enthält ungesicherte Änderungen.", "Sollen sie gesichert werden?"}, "Änderungen sichern", var1 ? 1 : 0);
-			if (var2 == 0) {
+			int confirmClose = JOptionPane.showConfirmDialog(this.window, new String[]{R.getResources().getString("editor_confirm_exit_unsaved1"), R.getResources().getString("editor_confirm_exit_unsaved2")}, "Änderungen sichern", cancelButton ? JOptionPane.YES_NO_CANCEL_OPTION : JOptionPane.YES_NO_OPTION);
+			if (confirmClose == 0) {
 				this.SichernAusführen(false);
-			} else if (var2 != 1) {
+			} else if (confirmClose != 1) {
 				return;
 			}
 		}
 
-		this.kontrolleur.SchließenAusführen(this.selbst);
-		this.fenster.dispose();
+		this.controller.SchließenAusführen(this.self);
+		this.window.dispose();
 	}
 
 	void BeendenMitteilen() {
 		if (!this.sicherungsstand.equals(this.editor.getText())) {
-			int var1 = JOptionPane.showConfirmDialog(this.fenster, new String[]{"Dieses Fenster enthält ungesicherte Änderungen.", "Sollen sie gesichert werden?"}, "Änderungen sichern", 0);
+			int var1 = JOptionPane.showConfirmDialog(this.window, new String[]{R.getResources().getString("editor_confirm_exit_unsaved1"), R.getResources().getString("editor_confirm_exit_unsaved2")}, "Änderungen sichern", JOptionPane.YES_NO_OPTION);
 			if (var1 == 0) {
 				this.SichernAusführen(false);
 			}
@@ -218,29 +244,29 @@ class Editor extends Anzeige {
 
 	}
 
-	protected void MenüsErzeugen() {
-		super.MenüsErzeugen();
-		this.schließenItem.addActionListener(new ActionListener() {
+	protected void initMenus() {
+		super.initMenus();
+		this.closeMenuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent var1) {
 				Editor.this.SchließenAusführen(true);
 			}
 		});
-		this.sichernItem.addActionListener(new ActionListener() {
+		this.saveMenuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent var1) {
 				Editor.this.SichernAusführen(false);
 			}
 		});
-		this.sichernUnterItem.addActionListener(new ActionListener() {
+		this.saveAsMenuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent var1) {
 				Editor.this.SichernAusführen(true);
 			}
 		});
-		this.druckenItem.addActionListener(new ActionListener() {
+		this.printMenuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent var1) {
 				Editor.this.DruckenAusführen();
 			}
 		});
-		this.undoItem = new JMenuItem("Widerrufen", 90);
+		this.undoItem = new JMenuItem(R.getResources().getString("edit_menu_undo"), 90);
 		this.undoItem.setAccelerator(KeyStroke.getKeyStroke(90, kommando));
 		this.undoItem.setEnabled(false);
 		this.undoItem.addActionListener(new ActionListener() {
@@ -251,8 +277,8 @@ class Editor extends Anzeige {
 				Editor.this.ZeilenNummernSetzen(false);
 			}
 		});
-		this.bearbeitenMenü.add(this.undoItem);
-		this.redoItem = new JMenuItem("Wiederholen");
+		this.editMenu.add(this.undoItem);
+		this.redoItem = new JMenuItem(R.getResources().getString("edit_menu_redo"));
 		this.redoItem.setAccelerator(KeyStroke.getKeyStroke(90, 64 + kommando));
 		this.redoItem.setEnabled(false);
 		this.redoItem.addActionListener(new ActionListener() {
@@ -263,40 +289,40 @@ class Editor extends Anzeige {
 				Editor.this.ZeilenNummernSetzen(false);
 			}
 		});
-		this.bearbeitenMenü.add(this.redoItem);
-		this.bearbeitenMenü.addSeparator();
-		JMenuItem var1 = new JMenuItem("Ausschneiden", 88);
+		this.editMenu.add(this.redoItem);
+		this.editMenu.addSeparator();
+		JMenuItem var1 = new JMenuItem(R.getResources().getString("edit_menu_cut"), 88);
 		var1.setAccelerator(KeyStroke.getKeyStroke(88, kommando));
 		var1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent var1) {
 				Editor.this.editor.cut();
 			}
 		});
-		this.bearbeitenMenü.add(var1);
-		var1 = new JMenuItem("Kopieren", 67);
+		this.editMenu.add(var1);
+		var1 = new JMenuItem(R.getResources().getString("edit_menu_copy"), 67);
 		var1.setAccelerator(KeyStroke.getKeyStroke(67, kommando));
 		var1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent var1) {
 				Editor.this.editor.copy();
 			}
 		});
-		this.bearbeitenMenü.add(var1);
-		var1 = new JMenuItem("Einfügen", 86);
+		this.editMenu.add(var1);
+		var1 = new JMenuItem(R.getResources().getString("edit_menu_paste"), 86);
 		var1.setAccelerator(KeyStroke.getKeyStroke(86, kommando));
 		var1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent var1) {
 				Editor.this.editor.paste();
 			}
 		});
-		this.bearbeitenMenü.add(var1);
-		var1 = new JMenuItem("Alles auswählen", 65);
+		this.editMenu.add(var1);
+		var1 = new JMenuItem(R.getResources().getString("edit_menu_select_all"), 65);
 		var1.setAccelerator(KeyStroke.getKeyStroke(65, kommando));
 		var1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent var1) {
 				Editor.this.editor.selectAll();
 			}
 		});
-		this.bearbeitenMenü.add(var1);
+		this.editMenu.add(var1);
 		String[] var2 = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
 		JMenu var3 = new JMenu("Fonts");
 		ActionListener var4 = new ActionListener() {
@@ -318,40 +344,40 @@ class Editor extends Anzeige {
 			var3.add(var9);
 		}
 
-		this.werkzeugMenü.addSeparator();
-		this.werkzeugMenü.add(var3);
-		this.werkzeugMenü.addSeparator();
-		var1 = new JMenuItem("Assemblieren");
+		this.toolsMenu.addSeparator();
+		this.toolsMenu.add(var3);
+		this.toolsMenu.addSeparator();
+		var1 = new JMenuItem(R.getResources().getString("editor_assemble"));
 		var1.setAccelerator(KeyStroke.getKeyStroke(65, kommando + 512));
 		var1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent var1) {
 				Editor.this.status.setText("");
-				Editor.this.kontrolleur.Assemblieren(Editor.this.editor.getText(), (Editor)Editor.this.selbst);
+				Editor.this.controller.assemble(Editor.this.editor.getText(), (Editor)Editor.this.self);
 			}
 		});
-		this.werkzeugMenü.add(var1);
-		this.werkzeugMenü.addSeparator();
+		this.toolsMenu.add(var1);
+		this.toolsMenu.addSeparator();
 		var1 = new JMenuItem("Übersetzen");
 		var1.setAccelerator(KeyStroke.getKeyStroke(85, kommando + 512));
 		var1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent var1) {
 				Editor.this.status.setText("");
-				Editor.this.kontrolleur.Übersetzen(Editor.this.editor.getText(), (Editor)Editor.this.selbst);
+				Editor.this.controller.Übersetzen(Editor.this.editor.getText(), (Editor)Editor.this.self);
 			}
 		});
-		this.werkzeugMenü.add(var1);
+		this.toolsMenu.add(var1);
 		var1 = new JMenuItem("Assemblertext zeigen");
 		var1.setAccelerator(KeyStroke.getKeyStroke(90, kommando + 512));
 		var1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent var1) {
 				Editor.this.status.setText("");
-				Editor.this.kontrolleur.AssemblertextZeigen(Editor.this.editor.getText(), (Editor)Editor.this.selbst);
+				Editor.this.controller.AssemblertextZeigen(Editor.this.editor.getText(), (Editor)Editor.this.self);
 			}
 		});
-		this.werkzeugMenü.add(var1);
+		this.toolsMenu.add(var1);
 	}
 
-	protected void DarstellungsgrößeSetzen(boolean var1) {
+	protected void resetDisplaySize(boolean var1) {
 		if (var1) {
 			this.FontgrößeSetzen(24);
 		} else {
@@ -370,10 +396,25 @@ class Editor extends Anzeige {
 	}
 
 	void DateiLesen() {
-		this.fileChooser.setCurrentDirectory(lastFolder);
-		int dialogChoice = this.fileChooser.showOpenDialog(this.fenster);
-		if (dialogChoice == 0) {
-			this.file = this.fileChooser.getSelectedFile();
+		//this.fileChooser.setCurrentDirectory(lastFolder);
+
+
+
+		fileDialog.setMode(FileDialog.LOAD);
+		fileDialog.setMultipleMode(false);
+		fileDialog.setTitle(R.getResources().getString("file_picker_open_title"));
+		fileDialog.setDirectory(lastFolder.getAbsolutePath());
+		fileDialog.setFile("*.mis;*.mia");
+		fileDialog.setVisible(true);
+		String file = fileDialog.getFile();
+
+
+		//int dialogChoice = this.fileChooser.showOpenDialog(this.window);
+
+		if(file != null) {
+			file = fileDialog.getDirectory() + file;
+			System.out.println(file + " chosen.");
+			this.file = new File(file);//this.fileChooser.getSelectedFile();
 
 			try {
 				FileReader fr = new FileReader(this.file);
@@ -389,11 +430,13 @@ class Editor extends Anzeige {
 
 				this.zeilenNummern.setText(buildString.toString());
 				this.sicherungsstand = this.editor.getText();
-				this.fenster.setTitle(this.file.getPath());
+				this.window.setTitle(this.file.getPath());
 				lastFolder = this.file;
 
 				Preferences prefs = Preferences.userRoot().node(this.getClass().getName());
 				prefs.put("lastFolder", lastFolder.getAbsolutePath());
+				System.out.println(lastFolder.getAbsolutePath());
+
 
 			} catch (Exception e) {
 				this.file = null;
@@ -403,13 +446,13 @@ class Editor extends Anzeige {
 		}
 
 		if (this.file != null) {
-			this.fenster.setVisible(true);
+			this.window.setVisible(true);
 			this.undoItem.setEnabled(false);
 			this.redoItem.setEnabled(false);
-			this.kontrolleur.FensterTitelÄndernWeitergeben(this.selbst);
+			this.controller.FensterTitelÄndernWeitergeben(this.self);
 		} else {
-			this.kontrolleur.SchließenAusführen(this.selbst);
-			this.fenster.dispose();
+			this.controller.SchließenAusführen(this.self);
+			this.window.dispose();
 		}
 
 	}
@@ -422,15 +465,15 @@ class Editor extends Anzeige {
 			this.editor.read(fr, (Object)null);
 			fr.close();
 			this.sicherungsstand = this.editor.getText();
-			this.fenster.setTitle(this.file.getPath());
+			this.window.setTitle(this.file.getPath());
 		} catch (Exception ex) {
 			this.file = null;
 		}
 
-		this.fenster.setVisible(true);
+		this.window.setVisible(true);
 		this.undoItem.setEnabled(false);
 		this.redoItem.setEnabled(false);
-		this.kontrolleur.FensterTitelÄndernWeitergeben(this.selbst);
+		this.controller.FensterTitelÄndernWeitergeben(this.self);
 	}
 
 	void FehlerAnzeigen(String var1, int var2) {
@@ -453,16 +496,19 @@ class Editor extends Anzeige {
 			}
 		}
 
-		PrintJob var1 = this.fenster.getToolkit().getPrintJob(this.fenster, this.fenster.getTitle(), (Properties)null);
-		Dimension var3 = var1.getPageDimension();
-		int var4 = var1.getPageResolution();
+		PrintJob printJob = this.window.getToolkit().getPrintJob(this.window, this.window.getTitle(), (Properties)null);
+		if(printJob == null) {
+			return;
+		}
+		Dimension var3 = printJob.getPageDimension();
+		int var4 = printJob.getPageResolution();
 		int var5 = 15000 * var4 / 25410;
 		int var6 = 10000 * var4 / 25410;
 		var3.width -= var5 * 2;
 		var3.height -= var5 * 2;
 		Font var11 = new Font("Monospaced", 0, 10);
 		Font var12 = new Font("Monospaced", 0, 14);
-		Graphics var2 = var1.getGraphics();
+		Graphics var2 = printJob.getGraphics();
 		int var8 = var2.getFontMetrics(var11).getHeight();
 		int var9 = (var3.height - var6 * 2) / var8;
 		int var10 = (var13.length + var9 - 1) / var9;
@@ -472,20 +518,20 @@ class Editor extends Anzeige {
 			var2.drawString(var13[var14], var5 + var6 * 5 / 10, var5 + 2 * var6 + var14 % var9 * var8);
 			if ((var14 + 1) % var9 == 0) {
 				var2.dispose();
-				var2 = var1.getGraphics();
+				var2 = printJob.getGraphics();
 				this.RahmenDrucken(var2, var3, var5, var6, (var14 + 1) / var9, var10, var11, var12);
 			}
 		}
 
 		var2.dispose();
-		var1.end();
+		printJob.end();
 	}
 
 	private void RahmenDrucken(Graphics var1, Dimension var2, int var3, int var4, int var5, int var6, Font var7, Font var8) {
 		var1.drawRoundRect(var3, var3, var2.width, var2.height, var4 * 2, var4 * 2);
 		var1.drawLine(var3, var3 + var4, var3 + var2.width, var3 + var4);
 		var1.drawLine(var3, var3 + var2.height - var4, var3 + var2.width, var3 + var2.height - var4);
-		String var9 = this.fenster.getTitle();
+		String var9 = this.window.getTitle();
 		var1.setFont(var8);
 		var1.drawString(var9, var3 + var2.width / 2 - var1.getFontMetrics().stringWidth(var9) / 2, var3 + var4 * 7 / 10);
 		var9 = "– " + var5 + " von " + var6 + " –";

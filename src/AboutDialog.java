@@ -70,7 +70,7 @@ class AboutDialog {
 		this.dialog.setVisible(false);
 	}
 
-	static void Zeigen() {
+	static void show() {
 		if (aboutDialog == null) {
 			aboutDialog = new AboutDialog();
 		}

@@ -13,27 +13,29 @@ import com.apple.eawt.AppEvent.AboutEvent;
 import com.apple.eawt.AppEvent.OpenFilesEvent;
 import com.apple.eawt.AppEvent.QuitEvent;
  */
-import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLightLaf;
+import javafx.scene.input.KeyCode;
+import res.R;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.*;
 
 abstract class Anzeige {
-	protected JFrame fenster;
-	protected JMenuBar menüZeile;
-	protected JMenu dateiMenü;
-	protected JMenu bearbeitenMenü;
-	protected JMenu werkzeugMenü;
-	protected JMenu fensterMenü;
-	protected JMenuItem schließenItem;
-	protected JMenuItem sichernItem;
-	protected JMenuItem sichernUnterItem;
-	protected JMenuItem druckenItem;
-	protected JCheckBoxMenuItem größeItem;
-	protected KontrolleurInterface kontrolleur;
-	protected Anzeige selbst;
+	protected JFrame window;
+	protected JMenuBar menuBar;
+	protected JMenu fileMenu;
+	protected JMenu editMenu;
+	protected JMenu toolsMenu;
+	protected JMenu windowsMenu;
+	protected JMenuItem closeMenuItem;
+	protected JMenuItem saveMenuItem;
+	protected JMenuItem saveAsMenuItem;
+	protected JMenuItem printMenuItem;
+	protected JCheckBoxMenuItem sizeMenuItem;
+
+	protected KontrolleurInterface controller;
+	protected Anzeige self;
 	private static boolean erster = true;
 	protected static boolean isMac;
 	protected static int kommando;
@@ -68,9 +70,9 @@ abstract class Anzeige {
 	}
 	*/
 
-	Anzeige(KontrolleurInterface var1) {
-		this.kontrolleur = var1;
-		this.selbst = this;
+	Anzeige(KontrolleurInterface controller) {
+		this.controller = controller;
+		this.self = this;
 		if (erster) {
 			erster = false;
 			isMac = System.getProperty("os.name", "").startsWith("Mac");
@@ -88,136 +90,143 @@ abstract class Anzeige {
 			}
 		}
 
-		this.MenüsErzeugen();
-		this.OberflächeAufbauen();
-		this.fenster.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+		this.initMenus();
+		this.initLayout();
+		//this.window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		if (isMac) {
 		}
 
 	}
 
-	protected abstract void OberflächeAufbauen();
+	protected abstract void initLayout();
 
-	protected void MenüsErzeugen() {
+	protected void initMenus() {
 
-		this.menüZeile = new JMenuBar();
-		this.dateiMenü = new JMenu("Ablage");
-		this.menüZeile.add(this.dateiMenü);
-		JMenuItem var1 = new JMenuItem("Neu", 78);
+		this.menuBar = new JMenuBar();
+		this.fileMenu = new JMenu(R.getResources().getString("file_menu"));
+		this.menuBar.add(this.fileMenu);
+		JMenuItem var1 = new JMenuItem(R.getResources().getString("file_menu_new"), 78);
 		var1.setAccelerator(KeyStroke.getKeyStroke(78, kommando));
 		var1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent var1) {
-				Anzeige.this.kontrolleur.NeuAusführen();
+				Anzeige.this.controller.NeuAusführen();
 			}
 		});
-		this.dateiMenü.add(var1);
-		var1 = new JMenuItem("Öffnen …", 79);
+		this.fileMenu.add(var1);
+		var1 = new JMenuItem(R.getResources().getString("file_menu_open"), 79);
 		var1.setAccelerator(KeyStroke.getKeyStroke(79, kommando));
 		var1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent var1) {
-				Anzeige.this.kontrolleur.ÖffnenAusführen();
+				Anzeige.this.controller.ÖffnenAusführen();
 			}
 		});
-		this.dateiMenü.add(var1);
-		this.dateiMenü.addSeparator();
-		this.schließenItem = new JMenuItem("Schließen", 87);
-		this.schließenItem.setAccelerator(KeyStroke.getKeyStroke(87, kommando));
-		this.dateiMenü.add(this.schließenItem);
-		this.sichernItem = new JMenuItem("Sichern", 83);
-		this.sichernItem.setAccelerator(KeyStroke.getKeyStroke(83, kommando));
-		this.dateiMenü.add(this.sichernItem);
-		this.sichernUnterItem = new JMenuItem("Sichern unter …");
-		this.sichernUnterItem.setAccelerator(KeyStroke.getKeyStroke(83, kommando + 64));
-		this.dateiMenü.add(this.sichernUnterItem);
-		this.dateiMenü.addSeparator();
-		this.druckenItem = new JMenuItem("Drucken …");
-		this.druckenItem.setAccelerator(KeyStroke.getKeyStroke(80, kommando));
-		this.dateiMenü.add(this.druckenItem);
+
+		this.fileMenu.add(var1);
+
+		this.fileMenu.addSeparator();
+
+		this.closeMenuItem = new JMenuItem(R.getResources().getString("file_menu_close"), 87);
+		this.closeMenuItem.setAccelerator(KeyStroke.getKeyStroke(87, kommando));
+		this.fileMenu.add(this.closeMenuItem);
+
+		this.saveMenuItem = new JMenuItem(R.getResources().getString("file_menu_save"), 83);
+		this.saveMenuItem.setAccelerator(KeyStroke.getKeyStroke(83, kommando));
+		this.fileMenu.add(this.saveMenuItem);
+
+		this.saveAsMenuItem = new JMenuItem(R.getResources().getString("file_menu_save_as"));
+		this.saveAsMenuItem.setAccelerator(KeyStroke.getKeyStroke(83, kommando + 64));
+		this.fileMenu.add(this.saveAsMenuItem);
+
+		this.fileMenu.addSeparator();
+
+		this.printMenuItem = new JMenuItem(R.getResources().getString("file_menu_print"));
+		this.printMenuItem.setAccelerator(KeyStroke.getKeyStroke('P', kommando));
+		this.fileMenu.add(this.printMenuItem);
 		if (!isMac) {
-			this.dateiMenü.addSeparator();
-			var1 = new JMenuItem("Beenden", 81);
+			this.fileMenu.addSeparator();
+			var1 = new JMenuItem(R.getResources().getString("file_menu_quit"), 81);
 			var1.setAccelerator(KeyStroke.getKeyStroke(81, kommando));
 			var1.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent var1) {
-					Anzeige.this.kontrolleur.BeendenAusführen();
+					Anzeige.this.controller.BeendenAusführen();
 				}
 			});
-			this.dateiMenü.add(var1);
+			this.fileMenu.add(var1);
 		}
 
-		this.bearbeitenMenü = new JMenu("Bearbeiten");
-		this.menüZeile.add(this.bearbeitenMenü);
-		this.werkzeugMenü = new JMenu("Werkzeuge");
-		this.menüZeile.add(this.werkzeugMenü);
-		this.größeItem = new JCheckBoxMenuItem("Große Darstellung");
-		this.größeItem.setEnabled(true);
-		this.größeItem.setSelected(false);
-		this.größeItem.addActionListener(new ActionListener() {
+		this.editMenu = new JMenu(R.getResources().getString("edit_menu"));
+		this.menuBar.add(this.editMenu);
+		this.toolsMenu = new JMenu(R.getResources().getString("tools_menu"));
+		this.menuBar.add(this.toolsMenu);
+		this.sizeMenuItem = new JCheckBoxMenuItem(R.getResources().getString("tools_menu_increase_size"));
+		this.sizeMenuItem.setEnabled(true);
+		this.sizeMenuItem.setSelected(false);
+		this.sizeMenuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent var1) {
-				Anzeige.this.DarstellungsgrößeSetzen(Anzeige.this.größeItem.isSelected());
+				Anzeige.this.resetDisplaySize(Anzeige.this.sizeMenuItem.isSelected());
 			}
 		});
-		this.werkzeugMenü.add(this.größeItem);
-		this.fensterMenü = new JMenu("Fenster");
-		this.menüZeile.add(this.fensterMenü);
+		this.toolsMenu.add(this.sizeMenuItem);
+		this.windowsMenu = new JMenu(R.getResources().getString("windows_menu"));
+		this.menuBar.add(this.windowsMenu);
 		if (!isMac) {
-			var1 = new JMenuItem("Über Minimaschine");
+			var1 = new JMenuItem(R.getResources().getString("windows_menu_about"));
 			var1.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent var1) {
-					AboutDialog.Zeigen();
+					AboutDialog.show();
 				}
 			});
-			this.fensterMenü.add(var1);
-			this.fensterMenü.addSeparator();
+			this.windowsMenu.add(var1);
+			this.windowsMenu.addSeparator();
 		}
 
-		var1 = new JMenuItem("CPU-Fenster");
+		var1 = new JMenuItem(R.getResources().getString("windows_menu_cpu"));
 		var1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent var1) {
-				Anzeige.this.kontrolleur.CpuFensterAuswählen();
+				Anzeige.this.controller.CpuFensterAuswählen();
 			}
 		});
-		this.fensterMenü.add(var1);
-		var1 = new JMenuItem("Speicher-Fenster");
+		this.windowsMenu.add(var1);
+		var1 = new JMenuItem(R.getResources().getString("windows_menu_memory"));
 		var1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent var1) {
-				Anzeige.this.kontrolleur.SpeicherFensterAuswählen();
+				Anzeige.this.controller.SpeicherFensterAuswählen();
 			}
 		});
-		this.fensterMenü.add(var1);
-		this.fensterMenü.addSeparator();
+		this.windowsMenu.add(var1);
+		this.windowsMenu.addSeparator();
 	}
 
-	protected abstract void DarstellungsgrößeSetzen(boolean var1);
+	protected abstract void resetDisplaySize(boolean var1);
 
 	private String TitelGeben() {
-		return this.fenster.getTitle();
+		return this.window.getTitle();
 	}
 
 	void FenstereintragHinzufügen(int var1, Anzeige var2) {
 		JMenuItem var3 = new JMenuItem(var2.TitelGeben());
 		var3.addActionListener(new Anzeige.FensterAktion(var2));
-		this.fensterMenü.insert(var3, var1 + 3);
+		this.windowsMenu.insert(var3, var1 + 3);
 	}
 
 	void FenstereintragEntfernen(int var1) {
-		this.fensterMenü.remove(var1 + 3);
+		this.windowsMenu.remove(var1 + 3);
 	}
 
 	void FenstereintragÄndern(int var1, Anzeige var2) {
-		this.fensterMenü.getItem(var1 + 3).setText(var2.TitelGeben());
+		this.windowsMenu.getItem(var1 + 3).setText(var2.TitelGeben());
 	}
 
 	void Aktivieren() {
-		if (!this.fenster.isVisible()) {
-			this.fenster.setVisible(true);
+		if (!this.window.isVisible()) {
+			this.window.setVisible(true);
 		}
 
-		this.fenster.toFront();
+		this.window.toFront();
 	}
 
 	void Ausblenden() {
-		this.fenster.setVisible(false);
+		this.window.setVisible(false);
 	}
 
 	void BeendenMitteilen() {
