@@ -102,21 +102,21 @@ class Kontrolleur implements KontrolleurInterface {
 	}
 
 	public void NeuAusführen() {
-		Editor var1 = new Editor(this);
-		this.verwaltung.EditorEintragen(var1);
-		var1.Aktivieren();
+		Editor editor = new Editor(this);
+		this.verwaltung.EditorEintragen(editor);
+		editor.Aktivieren();
 	}
 
 	public void ÖffnenAusführen() {
-		Editor var1 = new Editor(this);
-		this.verwaltung.EditorEintragen(var1);
-		var1.DateiLesen();
+		Editor editor = new Editor(this);
+		this.verwaltung.EditorEintragen(editor);
+		editor.DateiLesen();
 	}
 
-	public void ÖffnenAusführen(String var1) {
+	public void ÖffnenAusführen(String path) {
 		Editor var2 = new Editor(this);
 		this.verwaltung.EditorEintragen(var2);
-		var2.DateiLesen(var1);
+		var2.DateiLesen(path);
 	}
 
 	public void SchließenAusführen(Anzeige var1) {

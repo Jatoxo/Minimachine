@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.util.Properties;
+import java.util.prefs.Preferences;
 import javax.swing.JEditorPane;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -38,7 +39,7 @@ import javax.swing.undo.UndoManager;
 
 class Editor extends Anzeige {
 	private static final int umrechnung = 25410;
-	private static File letzterOrdner = null;
+	private static File lastFolder = null;
 	private JEditorPane editor;
 	private JScrollPane scroll;
 	private JTextArea zeilenNummern;
@@ -51,8 +52,15 @@ class Editor extends Anzeige {
 	private boolean istAssembler = true;
 	private String sicherungsstand = "";
 
-	Editor(KontrolleurInterface var1) {
-		super(var1);
+	Editor(KontrolleurInterface controller) {
+		super(controller);
+
+		Preferences prefs = Preferences.userRoot().node(this.getClass().getName());
+		String path = prefs.get("lastFolder", null);
+		if(path != null) {
+			lastFolder = new File(prefs.get("lastFolder", null));
+		}
+
 	}
 
 	void ZeilenNummernSetzen(boolean var1) {
@@ -149,7 +157,7 @@ class Editor extends Anzeige {
 			if (this.file != null) {
 				this.fileChooser.setSelectedFile(this.file);
 			} else {
-				this.fileChooser.setCurrentDirectory(letzterOrdner);
+				this.fileChooser.setCurrentDirectory(lastFolder);
 			}
 
 			int var2 = this.fileChooser.showSaveDialog(this.fenster);
@@ -163,13 +171,13 @@ class Editor extends Anzeige {
 					this.file = new File(this.file.getPath() + ".mia");
 				}
 
-				letzterOrdner = this.file;
+				lastFolder = this.file;
 			} else if (this.fileChooser.getFileFilter().getDescription().equals("Minimaschine Minisprache")) {
 				if (!this.file.getName().toLowerCase().endsWith(".mis")) {
 					this.file = new File(this.file.getPath() + ".mis");
 				}
 
-				letzterOrdner = this.file;
+				lastFolder = this.file;
 			}
 		}
 
@@ -362,27 +370,32 @@ class Editor extends Anzeige {
 	}
 
 	void DateiLesen() {
-		this.fileChooser.setCurrentDirectory(letzterOrdner);
-		int var1 = this.fileChooser.showOpenDialog(this.fenster);
-		if (var1 == 0) {
+		this.fileChooser.setCurrentDirectory(lastFolder);
+		int dialogChoice = this.fileChooser.showOpenDialog(this.fenster);
+		if (dialogChoice == 0) {
 			this.file = this.fileChooser.getSelectedFile();
 
 			try {
-				FileReader var2 = new FileReader(this.file);
-				this.editor.read(var2, (Object)null);
-				var2.close();
-				String[] var3 = this.editor.getText().split("\n");
-				String var4 = "";
+				FileReader fr = new FileReader(this.file);
+				this.editor.read(fr, null);
+				fr.close();
 
-				for(int var5 = 1; var5 <= var3.length; ++var5) {
-					var4 = var4 + var5 + " \n";
+				String[] lines = this.editor.getText().split("\n");
+				StringBuilder buildString = new StringBuilder();
+
+				for(int i = 1; i <= lines.length; ++i) {
+					buildString.append(i).append(" \n");
 				}
 
-				this.zeilenNummern.setText(var4);
+				this.zeilenNummern.setText(buildString.toString());
 				this.sicherungsstand = this.editor.getText();
 				this.fenster.setTitle(this.file.getPath());
-				letzterOrdner = this.file;
-			} catch (Exception var6) {
+				lastFolder = this.file;
+
+				Preferences prefs = Preferences.userRoot().node(this.getClass().getName());
+				prefs.put("lastFolder", lastFolder.getAbsolutePath());
+
+			} catch (Exception e) {
 				this.file = null;
 			}
 		} else {
@@ -401,16 +414,16 @@ class Editor extends Anzeige {
 
 	}
 
-	void DateiLesen(String var1) {
-		this.file = new File(var1);
+	void DateiLesen(String path) {
+		this.file = new File(path);
 
 		try {
-			FileReader var2 = new FileReader(this.file);
-			this.editor.read(var2, (Object)null);
-			var2.close();
+			FileReader fr = new FileReader(this.file);
+			this.editor.read(fr, (Object)null);
+			fr.close();
 			this.sicherungsstand = this.editor.getText();
 			this.fenster.setTitle(this.file.getPath());
-		} catch (Exception var3) {
+		} catch (Exception ex) {
 			this.file = null;
 		}
 
