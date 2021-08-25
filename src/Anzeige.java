@@ -18,9 +18,6 @@ import com.formdev.flatlaf.FlatLightLaf;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
-import java.util.Iterator;
-import java.util.List;
 import javax.swing.*;
 
 abstract class Anzeige {
@@ -167,7 +164,7 @@ abstract class Anzeige {
 			var1 = new JMenuItem("Über Minimaschine");
 			var1.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent var1) {
-					Über.Zeigen();
+					AboutDialog.Zeigen();
 				}
 			});
 			this.fensterMenü.add(var1);
