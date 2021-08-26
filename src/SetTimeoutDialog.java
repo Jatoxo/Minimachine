@@ -18,12 +18,12 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
-class Zeitschranke {
+class SetTimeoutDialog {
 	private JDialog dialog;
-	private static Zeitschranke timeoutDialog = null;
+	private static SetTimeoutDialog timeoutDialog = null;
 	private KontrolleurInterface kontrolleur;
 
-	private Zeitschranke(KontrolleurInterface controller) {
+	private SetTimeoutDialog(KontrolleurInterface controller) {
 		this.kontrolleur = controller;
 		this.dialog = new JDialog((JFrame)null);
 		this.dialog.setTitle(R.getResources().getString("dialog_timeout_title"));
@@ -54,8 +54,8 @@ class Zeitschranke {
 			public void actionPerformed(ActionEvent var1) {
 				try {
 					int var2 = Integer.parseInt(inputField.getText());
-					Zeitschranke.this.kontrolleur.ZeitschrankeSetzen(var2);
-					Zeitschranke.this.dialog.setVisible(false);
+					SetTimeoutDialog.this.kontrolleur.ZeitschrankeSetzen(var2);
+					SetTimeoutDialog.this.dialog.setVisible(false);
 				} catch (Exception var3) {
 					inputField.selectAll();
 				}
@@ -71,7 +71,7 @@ class Zeitschranke {
 
 	static void show(KontrolleurInterface controller) {
 		if (timeoutDialog == null) {
-			timeoutDialog = new Zeitschranke(controller);
+			timeoutDialog = new SetTimeoutDialog(controller);
 		}
 		timeoutDialog.dialog.setLocationRelativeTo(null);
 		timeoutDialog.dialog.setVisible(true);

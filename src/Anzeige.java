@@ -13,11 +13,7 @@ import com.apple.eawt.AppEvent.AboutEvent;
 import com.apple.eawt.AppEvent.OpenFilesEvent;
 import com.apple.eawt.AppEvent.QuitEvent;
  */
-import com.formdev.flatlaf.FlatDarkLaf;
-import com.formdev.flatlaf.FlatIntelliJLaf;
 import com.formdev.flatlaf.FlatLightLaf;
-import com.formdev.flatlaf.FlatPropertiesLaf;
-import javafx.scene.input.KeyCode;
 import res.R;
 
 import java.awt.event.ActionEvent;
@@ -227,7 +223,7 @@ abstract class Anzeige {
 		this.windowsMenu.getItem(var1 + 3).setText(var2.TitelGeben());
 	}
 
-	void Aktivieren() {
+	void show() {
 		if (!this.window.isVisible()) {
 			this.window.setVisible(true);
 		}
@@ -235,7 +231,7 @@ abstract class Anzeige {
 		this.window.toFront();
 	}
 
-	void Ausblenden() {
+	void hide() {
 		this.window.setVisible(false);
 	}
 
@@ -254,7 +250,7 @@ abstract class Anzeige {
 		}
 
 		public void actionPerformed(ActionEvent var1) {
-			this.anzeige.Aktivieren();
+			this.anzeige.show();
 		}
 	}
 }

@@ -6,7 +6,7 @@
 import javax.swing.JLabel;
 import javax.swing.border.LineBorder;
 
-class CpuAnzeigeErweitert extends CpuAnzeige {
+class CpuExtendedDisplay extends CpuDisplay {
 	private JLabel labelSP;
 	private JLabel labelAdr4;
 	private JLabel labelAdr5;
@@ -14,7 +14,7 @@ class CpuAnzeigeErweitert extends CpuAnzeige {
 	private JLabel labelMem5;
 	private JLabel spLabel;
 
-	CpuAnzeigeErweitert(KontrolleurInterface controller) {
+	CpuExtendedDisplay(KontrolleurInterface controller) {
 		super(controller);
 	}
 

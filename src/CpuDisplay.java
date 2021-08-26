@@ -14,7 +14,7 @@ import javax.swing.*;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 
-class CpuAnzeige extends Anzeige implements CpuBeobachter {
+class CpuDisplay extends Anzeige implements CpuBeobachter {
 	private JLabel labelA;
 	private JLabel labelPC;
 	private JLabel labelIR1;
@@ -43,7 +43,7 @@ class CpuAnzeige extends Anzeige implements CpuBeobachter {
 	protected JButton einzelButton;
 	JCheckBoxMenuItem erweiterungenItem;
 
-	CpuAnzeige(KontrolleurInterface var1) {
+	CpuDisplay(KontrolleurInterface var1) {
 		super(var1);
 	}
 
@@ -187,7 +187,7 @@ class CpuAnzeige extends Anzeige implements CpuBeobachter {
 		this.window.add(this.ausfuehrenButton);
 		this.ausfuehrenButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent var1) {
-				CpuAnzeige.this.controller.Ausführen();
+				CpuDisplay.this.controller.Ausführen();
 			}
 		});
 		this.einzelButton = new JButton("Einzelschritt");
@@ -196,7 +196,7 @@ class CpuAnzeige extends Anzeige implements CpuBeobachter {
 		this.window.add(this.einzelButton);
 		this.einzelButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent var1) {
-				CpuAnzeige.this.controller.EinzelSchritt();
+				CpuDisplay.this.controller.EinzelSchritt();
 			}
 		});
 
@@ -408,7 +408,7 @@ class CpuAnzeige extends Anzeige implements CpuBeobachter {
 		var1.setAccelerator(KeyStroke.getKeyStroke(69, kommando + 512));
 		var1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent var1) {
-				CpuAnzeige.this.controller.EinfacheDarstellungAnzeigen();
+				CpuDisplay.this.controller.EinfacheDarstellungAnzeigen();
 			}
 		});
 		this.toolsMenu.add(var1);
@@ -416,7 +416,7 @@ class CpuAnzeige extends Anzeige implements CpuBeobachter {
 		var1.setAccelerator(KeyStroke.getKeyStroke(68, kommando + 512));
 		var1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent var1) {
-				CpuAnzeige.this.controller.DetailDarstellungAnzeigen();
+				CpuDisplay.this.controller.DetailDarstellungAnzeigen();
 			}
 		});
 		this.toolsMenu.add(var1);
@@ -425,7 +425,7 @@ class CpuAnzeige extends Anzeige implements CpuBeobachter {
 		var1.setAccelerator(KeyStroke.getKeyStroke(65, kommando + 512));
 		var1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent var1) {
-				Zeitschranke.show(CpuAnzeige.this.controller);
+				SetTimeoutDialog.show(CpuDisplay.this.controller);
 			}
 		});
 		this.toolsMenu.add(var1);
@@ -434,7 +434,7 @@ class CpuAnzeige extends Anzeige implements CpuBeobachter {
 		var1.setAccelerator(KeyStroke.getKeyStroke(82, kommando + 512));
 		var1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent var1) {
-				CpuAnzeige.this.controller.ZurückSetzen();
+				CpuDisplay.this.controller.ZurückSetzen();
 			}
 		});
 		this.toolsMenu.add(var1);
@@ -444,7 +444,7 @@ class CpuAnzeige extends Anzeige implements CpuBeobachter {
 		this.erweiterungenItem.setSelected(false);
 		this.erweiterungenItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent var1) {
-				CpuAnzeige.this.controller.ErweiterungenEinschalten(CpuAnzeige.this.erweiterungenItem.isSelected());
+				CpuDisplay.this.controller.ErweiterungenEinschalten(CpuDisplay.this.erweiterungenItem.isSelected());
 			}
 		});
 		this.toolsMenu.add(this.erweiterungenItem);

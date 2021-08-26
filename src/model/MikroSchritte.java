@@ -6,13 +6,13 @@
 package model;
 
 enum MikroSchritte {
-	komplett,
-	fetch_opcode,
-	fetch_adressteil,
-	fetch_indirekt,
-	decode,
-	execute_1,
-	execute_2;
+	COMPLETE,
+	FETCH_OPCODE,
+	FETCH_ADDRESS,
+	FETCH_INDIRECT,
+	DECODE,
+	EXECUTE_1,
+	EXECUTE_2;
 
 	private MikroSchritte() {
 	}

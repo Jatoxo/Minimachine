@@ -15,13 +15,9 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JFrame;
-import javax.swing.JMenuItem;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.KeyStroke;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableModel;
@@ -67,7 +63,7 @@ class SpeicherAnzeige extends Anzeige implements SpeicherBeobachter {
 
 			public Object getValueAt(int var1, int var2) {
 				if (var2 == 0) {
-					return new Integer(var1 * 10);
+					return var1 * 10;
 				} else {
 					int var3 = var1 * 10 + (var2 - 1);
 					if (var3 < 65536) {
@@ -158,9 +154,12 @@ class SpeicherAnzeige extends Anzeige implements SpeicherBeobachter {
 				return var7;
 			}
 		});
+
+		this.table.getTableHeader().setReorderingAllowed(false);
 		this.table.getTableHeader().setFont(this.table.getTableHeader().getFont().deriveFont(1));
 		this.scrollpane = new JScrollPane(this.table);
 		this.tableGross = new JTable(this.dataModel);
+		this.table.getTableHeader().setReorderingAllowed(false);
 		this.tableGross.setRowHeight(30);
 
 		for(var1 = 0; var1 < 11; ++var1) {
@@ -209,33 +208,33 @@ class SpeicherAnzeige extends Anzeige implements SpeicherBeobachter {
 		this.saveMenuItem.setEnabled(false);
 		this.saveAsMenuItem.setEnabled(false);
 		this.printMenuItem.setEnabled(false);
-		JMenuItem var1 = new JMenuItem("Widerrufen", 90);
+		JMenuItem var1 = new JMenuItem(R.getResources().getString("edit_menu_undo"), 90);
 		var1.setAccelerator(KeyStroke.getKeyStroke(90, kommando));
 		var1.setEnabled(false);
 		this.editMenu.add(var1);
-		var1 = new JMenuItem("Wiederholen");
+		var1 = new JMenuItem(R.getResources().getString("edit_menu_redo"));
 		var1.setAccelerator(KeyStroke.getKeyStroke(90, 64 + kommando));
 		var1.setEnabled(false);
 		this.editMenu.add(var1);
 		this.editMenu.addSeparator();
-		var1 = new JMenuItem("Ausschneiden", 88);
+		var1 = new JMenuItem(R.getResources().getString("edit_menu_cut"), 88);
 		var1.setAccelerator(KeyStroke.getKeyStroke(88, kommando));
 		var1.setEnabled(false);
 		this.editMenu.add(var1);
-		var1 = new JMenuItem("Kopieren", 67);
+		var1 = new JMenuItem(R.getResources().getString("edit_menu_copy"), 67);
 		var1.setAccelerator(KeyStroke.getKeyStroke(67, kommando));
 		var1.setEnabled(false);
 		this.editMenu.add(var1);
-		var1 = new JMenuItem("Einfügen", 86);
+		var1 = new JMenuItem(R.getResources().getString("edit_menu_paste"), 86);
 		var1.setAccelerator(KeyStroke.getKeyStroke(86, kommando));
 		var1.setEnabled(false);
 		this.editMenu.add(var1);
-		var1 = new JMenuItem("Alles auswählen", 65);
+		var1 = new JMenuItem(R.getResources().getString("edit_menu_select_all"), 65);
 		var1.setAccelerator(KeyStroke.getKeyStroke(65, kommando));
 		var1.setEnabled(false);
 		this.editMenu.add(var1);
 		this.toolsMenu.addSeparator();
-		var1 = new JMenuItem("Speicher löschen", 65);
+		var1 = new JMenuItem(R.getResources().getString("memory_clear_memory"), 65);
 		var1.setEnabled(true);
 		var1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent var1) {
@@ -244,7 +243,7 @@ class SpeicherAnzeige extends Anzeige implements SpeicherBeobachter {
 		});
 		this.toolsMenu.add(var1);
 		this.toolsMenu.addSeparator();
-		this.hexaItem = new JCheckBoxMenuItem("Darstellung hexadezimal");
+		this.hexaItem = new JCheckBoxMenuItem(R.getResources().getString("memory_display_hex"));
 		this.hexaItem.setEnabled(true);
 		this.hexaItem.setSelected(false);
 		this.hexaItem.addActionListener(new ActionListener() {
@@ -258,7 +257,7 @@ class SpeicherAnzeige extends Anzeige implements SpeicherBeobachter {
 				SpeicherAnzeige.this.controller.CpuInvalidieren();
 			}
 		});
-		this.opcodeItem = new JCheckBoxMenuItem("Opcodes anzeigen");
+		this.opcodeItem = new JCheckBoxMenuItem(R.getResources().getString("memory_display_op"));
 		this.opcodeItem.setEnabled(true);
 		this.opcodeItem.setSelected(false);
 		this.opcodeItem.addActionListener(new ActionListener() {
@@ -273,7 +272,7 @@ class SpeicherAnzeige extends Anzeige implements SpeicherBeobachter {
 		this.toolsMenu.add(this.hexaItem);
 		this.toolsMenu.add(this.opcodeItem);
 		this.toolsMenu.addSeparator();
-		this.editItem = new JCheckBoxMenuItem("Speicher editieren");
+		this.editItem = new JCheckBoxMenuItem(R.getResources().getString("memory_edit"));
 		this.editItem.setEnabled(true);
 		this.editItem.setSelected(false);
 		this.editItem.addActionListener(new ActionListener() {

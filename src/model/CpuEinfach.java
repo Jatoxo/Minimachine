@@ -5,6 +5,8 @@
 
 package model;
 
+import res.R;
+
 class CpuEinfach extends Cpu {
 	CpuEinfach(Speicher storage) {
 		super(storage);
@@ -135,11 +137,11 @@ class CpuEinfach extends Cpu {
 							this.eqflag = var3 == 0;
 							break label288;
 						default:
-							this.Fehlermeldung("Illegaler Befehlscode");
+							this.reportError(R.getResources().getString("cpu_illegal_opcode"));
 							this.befehlscode = -1;
 					}
 				} else {
-					this.Fehlermeldung("Illegaler Befehlscode");
+					this.reportError(R.getResources().getString("cpu_illegal_opcode"));
 					this.befehlscode = -1;
 				}
 				break;
@@ -167,7 +169,7 @@ class CpuEinfach extends Cpu {
 				var1 = this.a.WertGeben();
 				var2 = this.OperandenwertGeben(this.adresse, this.adressmodus);
 				if (var2 == 0) {
-					this.Fehlermeldung("Division durch 0");
+					this.reportError(R.getResources().getString("cpu_zero_division"));
 					var3 = var1;
 					this.ovflag = true;
 				} else {
@@ -184,7 +186,7 @@ class CpuEinfach extends Cpu {
 				var1 = this.a.WertGeben();
 				var2 = this.OperandenwertGeben(this.adresse, this.adressmodus);
 				if (var2 == 0) {
-					this.Fehlermeldung("Division durch 0");
+					this.reportError(R.getResources().getString("cpu_zero_division"));
 					var3 = 0;
 					this.ovflag = true;
 				} else {

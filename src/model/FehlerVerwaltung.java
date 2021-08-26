@@ -14,9 +14,9 @@ public class FehlerVerwaltung {
 	public FehlerVerwaltung() {
 	}
 
-	public void FehlerEintragen(String var1, int var2) {
-		this.meldungen.add(var1);
-		this.positionen.add(var2);
+	public void FehlerEintragen(String message, int position) {
+		this.meldungen.add(message);
+		this.positionen.add(position);
 	}
 
 	public boolean FehlerAufgetreten() {

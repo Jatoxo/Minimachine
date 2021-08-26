@@ -3,6 +3,8 @@
 // (powered by Fernflower decompiler)
 //
 
+import res.R;
+
 import java.awt.BorderLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -59,11 +61,11 @@ class AssemblerAnzeige extends Anzeige {
 			public void actionPerformed(ActionEvent var1) {
 			}
 		});
-		JMenuItem var1 = new JMenuItem("Ausschneiden", 88);
+		JMenuItem var1 = new JMenuItem(R.getResources().getString("edit_menu_cut"), 88);
 		var1.setAccelerator(KeyStroke.getKeyStroke(88, 256));
 		var1.setEnabled(false);
 		this.editMenu.add(var1);
-		var1 = new JMenuItem("Kopieren", 67);
+		var1 = new JMenuItem(R.getResources().getString("edit_menu_copy"), 67);
 		var1.setAccelerator(KeyStroke.getKeyStroke(67, 256));
 		var1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent var1) {
@@ -71,11 +73,11 @@ class AssemblerAnzeige extends Anzeige {
 			}
 		});
 		this.editMenu.add(var1);
-		var1 = new JMenuItem("Einfügen", 86);
+		var1 = new JMenuItem(R.getResources().getString("edit_menu_paste"), 86);
 		var1.setAccelerator(KeyStroke.getKeyStroke(86, 256));
 		var1.setEnabled(false);
 		this.editMenu.add(var1);
-		var1 = new JMenuItem("Alles auswählen", 65);
+		var1 = new JMenuItem(R.getResources().getString("edit_menu_select_all"), 65);
 		var1.setAccelerator(KeyStroke.getKeyStroke(65, 256));
 		var1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent var1) {

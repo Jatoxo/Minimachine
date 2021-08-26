@@ -8,29 +8,31 @@ import model.FehlerVerwaltung;
 import model.SpeicherLesen;
 import model.minilanguage.ParserEinfach;
 import model.minilanguage.ParserErweitert;
+import res.R;
 
-class Kontrolleur implements KontrolleurInterface {
+class Controller implements KontrolleurInterface {
 	private Cpu cpu;
-	private Cpu cpuEinfach;
+	private Cpu cpuSimple;
 	private Cpu cpuDetail;
-	private FensterVerwaltung verwaltung;
+	private WindowManager windowManager;
 	private boolean erweitert;
 
-	Kontrolleur(Cpu cpuSimple, Cpu cpuDetailed) {
-		this.cpuEinfach = cpuSimple;
-		this.cpuDetail = cpuDetailed;
-		this.cpu = cpuDetailed;
-		this.verwaltung = null;
+	Controller(Cpu cpuSimple, Cpu cpuDetail) {
+		this.cpuSimple = cpuSimple;
+		this.cpuDetail = cpuDetail;
+		this.cpu = cpuDetail;
+		this.windowManager = null;
 		this.erweitert = false;
 	}
 
-	void VerwaltungSetzen(FensterVerwaltung var1) {
-		this.verwaltung = var1;
-		var1.CpuAnzeigeWählen(true, false);
+	void setWindowManager(WindowManager manager) {
+		this.windowManager = manager;
+
+		manager.setCpuDisplayMode(true, false);
 	}
 
 	public void CpuHexaSetzen(boolean var1) {
-		this.cpuEinfach.HexaSetzen(var1);
+		this.cpuSimple.HexaSetzen(var1);
 		this.cpuDetail.HexaSetzen(var1);
 	}
 
@@ -46,6 +48,7 @@ class Kontrolleur implements KontrolleurInterface {
 		if (fehlerVerwaltung.FehlerAufgetreten()) {
 			editor.FehlerAnzeigen(fehlerVerwaltung.FehlertextMelden(), fehlerVerwaltung.FehlerpositionMelden());
 		} else {
+			editor.displayStatusMessage(R.getResources().getString("editor_assembly_success"));
 			this.cpu.ZurückSetzen();
 		}
 
@@ -77,7 +80,7 @@ class Kontrolleur implements KontrolleurInterface {
 			var2.FehlerAnzeigen(var3.FehlertextMelden(), var3.FehlerpositionMelden());
 		} else {
 			AssemblerAnzeige var4 = new AssemblerAnzeige(this, var5);
-			this.verwaltung.EditorEintragen(var4);
+			this.windowManager.EditorEintragen(var4);
 		}
 
 		return !var3.FehlerAufgetreten();
@@ -105,55 +108,55 @@ class Kontrolleur implements KontrolleurInterface {
 
 	public void NeuAusführen() {
 		Editor editor = new Editor(this);
-		this.verwaltung.EditorEintragen(editor);
-		editor.Aktivieren();
+		this.windowManager.EditorEintragen(editor);
+		editor.show();
 	}
 
 	public void ÖffnenAusführen() {
 		Editor editor = new Editor(this);
-		this.verwaltung.EditorEintragen(editor);
+		this.windowManager.EditorEintragen(editor);
 		editor.DateiLesen();
 	}
 
 	public void ÖffnenAusführen(String path) {
 		Editor editor = new Editor(this);
-		this.verwaltung.EditorEintragen(editor);
+		this.windowManager.EditorEintragen(editor);
 		editor.DateiLesen(path);
 	}
 
 	public void SchließenAusführen(Anzeige var1) {
-		this.verwaltung.EditorAustragen(var1);
+		this.windowManager.EditorAustragen(var1);
 	}
 
 	public void FensterTitelÄndernWeitergeben(Anzeige var1) {
-		this.verwaltung.EditorTitelÄndern(var1);
+		this.windowManager.EditorTitelÄndern(var1);
 	}
 
 	public void CpuFensterAuswählen() {
-		this.verwaltung.CpuFensterAuswählen();
+		this.windowManager.CpuFensterAuswählen();
 	}
 
 	public void SpeicherFensterAuswählen() {
-		this.verwaltung.SpeicherFensterAuswählen();
+		this.windowManager.SpeicherFensterAuswählen();
 	}
 
 	public void EinfacheDarstellungAnzeigen() {
-		this.cpu.Übertragen(this.cpuEinfach);
-		this.cpu = this.cpuEinfach;
-		this.verwaltung.CpuAnzeigeWählen(false, this.erweitert);
+		this.cpu.Übertragen(this.cpuSimple);
+		this.cpu = this.cpuSimple;
+		this.windowManager.setCpuDisplayMode(false, this.erweitert);
 	}
 
 	public void DetailDarstellungAnzeigen() {
 		this.cpu.Übertragen(this.cpuDetail);
 		this.cpu = this.cpuDetail;
-		this.verwaltung.CpuAnzeigeWählen(true, this.erweitert);
+		this.windowManager.setCpuDisplayMode(true, this.erweitert);
 	}
 
 	public void ErweiterungenEinschalten(boolean var1) {
 		this.erweitert = var1;
 		this.cpu.ErweitertSetzen(var1);
 		this.cpu.ZurückSetzen();
-		this.verwaltung.CpuAnzeigeWählen(this.cpu == this.cpuDetail, this.erweitert);
+		this.windowManager.setCpuDisplayMode(this.cpu == this.cpuDetail, this.erweitert);
 	}
 
 	public void ZeitschrankeSetzen(int var1) {
@@ -161,7 +164,7 @@ class Kontrolleur implements KontrolleurInterface {
 	}
 
 	public void BeendenAusführen() {
-		this.verwaltung.BeendenMitteilen();
+		this.windowManager.BeendenMitteilen();
 		System.exit(0);
 	}
 }

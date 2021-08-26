@@ -10,24 +10,25 @@ class Minimaschine {
 		Cpu cpuEinfach = Cpu.CpuErzeugen("einfach");
 		Cpu cpuDetail = Cpu.CpuErzeugen("detail");
 
-		Kontrolleur kontrolleur = new Kontrolleur(cpuEinfach, cpuDetail);
-		CpuAnzeige cpuAnzeige = new CpuAnzeige(kontrolleur);
-		CpuAnzeigeDetail cpuAnzeigeDetail = new CpuAnzeigeDetail(kontrolleur);
-		CpuAnzeigeErweitert cpuAnzeigeErweitert = new CpuAnzeigeErweitert(kontrolleur);
-		SpeicherAnzeige speicherAnzeige = new SpeicherAnzeige(kontrolleur);
+		Controller controller = new Controller(cpuEinfach, cpuDetail);
 
-		FensterVerwaltung windowManagement = new FensterVerwaltung(cpuAnzeige, cpuAnzeigeDetail, cpuAnzeigeErweitert, speicherAnzeige);
-		kontrolleur.VerwaltungSetzen(windowManagement);
+		CpuDisplay cpuDisplay = new CpuDisplay(controller);
+		CpuGraphicalDisplay cpuAnzeigeDetail = new CpuGraphicalDisplay(controller);
+		CpuExtendedDisplay cpuExtendedDisplay = new CpuExtendedDisplay(controller);
+		SpeicherAnzeige speicherAnzeige = new SpeicherAnzeige(controller);
 
-		cpuEinfach.Registrieren(cpuAnzeige);
+		WindowManager windowManagement = new WindowManager(cpuDisplay, cpuAnzeigeDetail, cpuExtendedDisplay, speicherAnzeige);
+		controller.setWindowManager(windowManagement);
+
+		cpuEinfach.Registrieren(cpuDisplay);
 		cpuDetail.Registrieren(cpuAnzeigeDetail);
 
-		cpuEinfach.Registrieren(cpuAnzeigeErweitert);
+		cpuEinfach.Registrieren(cpuExtendedDisplay);
 		cpuEinfach.SpeicherbeobachterSetzen(speicherAnzeige);
 
 		if (!Anzeige.IstMacOS()) {
 			for(int var10 = 0; var10 < args.length; ++var10) {
-				kontrolleur.ÖffnenAusführen(args[var10]);
+				controller.ÖffnenAusführen(args[var10]);
 			}
 		}
 

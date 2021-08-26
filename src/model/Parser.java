@@ -5,6 +5,8 @@
 
 package model;
 
+import res.R;
+
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map.Entry;
@@ -20,11 +22,11 @@ class Parser {
 	private HashMap<Integer, String> fixierungen;
 	private boolean erweitert;
 
-	Parser(Scanner var1, Speicher var2, FehlerVerwaltung var3, boolean var4) {
-		this.scanner = var1;
-		this.speicher = var2;
-		this.fehler = var3;
-		this.erweitert = var4;
+	Parser(Scanner scanner, Speicher memory, FehlerVerwaltung exceptionHandler, boolean extended) {
+		this.scanner = scanner;
+		this.speicher = memory;
+		this.fehler = exceptionHandler;
+		this.erweitert = extended;
 		this.pc = 0;
 		this.befehle = AssemblerBefehle.AssemblerbefehleGeben();
 		this.marken = new HashMap(40);
@@ -41,27 +43,27 @@ class Parser {
 			Scanner var10001 = this.scanner;
 			if (this.aktToken != 2) {
 				if (this.aktToken != 0) {
-					this.fehler.FehlerEintragen("Bezeichner erwartet", this.scanner.PositionGeben());
+					this.fehler.FehlerEintragen(R.getResources().getString("parse_error_expected_label_name"), this.scanner.PositionGeben());
 					this.Überspringen();
 				}
 			} else {
-				String var1 = this.scanner.BezeichnerGeben();
+				String label = this.scanner.BezeichnerGeben();
 				int var6 = this.scanner.PositionGeben();
 				this.aktToken = this.scanner.NächstesToken();
 				var10001 = this.scanner;
 				if (this.aktToken == 4) {
-					if (this.marken.containsKey(var1)) {
-						this.fehler.FehlerEintragen("Marke doppelt vereinbart", this.scanner.PositionGeben());
-					} else if (!this.erweitert || !var1.equals("SP") && !var1.equals("sp")) {
-						this.marken.put(var1, this.pc);
+					if (this.marken.containsKey(label)) {
+						this.fehler.FehlerEintragen(R.getResources().getString("parse_error_label_exists"), this.scanner.PositionGeben());
+					} else if (!this.erweitert || !label.equals("SP") && !label.equals("sp")) {
+						this.marken.put(label, this.pc);
 					} else {
-						this.fehler.FehlerEintragen("unzulässiger Name für Marke: " + var1, this.scanner.PositionGeben());
+						this.fehler.FehlerEintragen(R.getResources().getString("parse_error_invalid_label") + ": " + label, this.scanner.PositionGeben());
 					}
 
 					this.aktToken = this.scanner.NächstesToken();
 					var10001 = this.scanner;
 					if (this.aktToken == 2) {
-						var1 = this.scanner.BezeichnerGeben();
+						label = this.scanner.BezeichnerGeben();
 						var6 = this.scanner.PositionGeben();
 						this.aktToken = this.scanner.NächstesToken();
 					} else {
@@ -75,15 +77,15 @@ class Parser {
 							continue;
 						}
 
-						this.fehler.FehlerEintragen("Bezeichner erwartet", this.scanner.PositionGeben());
+						this.fehler.FehlerEintragen(R.getResources().getString("parse_error_expected_label_name"), this.scanner.PositionGeben());
 					}
 				}
 
-				if (!this.befehle.BezeichnerTesten(var1)) {
-					this.fehler.FehlerEintragen("Kein gültiger Befehl: " + var1, var6);
+				if (!this.befehle.BezeichnerTesten(label)) {
+					this.fehler.FehlerEintragen(R.getResources().getString("parse_error_invalid_instruction") + ": " + label, var6);
 					this.Überspringen();
 				} else {
-					int var2 = this.befehle.OpcodeGeben(var1);
+					int var2 = this.befehle.OpcodeGeben(label);
 					byte var3 = 0;
 					byte var5;
 					if (var2 < 0) {
@@ -102,22 +104,23 @@ class Parser {
 						} else {
 							this.speicher.WortSetzen(this.pc, 0);
 							++this.pc;
-							this.fehler.FehlerEintragen("Zahl erwartet", this.scanner.PositionGeben());
+							this.fehler.FehlerEintragen(R.getResources().getString("parse_error_expected_number"), this.scanner.PositionGeben());
 						}
 					} else {
 						int var4;
+						var4 = 0;
+
 						if (var2 >= 300) {
-							var4 = 0;
 							var3 = 2;
 							var2 -= 300;
 							var5 = 1;
 							var10001 = this.scanner;
 							if (this.aktToken == 2) {
-								var1 = this.scanner.BezeichnerGeben();
-								if (this.marken.containsKey(var1)) {
-									var4 = (Integer)this.marken.get(var1);
+								label = this.scanner.BezeichnerGeben();
+								if (this.marken.containsKey(label)) {
+									var4 = (Integer)this.marken.get(label);
 								} else {
-									this.fixierungen.put(this.pc + 1, var1);
+									this.fixierungen.put(this.pc + 1, label);
 								}
 
 								this.aktToken = this.scanner.NächstesToken();
@@ -138,27 +141,22 @@ class Parser {
 									var4 = var5 * this.scanner.ZahlGeben();
 									this.aktToken = this.scanner.NächstesToken();
 								} else {
-									this.fehler.FehlerEintragen("Zahl erwartet", this.scanner.PositionGeben());
+									this.fehler.FehlerEintragen(R.getResources().getString("parse_error_expected_number"), this.scanner.PositionGeben());
 								}
 							}
 
-							this.speicher.WortSetzen(this.pc, var3 * 256 + var2);
-							++this.pc;
-							this.speicher.WortSetzen(this.pc, var4);
-							++this.pc;
 						} else {
-							var4 = 0;
 							var3 = 0;
 							var10001 = this.scanner;
 							if (this.aktToken != 9) {
 								var10001 = this.scanner;
 								if (this.aktToken == 2) {
 									var3 = 1;
-									var1 = this.scanner.BezeichnerGeben();
-									if (this.marken.containsKey(var1)) {
-										var4 = (Integer)this.marken.get(var1);
+									label = this.scanner.BezeichnerGeben();
+									if (this.marken.containsKey(label)) {
+										var4 = (Integer)this.marken.get(label);
 									} else {
-										this.fixierungen.put(this.pc + 1, var1);
+										this.fixierungen.put(this.pc + 1, label);
 									}
 
 									this.aktToken = this.scanner.NächstesToken();
@@ -176,17 +174,17 @@ class Parser {
 												var10001 = this.scanner;
 												if (this.aktToken == 2) {
 													if (!this.scanner.BezeichnerGeben().equals("SP") && !this.scanner.BezeichnerGeben().equals("sp")) {
-														this.fehler.FehlerEintragen("'SP' erwartet", this.scanner.PositionGeben());
+														this.fehler.FehlerEintragen("'SP' " + R.getResources().getString("parse_error_x_expected"), this.scanner.PositionGeben());
 													}
 
 													this.aktToken = this.scanner.NächstesToken();
 												} else {
 													var10001 = this.scanner;
 													if (this.aktToken == 3) {
-														this.fehler.FehlerEintragen("'SP' erwartet", this.scanner.PositionGeben());
+														this.fehler.FehlerEintragen("'SP' " + R.getResources().getString("parse_error_x_expected"), this.scanner.PositionGeben());
 														this.aktToken = this.scanner.NächstesToken();
 													} else {
-														this.fehler.FehlerEintragen("'SP' erwartet", this.scanner.PositionGeben());
+														this.fehler.FehlerEintragen("'SP' " + R.getResources().getString("parse_error_x_expected"), this.scanner.PositionGeben());
 													}
 												}
 
@@ -194,7 +192,7 @@ class Parser {
 												if (this.aktToken == 10) {
 													this.aktToken = this.scanner.NächstesToken();
 												} else {
-													this.fehler.FehlerEintragen("')' erwartet", this.scanner.PositionGeben());
+													this.fehler.FehlerEintragen("')' " + R.getResources().getString("parse_error_x_expected"), this.scanner.PositionGeben());
 												}
 											}
 										}
@@ -206,11 +204,11 @@ class Parser {
 											var5 = 1;
 											var10001 = this.scanner;
 											if (this.aktToken == 2) {
-												var1 = this.scanner.BezeichnerGeben();
-												if (this.marken.containsKey(var1)) {
-													var4 = (Integer)this.marken.get(var1);
+												label = this.scanner.BezeichnerGeben();
+												if (this.marken.containsKey(label)) {
+													var4 = (Integer)this.marken.get(label);
 												} else {
-													this.fixierungen.put(this.pc + 1, var1);
+													this.fixierungen.put(this.pc + 1, label);
 												}
 
 												this.aktToken = this.scanner.NächstesToken();
@@ -238,24 +236,24 @@ class Parser {
 															var10001 = this.scanner;
 															if (this.aktToken == 2) {
 																if (!this.scanner.BezeichnerGeben().equals("SP") && !this.scanner.BezeichnerGeben().equals("sp")) {
-																	this.fehler.FehlerEintragen("'SP' erwartet", this.scanner.PositionGeben());
+																	this.fehler.FehlerEintragen("'SP' " + R.getResources().getString("parse_error_x_expected"), this.scanner.PositionGeben());
 																}
 
 																this.aktToken = this.scanner.NächstesToken();
 															} else {
-																this.fehler.FehlerEintragen("'SP' erwartet", this.scanner.PositionGeben());
+																this.fehler.FehlerEintragen("'SP' " + R.getResources().getString("parse_error_x_expected"), this.scanner.PositionGeben());
 															}
 
 															var10001 = this.scanner;
 															if (this.aktToken == 10) {
 																this.aktToken = this.scanner.NächstesToken();
 															} else {
-																this.fehler.FehlerEintragen("')' erwartet", this.scanner.PositionGeben());
+																this.fehler.FehlerEintragen("')' " + R.getResources().getString("parse_error_x_expected"), this.scanner.PositionGeben());
 															}
 														}
 													}
 												} else {
-													this.fehler.FehlerEintragen("Zahl erwartet", this.scanner.PositionGeben());
+													this.fehler.FehlerEintragen(R.getResources().getString("parse_error_expected_number"), this.scanner.PositionGeben());
 												}
 											}
 										} else if (this.erweitert) {
@@ -270,7 +268,7 @@ class Parser {
 												} else {
 													var10001 = this.scanner;
 													if (this.aktToken == 2) {
-														this.fehler.FehlerEintragen("Zahl erwartet", this.scanner.PositionGeben());
+														this.fehler.FehlerEintragen(R.getResources().getString("parse_error_expected_number"), this.scanner.PositionGeben());
 														this.aktToken = this.scanner.NächstesToken();
 													}
 												}
@@ -281,17 +279,17 @@ class Parser {
 													var10001 = this.scanner;
 													if (this.aktToken == 2) {
 														if (!this.scanner.BezeichnerGeben().equals("SP") && !this.scanner.BezeichnerGeben().equals("sp")) {
-															this.fehler.FehlerEintragen("'SP' erwartet", this.scanner.PositionGeben());
+															this.fehler.FehlerEintragen("'SP' " + R.getResources().getString("parse_error_x_expected"), this.scanner.PositionGeben());
 														}
 
 														this.aktToken = this.scanner.NächstesToken();
 													} else {
 														var10001 = this.scanner;
 														if (this.aktToken == 3) {
-															this.fehler.FehlerEintragen("'SP' erwartet", this.scanner.PositionGeben());
+															this.fehler.FehlerEintragen("'SP' " + R.getResources().getString("parse_error_x_expected"), this.scanner.PositionGeben());
 															this.aktToken = this.scanner.NächstesToken();
 														} else {
-															this.fehler.FehlerEintragen("'SP' erwartet", this.scanner.PositionGeben());
+															this.fehler.FehlerEintragen("'SP' " + R.getResources().getString("parse_error_x_expected"), this.scanner.PositionGeben());
 														}
 													}
 
@@ -299,7 +297,7 @@ class Parser {
 													if (this.aktToken == 10) {
 														this.aktToken = this.scanner.NächstesToken();
 													} else {
-														this.fehler.FehlerEintragen("')' erwartet", this.scanner.PositionGeben());
+														this.fehler.FehlerEintragen("')' " + R.getResources().getString("parse_error_x_expected"), this.scanner.PositionGeben());
 													}
 												} else {
 													this.fehler.FehlerEintragen("(", this.scanner.PositionGeben());
@@ -313,14 +311,14 @@ class Parser {
 								var3 = 3;
 								var10001 = this.scanner;
 								if (this.aktToken == 2) {
-									var1 = this.scanner.BezeichnerGeben();
-									if (this.erweitert && (var1.equals("SP") || var1.equals("sp"))) {
+									label = this.scanner.BezeichnerGeben();
+									if (this.erweitert && (label.equals("SP") || label.equals("sp"))) {
 										var3 = 4;
 										var4 = 0;
-									} else if (this.marken.containsKey(var1)) {
-										var4 = (Integer)this.marken.get(var1);
+									} else if (this.marken.containsKey(label)) {
+										var4 = (Integer)this.marken.get(label);
 									} else {
-										this.fixierungen.put(this.pc + 1, var1);
+										this.fixierungen.put(this.pc + 1, label);
 									}
 
 									this.aktToken = this.scanner.NächstesToken();
@@ -330,7 +328,7 @@ class Parser {
 										var4 = this.scanner.ZahlGeben();
 										this.aktToken = this.scanner.NächstesToken();
 									} else {
-										this.fehler.FehlerEintragen("Zahl oder Bezeichner erwartet", this.scanner.PositionGeben());
+										this.fehler.FehlerEintragen(R.getResources().getString("parse_error_expected_number_or_label"), this.scanner.PositionGeben());
 									}
 								}
 
@@ -338,22 +336,22 @@ class Parser {
 								if (this.aktToken == 10) {
 									this.aktToken = this.scanner.NächstesToken();
 								} else {
-									this.fehler.FehlerEintragen("')' erwartet", this.scanner.PositionGeben());
+									this.fehler.FehlerEintragen("')' " + R.getResources().getString("parse_error_x_expected"), this.scanner.PositionGeben());
 								}
 							}
 
-							this.speicher.WortSetzen(this.pc, var3 * 256 + var2);
-							++this.pc;
-							this.speicher.WortSetzen(this.pc, var4);
-							++this.pc;
 						}
+						this.speicher.WortSetzen(this.pc, var3 * 256 + var2);
+						++this.pc;
+						this.speicher.WortSetzen(this.pc, var4);
+						++this.pc;
 					}
 
 					switch(var2) {
 						case 1:
 						case 99:
 							if (var3 != 0) {
-								this.fehler.FehlerEintragen("Unzulässige Adressteile", this.scanner.PositionGeben());
+								this.fehler.FehlerEintragen(R.getResources().getString("parse_error_invalid_address"), this.scanner.PositionGeben());
 							}
 						case 2:
 						case 3:
@@ -436,30 +434,30 @@ class Parser {
 							break;
 						case 5:
 							if (var3 == 0) {
-								this.fehler.FehlerEintragen("Fehlender Adressteil", this.scanner.PositionGeben());
+								this.fehler.FehlerEintragen(R.getResources().getString("parse_error_missing_address"), this.scanner.PositionGeben());
 							} else if (var3 == 2) {
-								this.fehler.FehlerEintragen("Unzulässige Adressart", this.scanner.PositionGeben());
+								this.fehler.FehlerEintragen(R.getResources().getString("parse_error_invalid_address_mode"), this.scanner.PositionGeben());
 							}
 
 							if (!this.erweitert) {
-								this.fehler.FehlerEintragen("Erweiterte Befehle nicht zulässig", this.scanner.PositionGeben());
+								this.fehler.FehlerEintragen(R.getResources().getString("parse_error_extended_instruction"), this.scanner.PositionGeben());
 							}
 							break;
 						case 6:
 						case 25:
 						case 26:
 							if (var3 != 0) {
-								this.fehler.FehlerEintragen("Unzulässige Adressteile", this.scanner.PositionGeben());
+								this.fehler.FehlerEintragen(R.getResources().getString("parse_error_invalid_address"), this.scanner.PositionGeben());
 							}
 
 							if (!this.erweitert) {
-								this.fehler.FehlerEintragen("Erweiterte Befehle nicht zulässig", this.scanner.PositionGeben());
+								this.fehler.FehlerEintragen(R.getResources().getString("parse_error_extended_instruction"), this.scanner.PositionGeben());
 							}
 							break;
 						case 7:
 						case 8:
 							if (var3 != 2) {
-								this.fehler.FehlerEintragen("Unzulässige Adressteile", this.scanner.PositionGeben());
+								this.fehler.FehlerEintragen(R.getResources().getString("parse_error_invalid_address"), this.scanner.PositionGeben());
 							}
 							break;
 						case 10:
@@ -469,7 +467,7 @@ class Parser {
 						case 15:
 						case 20:
 							if (var3 == 0) {
-								this.fehler.FehlerEintragen("Fehlender Adressteil", this.scanner.PositionGeben());
+								this.fehler.FehlerEintragen(R.getResources().getString("parse_error_missing_address"), this.scanner.PositionGeben());
 							}
 							break;
 						case 21:
@@ -481,14 +479,14 @@ class Parser {
 						case 35:
 						case 36:
 							if (var3 == 0) {
-								this.fehler.FehlerEintragen("Fehlender Adressteil", this.scanner.PositionGeben());
+								this.fehler.FehlerEintragen(R.getResources().getString("parse_error_missing_address"), this.scanner.PositionGeben());
 							} else if (var3 == 2) {
-								this.fehler.FehlerEintragen("Unzulässige Adressart", this.scanner.PositionGeben());
+								this.fehler.FehlerEintragen(R.getResources().getString("parse_error_invalid_address_mode"), this.scanner.PositionGeben());
 							}
 					}
 
 					if (this.aktToken != 0 && this.aktToken != 5) {
-						this.fehler.FehlerEintragen("Überflüssige Adressteile", this.scanner.PositionGeben());
+						this.fehler.FehlerEintragen(R.getResources().getString("parse_error_unnecessary_address"), this.scanner.PositionGeben());
 					}
 				}
 			}
@@ -505,7 +503,7 @@ class Parser {
 			if (this.marken.containsKey(var8.getValue())) {
 				this.speicher.WortSetzen((Integer)var8.getKey(), (Integer)this.marken.get(var8.getValue()));
 			} else {
-				this.fehler.FehlerEintragen("Marke nicht definiert: " + (String)var8.getValue(), this.scanner.PositionGeben());
+				this.fehler.FehlerEintragen(R.getResources().getString("parse_error_label_not_defined") + ": " + (String)var8.getValue(), this.scanner.PositionGeben());
 			}
 		}
 

@@ -129,28 +129,29 @@ public abstract class Cpu implements CpuMeldungsErzeuger {
 		return var1;
 	}
 
-	protected void Melden(String var1, String var2, String var3, String var4, String var5, boolean var6, int var7, int var8, int var9, String var10) {
+	protected void Melden(String data, String address, String alu1, String alu2, String alu3, boolean var6, int var7, int var8, int var9, String microStepName) {
 		this.letzterDa = true;
-		this.datenWert_letzter = var1;
-		this.adressWert_letzter = var2;
-		this.alu1_letzter = var3;
-		this.alu2_letzter = var4;
-		this.alu3_letzter = var5;
-		this.mikro_letzter = var10;
+		this.datenWert_letzter = data;
+		this.adressWert_letzter = address;
+		this.alu1_letzter = alu1;
+		this.alu2_letzter = alu2;
+		this.alu3_letzter = alu3;
+		this.mikro_letzter = microStepName;
 		this.opMnemo_letzter = var6;
+
 		String var11 = "" + this.a.WertGeben();
 		String var12 = "" + this.adresse;
 		String var13 = "" + (this.befehlscode + this.adressmodus * 256);
 		if (this.hexaAnzeige) {
-			var1 = this.HexaString(var1);
-			var3 = this.HexaString(var3);
-			var4 = this.HexaString(var4);
-			var5 = this.HexaString(var5);
+			data = this.HexaString(data);
+			alu1 = this.HexaString(alu1);
+			alu2 = this.HexaString(alu2);
+			alu3 = this.HexaString(alu3);
 			var11 = this.HexaString(var11);
 			var12 = this.HexaString(var12);
 			var13 = this.HexaString(var13);
-			if (var2.length() > 0 && !" ".equals(var2)) {
-				var2 = var2 + " [" + this.HexaString(var2) + "]";
+			if (address.length() > 0 && !" ".equals(address)) {
+				address = address + " [" + this.HexaString(address) + "]";
 			}
 		}
 
@@ -202,7 +203,7 @@ public abstract class Cpu implements CpuMeldungsErzeuger {
 
 		while(var15.hasNext()) {
 			CpuBeobachter var16 = (CpuBeobachter)var15.next();
-			var16.Befehlsmeldung(var1, var2, var3, var4, var5, var11, this.sp.WertGeben() < 0 ? "" + (this.sp.WertGeben() + 65536) : "" + this.sp.WertGeben(), this.eqflag, this.ltflag, this.ovflag, var6 ? (this.adressmodus == 2 ? var17 + "I" : var17) : var13, var12, "" + this.pc.WertGeben(), this.progadr, this.progmem, this.dataadr, this.datamem, this.stackadr, this.stackmem, var10);
+			var16.Befehlsmeldung(data, address, alu1, alu2, alu3, var11, this.sp.WertGeben() < 0 ? "" + (this.sp.WertGeben() + 65536) : "" + this.sp.WertGeben(), this.eqflag, this.ltflag, this.ovflag, var6 ? (this.adressmodus == 2 ? var17 + "I" : var17) : var13, var12, "" + this.pc.WertGeben(), this.progadr, this.progmem, this.dataadr, this.datamem, this.stackadr, this.stackmem, microStepName);
 		}
 
 	}
@@ -214,12 +215,12 @@ public abstract class Cpu implements CpuMeldungsErzeuger {
 
 	}
 
-	protected void Fehlermeldung(String var1) {
-		Iterator var2 = this.beobachter.iterator();
+	protected void reportError(String message) {
+		Iterator listeners = this.beobachter.iterator();
 
-		while(var2.hasNext()) {
-			CpuBeobachter var3 = (CpuBeobachter)var2.next();
-			var3.Fehlermeldung(var1);
+		while(listeners.hasNext()) {
+			CpuBeobachter listener = (CpuBeobachter) listeners.next();
+			listener.Fehlermeldung(message);
 		}
 
 	}
@@ -384,7 +385,7 @@ public abstract class Cpu implements CpuMeldungsErzeuger {
 		} while(this.befehlscode != 99 && this.befehlscode != -1 && var1 > System.currentTimeMillis());
 
 		if (this.befehlscode != 99 && this.befehlscode != -1) {
-			this.Fehlermeldung("Programmabbruch wegen Zeitüberschreitung");
+			this.reportError("Programmabbruch wegen Zeitüberschreitung");
 		}
 
 	}
