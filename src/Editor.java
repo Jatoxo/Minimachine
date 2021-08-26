@@ -222,7 +222,7 @@ class Editor extends Anzeige {
 
 	private void SchließenAusführen(boolean cancelButton) {
 		if (!this.sicherungsstand.equals(this.editor.getText())) {
-			int confirmClose = JOptionPane.showConfirmDialog(this.window, new String[]{R.getResources().getString("editor_confirm_exit_unsaved1"), R.getResources().getString("editor_confirm_exit_unsaved2")}, "Änderungen sichern", cancelButton ? JOptionPane.YES_NO_CANCEL_OPTION : JOptionPane.YES_NO_OPTION);
+			int confirmClose = JOptionPane.showConfirmDialog(this.window, new String[]{R.getResources().getString("editor_confirm_exit_unsaved1"), R.getResources().getString("editor_confirm_exit_unsaved2")}, R.getResources().getString("editor_confirm_exit_unsaved_title"), cancelButton ? JOptionPane.YES_NO_CANCEL_OPTION : JOptionPane.YES_NO_OPTION);
 			if (confirmClose == 0) {
 				this.SichernAusführen(false);
 			} else if (confirmClose != 1) {

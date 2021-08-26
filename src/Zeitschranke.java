@@ -40,6 +40,7 @@ class Zeitschranke {
 		JLabel label = new JLabel(R.getResources().getString("dialog_timeout_prompt"));
 		panel.add(label);
 		final JTextField inputField = new JTextField();
+		inputField.setColumns(3);
 		inputField.setMinimumSize(new Dimension(80, 30));
 		panel.add(inputField);
 
