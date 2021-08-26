@@ -6,12 +6,7 @@
 import res.R;
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.awt.event.*;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -110,6 +105,15 @@ class Editor extends Anzeige {
 					Editor.this.ZeilenNummernSetzen(var1.getKeyChar() == '\n' && Editor.this.editor.getCaretPosition() >= Editor.this.editor.getText().length() - 1);
 				}
 
+			}
+		});
+		this.editor.addMouseWheelListener(new MouseWheelListener() {
+			@Override
+			public void mouseWheelMoved(MouseWheelEvent mouseWheelEvent) {
+				if(mouseWheelEvent.isControlDown()) {
+					int scroll = mouseWheelEvent.getWheelRotation();
+					setFontSize(Math.min(200, Math.max(10, editor.getFont().getSize() - 2 * scroll)));
+				}
 			}
 		});
 		this.scroll = new JScrollPane(this.editor, 20, 30);
@@ -375,22 +379,24 @@ class Editor extends Anzeige {
 			}
 		});
 		this.toolsMenu.add(var1);
+
+
 	}
 
 	protected void resetDisplaySize(boolean var1) {
 		if (var1) {
-			this.FontgrößeSetzen(24);
+			this.setFontSize(24);
 		} else {
-			this.FontgrößeSetzen(13);
+			this.setFontSize(13);
 		}
 
 		this.editor.invalidate();
 		this.editor.repaint();
 	}
 
-	private void FontgrößeSetzen(int var1) {
+	private void setFontSize(int newSize) {
 		Font var2 = this.editor.getFont();
-		Font var3 = new Font(var2.getName(), var2.getStyle(), var1);
+		Font var3 = new Font(var2.getName(), var2.getStyle(), newSize);
 		this.editor.setFont(var3);
 		this.zeilenNummern.setFont(var3);
 	}
@@ -476,9 +482,12 @@ class Editor extends Anzeige {
 		this.controller.FensterTitelÄndernWeitergeben(this.self);
 	}
 
-	void FehlerAnzeigen(String var1, int var2) {
-		this.status.setText(var1);
-		this.editor.select(var2 - 2, var2 - 1);
+	void FehlerAnzeigen(String message, int position) {
+		this.status.setText(message);
+		this.editor.select(position - 2, position - 1);
+	}
+	void displayStatusMessage(String message) {
+		this.status.setText(message);
 	}
 
 	private void DruckenAusführen() {
