@@ -16,8 +16,12 @@ import com.apple.eawt.AppEvent.QuitEvent;
 import com.formdev.flatlaf.FlatLightLaf;
 import res.R;
 
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import javax.swing.*;
 
@@ -174,6 +178,20 @@ abstract class Anzeige {
 		});
 		this.toolsMenu.add(this.sizeMenuItem);
 		this.windowsMenu = new JMenu(R.getResources().getString("windows_menu"));
+		JMenuItem helpMenuItem = new JMenuItem(R.getResources().getString("windows_menu_open_doc"));
+		this.windowsMenu.add(helpMenuItem);
+		helpMenuItem.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent actionEvent) {
+				if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
+					try {
+						Desktop.getDesktop().browse(new URI("https://jatoxo.github.io/Minimachine"));
+					} catch(IOException | URISyntaxException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		});
 		this.menuBar.add(this.windowsMenu);
 		if (!isMac) {
 			var1 = new JMenuItem(R.getResources().getString("windows_menu_about"));
