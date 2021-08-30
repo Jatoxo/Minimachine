@@ -166,7 +166,7 @@ class Editor extends Anzeige {
 			if (this.file != null) {
 				fileDialog.setDirectory(this.file.getAbsolutePath());
 				//this.fileChooser.setSelectedFile(this.file);
-			} else {
+			} else if(lastFolder != null) {
 				fileDialog.setDirectory(lastFolder.getAbsolutePath());
 				//this.fileChooser.setCurrentDirectory(lastFolder);
 			}
@@ -409,7 +409,9 @@ class Editor extends Anzeige {
 		fileDialog.setMode(FileDialog.LOAD);
 		fileDialog.setMultipleMode(false);
 		fileDialog.setTitle(R.getResources().getString("file_picker_open_title"));
-		fileDialog.setDirectory(lastFolder.getAbsolutePath());
+		if(lastFolder != null) {
+			fileDialog.setDirectory(lastFolder.getAbsolutePath());
+		}
 		fileDialog.setFile("*.mis;*.mia");
 		fileDialog.setVisible(true);
 		String file = fileDialog.getFile();
