@@ -213,6 +213,7 @@ class Editor extends Anzeige {
 			FileWriter var4 = new FileWriter(this.file);
 			this.editor.write(var4);
 			var4.close();
+			//displayStatusMessage(R.getResources().getString("editor_saved"));
 			this.sicherungsstand = this.editor.getText();
 			this.window.setTitle(this.file.getPath());
 			this.controller.FensterTitelÄndernWeitergeben(this.self);
