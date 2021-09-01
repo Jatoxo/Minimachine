@@ -42,7 +42,7 @@ class CpuDetail extends Cpu {
 			case FETCH_OPCODE:
 				this.pcAlt = this.pc.WertGeben();
 				int var1 = this.speicher.WortOhneVorzeichenGeben(this.pcAlt);
-				this.pc.Inkrementieren(1);
+				this.pc.increment(1);
 				this.adressmodus = var1 / 256;
 				this.befehlscode = var1 % 256;
 				this.mikroStatus = MikroSchritte.FETCH_ADDRESS;
@@ -51,7 +51,7 @@ class CpuDetail extends Cpu {
 			case FETCH_ADDRESS:
 				this.pcAlt = this.pc.WertGeben();
 				this.adresse = this.speicher.WortMitVorzeichenGeben(this.pcAlt);
-				this.pc.Inkrementieren(1);
+				this.pc.increment(1);
 				String var3;
 				if (this.adressmodus != 4 && this.adressmodus != 5) {
 					if (this.adressmodus == 6) {
@@ -112,7 +112,7 @@ class CpuDetail extends Cpu {
 				break;
 			case 1:
 				this.ZurückSetzen();
-				this.speicher.SpeicherLöschen();
+				this.speicher.clearMemory();
 				this.mikroStatus = MikroSchritte.COMPLETE;
 				this.Melden("", "", "", "", "", true, -1, -1, -1, R.getResources().getString("micro_step_exec_1"));
 				break;
@@ -198,7 +198,7 @@ class CpuDetail extends Cpu {
 							this.mikroStatus = MikroSchritte.EXECUTE_2;
 							var1 = this.sp.WertGeben() < 0 ? this.sp.WertGeben() + 65536 : this.sp.WertGeben();
 							this.Melden("", "", "" + var1, "-1", "" + (var1 - 1), true, -1, -1, -1, R.getResources().getString("micro_step_exec_1"));
-							this.sp.Dekrementieren(1);
+							this.sp.decrement(1);
 							return;
 						case 6:
 							this.mikroStatus = MikroSchritte.EXECUTE_2;
@@ -209,14 +209,14 @@ class CpuDetail extends Cpu {
 						case 7:
 							this.mikroStatus = MikroSchritte.COMPLETE;
 							var2 = this.sp.WertGeben() < 0 ? this.sp.WertGeben() + 65536 : this.sp.WertGeben();
-							this.sp.Dekrementieren(this.adresse);
+							this.sp.decrement(this.adresse);
 							var1 = this.sp.WertGeben() < 0 ? this.sp.WertGeben() + 65536 : this.sp.WertGeben();
 							this.Melden("", "", "" + var2, "" + this.adresse, "" + var1, true, -1, -1, this.sp.WertGeben(), R.getResources().getString("micro_step_exec_1"));
 							return;
 						case 8:
 							this.mikroStatus = MikroSchritte.COMPLETE;
 							var2 = this.sp.WertGeben() < 0 ? this.sp.WertGeben() + 65536 : this.sp.WertGeben();
-							this.sp.Inkrementieren(this.adresse);
+							this.sp.increment(this.adresse);
 							var1 = this.sp.WertGeben() < 0 ? this.sp.WertGeben() + 65536 : this.sp.WertGeben();
 							this.Melden("", "", "" + var2, "" + this.adresse, "" + var1, true, -1, -1, this.sp.WertGeben(), R.getResources().getString("micro_step_exec_1"));
 							return;
@@ -224,7 +224,7 @@ class CpuDetail extends Cpu {
 							this.mikroStatus = MikroSchritte.EXECUTE_2;
 							var1 = this.sp.WertGeben() < 0 ? this.sp.WertGeben() + 65536 : this.sp.WertGeben();
 							this.Melden("", "", "" + var1, "-1", "" + (var1 - 1), true, -1, -1, -1, R.getResources().getString("micro_step_exec_1"));
-							this.sp.Dekrementieren(1);
+							this.sp.decrement(1);
 							return;
 						case 26:
 							this.mikroStatus = MikroSchritte.EXECUTE_2;
@@ -375,7 +375,7 @@ class CpuDetail extends Cpu {
 				this.mikroStatus = MikroSchritte.COMPLETE;
 				this.res = this.sp.WertGeben() < 0 ? this.sp.WertGeben() + 65536 : this.sp.WertGeben();
 				this.Melden("", "", "" + this.res, "1", "" + (this.res + 1), true, -1, -1, -1, R.getResources().getString("micro_step_exec_2"));
-				this.sp.Inkrementieren(1);
+				this.sp.increment(1);
 			case 7:
 			case 8:
 			case 9:

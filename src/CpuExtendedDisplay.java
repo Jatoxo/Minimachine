@@ -14,7 +14,7 @@ class CpuExtendedDisplay extends CpuDisplay {
 	private JLabel labelMem5;
 	private JLabel spLabel;
 
-	CpuExtendedDisplay(KontrolleurInterface controller) {
+	CpuExtendedDisplay(ControllerInterface controller) {
 		super(controller);
 	}
 

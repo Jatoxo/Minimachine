@@ -22,7 +22,7 @@ class AssemblerAnzeige extends Anzeige {
 	private JTextArea text;
 	private JScrollPane scroll;
 
-	AssemblerAnzeige(KontrolleurInterface var1, String var2) {
+	AssemblerAnzeige(ControllerInterface var1, String var2) {
 		super(var1);
 		this.text.setText(var2);
 	}

@@ -44,7 +44,7 @@ class Editor extends Anzeige {
 	private boolean istAssembler = true;
 	private String sicherungsstand = "";
 
-	Editor(KontrolleurInterface controller) {
+	Editor(ControllerInterface controller) {
 		super(controller);
 
 		Preferences prefs = Preferences.userRoot().node(this.getClass().getName());
@@ -122,8 +122,10 @@ class Editor extends Anzeige {
 
 					int scroll = mouseWheelEvent.getWheelRotation();
 					setFontSize(Math.min(200, Math.max(10, editor.getFont().getSize() - 2 * scroll)));
+				} else {
+					scroll.dispatchEvent(mouseWheelEvent);
 				}
-				scroll.dispatchEvent(mouseWheelEvent);
+
 			}
 		});
 
@@ -137,7 +139,7 @@ class Editor extends Anzeige {
 		this.window.setSize(400, 200);
 		this.window.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent var1) {
-				Editor.this.SchließenAusführen(false);
+				Editor.this.close(false);
 			}
 		});
 		this.window.setDefaultCloseOperation(2);
@@ -172,7 +174,7 @@ class Editor extends Anzeige {
 		 */
 	}
 
-	private void SichernAusführen(boolean choosePath) {
+	private void saveFile(boolean choosePath) {
 		if (this.file == null || choosePath) {
 			if (this.file != null) {
 				fileDialog.setDirectory(this.file.getAbsolutePath());
@@ -221,10 +223,10 @@ class Editor extends Anzeige {
 		}
 
 		try {
-			FileWriter var4 = new FileWriter(this.file);
-			this.editor.write(var4);
-			var4.close();
-			//displayStatusMessage(R.getResources().getString("editor_saved"));
+			FileWriter fw = new FileWriter(this.file);
+			this.editor.write(fw);
+			fw.close();
+			displayStatusMessage(R.getResources().getString("editor_saved"));
 			this.sicherungsstand = this.editor.getText();
 			this.window.setTitle(this.file.getPath());
 			this.controller.FensterTitelÄndernWeitergeben(this.self);
@@ -232,15 +234,15 @@ class Editor extends Anzeige {
 			this.file = null;
 		}
 
-		controller.assemble(editor.getText(), this);
+		//controller.assemble(editor.getText(), this);
 
 	}
 
-	private void SchließenAusführen(boolean cancelButton) {
+	private void close(boolean cancelButton) {
 		if (!this.sicherungsstand.equals(this.editor.getText())) {
 			int confirmClose = JOptionPane.showConfirmDialog(this.window, new String[]{R.getResources().getString("editor_confirm_exit_unsaved1"), R.getResources().getString("editor_confirm_exit_unsaved2")}, R.getResources().getString("editor_confirm_exit_unsaved_title"), cancelButton ? JOptionPane.YES_NO_CANCEL_OPTION : JOptionPane.YES_NO_OPTION);
 			if (confirmClose == 0) {
-				this.SichernAusführen(false);
+				this.saveFile(false);
 			} else if (confirmClose != 1) {
 				return;
 			}
@@ -250,11 +252,11 @@ class Editor extends Anzeige {
 		this.window.dispose();
 	}
 
-	void BeendenMitteilen() {
+	void notifyClose() {
 		if (!this.sicherungsstand.equals(this.editor.getText())) {
-			int var1 = JOptionPane.showConfirmDialog(this.window, new String[]{R.getResources().getString("editor_confirm_exit_unsaved1"), R.getResources().getString("editor_confirm_exit_unsaved2")}, "Änderungen sichern", JOptionPane.YES_NO_OPTION);
-			if (var1 == 0) {
-				this.SichernAusführen(false);
+			int dialog = JOptionPane.showConfirmDialog(this.window, new String[]{R.getResources().getString("editor_confirm_exit_unsaved1"), R.getResources().getString("editor_confirm_exit_unsaved2")}, "Änderungen sichern", JOptionPane.YES_NO_OPTION);
+			if (dialog == 0) {
+				this.saveFile(false);
 			}
 		}
 
@@ -264,26 +266,26 @@ class Editor extends Anzeige {
 		super.initMenus();
 		this.closeMenuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent var1) {
-				Editor.this.SchließenAusführen(true);
+				Editor.this.close(true);
 			}
 		});
 		this.saveMenuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent var1) {
-				Editor.this.SichernAusführen(false);
+				Editor.this.saveFile(false);
 			}
 		});
 		this.saveAsMenuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent var1) {
-				Editor.this.SichernAusführen(true);
+				Editor.this.saveFile(true);
 			}
 		});
 		this.printMenuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent var1) {
-				Editor.this.DruckenAusführen();
+				Editor.this.print();
 			}
 		});
 		this.undoItem = new JMenuItem(R.getResources().getString("edit_menu_undo"), 90);
-		this.undoItem.setAccelerator(KeyStroke.getKeyStroke(90, kommando));
+		this.undoItem.setAccelerator(KeyStroke.getKeyStroke(90, cmdKey));
 		this.undoItem.setEnabled(false);
 		this.undoItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent var1) {
@@ -295,7 +297,7 @@ class Editor extends Anzeige {
 		});
 		this.editMenu.add(this.undoItem);
 		this.redoItem = new JMenuItem(R.getResources().getString("edit_menu_redo"));
-		this.redoItem.setAccelerator(KeyStroke.getKeyStroke(90, 64 + kommando));
+		this.redoItem.setAccelerator(KeyStroke.getKeyStroke(90, 64 + cmdKey));
 		this.redoItem.setEnabled(false);
 		this.redoItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent var1) {
@@ -308,7 +310,7 @@ class Editor extends Anzeige {
 		this.editMenu.add(this.redoItem);
 		this.editMenu.addSeparator();
 		JMenuItem var1 = new JMenuItem(R.getResources().getString("edit_menu_cut"), 88);
-		var1.setAccelerator(KeyStroke.getKeyStroke(88, kommando));
+		var1.setAccelerator(KeyStroke.getKeyStroke(88, cmdKey));
 		var1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent var1) {
 				Editor.this.editor.cut();
@@ -316,7 +318,7 @@ class Editor extends Anzeige {
 		});
 		this.editMenu.add(var1);
 		var1 = new JMenuItem(R.getResources().getString("edit_menu_copy"), 67);
-		var1.setAccelerator(KeyStroke.getKeyStroke(67, kommando));
+		var1.setAccelerator(KeyStroke.getKeyStroke(67, cmdKey));
 		var1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent var1) {
 				Editor.this.editor.copy();
@@ -324,7 +326,7 @@ class Editor extends Anzeige {
 		});
 		this.editMenu.add(var1);
 		var1 = new JMenuItem(R.getResources().getString("edit_menu_paste"), 86);
-		var1.setAccelerator(KeyStroke.getKeyStroke(86, kommando));
+		var1.setAccelerator(KeyStroke.getKeyStroke(86, cmdKey));
 		var1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent var1) {
 				Editor.this.editor.paste();
@@ -332,7 +334,7 @@ class Editor extends Anzeige {
 		});
 		this.editMenu.add(var1);
 		var1 = new JMenuItem(R.getResources().getString("edit_menu_select_all"), 65);
-		var1.setAccelerator(KeyStroke.getKeyStroke(65, kommando));
+		var1.setAccelerator(KeyStroke.getKeyStroke(65, cmdKey));
 		var1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent var1) {
 				Editor.this.editor.selectAll();
@@ -364,7 +366,7 @@ class Editor extends Anzeige {
 		this.toolsMenu.add(var3);
 		this.toolsMenu.addSeparator();
 		var1 = new JMenuItem(R.getResources().getString("editor_assemble"));
-		var1.setAccelerator(KeyStroke.getKeyStroke(65, kommando + 512));
+		var1.setAccelerator(KeyStroke.getKeyStroke(65, cmdKey + 512));
 		var1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent var1) {
 				Editor.this.status.setText("");
@@ -374,7 +376,7 @@ class Editor extends Anzeige {
 		this.toolsMenu.add(var1);
 		this.toolsMenu.addSeparator();
 		var1 = new JMenuItem("Übersetzen");
-		var1.setAccelerator(KeyStroke.getKeyStroke(85, kommando + 512));
+		var1.setAccelerator(KeyStroke.getKeyStroke(85, cmdKey + 512));
 		var1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent var1) {
 				Editor.this.status.setText("");
@@ -383,7 +385,7 @@ class Editor extends Anzeige {
 		});
 		this.toolsMenu.add(var1);
 		var1 = new JMenuItem("Assemblertext zeigen");
-		var1.setAccelerator(KeyStroke.getKeyStroke(90, kommando + 512));
+		var1.setAccelerator(KeyStroke.getKeyStroke(90, cmdKey + 512));
 		var1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent var1) {
 				Editor.this.status.setText("");
@@ -413,7 +415,7 @@ class Editor extends Anzeige {
 		this.zeilenNummern.setFont(var3);
 	}
 
-	void DateiLesen() {
+	void readFile() {
 		//this.fileChooser.setCurrentDirectory(lastFolder);
 
 
@@ -477,12 +479,12 @@ class Editor extends Anzeige {
 
 	}
 
-	void DateiLesen(String path) {
+	void readFile(String path) {
 		this.file = new File(path);
 
 		try {
 			FileReader fr = new FileReader(this.file);
-			this.editor.read(fr, (Object)null);
+			this.editor.read(fr, null);
 			fr.close();
 			this.sicherungsstand = this.editor.getText();
 			this.window.setTitle(this.file.getPath());
@@ -504,7 +506,7 @@ class Editor extends Anzeige {
 		this.status.setText(message);
 	}
 
-	private void DruckenAusführen() {
+	private void print() {
 		String[] var13 = this.editor.getText().split("\n");
 
 		int var14;
@@ -535,14 +537,14 @@ class Editor extends Anzeige {
 		int var8 = var2.getFontMetrics(var11).getHeight();
 		int var9 = (var3.height - var6 * 2) / var8;
 		int var10 = (var13.length + var9 - 1) / var9;
-		this.RahmenDrucken(var2, var3, var5, var6, 1, var10, var11, var12);
+		this.printBorder(var2, var3, var5, var6, 1, var10, var11, var12);
 
 		for(var14 = 0; var14 < var13.length; ++var14) {
 			var2.drawString(var13[var14], var5 + var6 * 5 / 10, var5 + 2 * var6 + var14 % var9 * var8);
 			if ((var14 + 1) % var9 == 0) {
 				var2.dispose();
 				var2 = printJob.getGraphics();
-				this.RahmenDrucken(var2, var3, var5, var6, (var14 + 1) / var9, var10, var11, var12);
+				this.printBorder(var2, var3, var5, var6, (var14 + 1) / var9, var10, var11, var12);
 			}
 		}
 
@@ -550,15 +552,15 @@ class Editor extends Anzeige {
 		printJob.end();
 	}
 
-	private void RahmenDrucken(Graphics var1, Dimension var2, int var3, int var4, int var5, int var6, Font var7, Font var8) {
-		var1.drawRoundRect(var3, var3, var2.width, var2.height, var4 * 2, var4 * 2);
-		var1.drawLine(var3, var3 + var4, var3 + var2.width, var3 + var4);
-		var1.drawLine(var3, var3 + var2.height - var4, var3 + var2.width, var3 + var2.height - var4);
+	private void printBorder(Graphics g, Dimension dimension, int var3, int var4, int var5, int var6, Font font, Font font2) {
+		g.drawRoundRect(var3, var3, dimension.width, dimension.height, var4 * 2, var4 * 2);
+		g.drawLine(var3, var3 + var4, var3 + dimension.width, var3 + var4);
+		g.drawLine(var3, var3 + dimension.height - var4, var3 + dimension.width, var3 + dimension.height - var4);
 		String var9 = this.window.getTitle();
-		var1.setFont(var8);
-		var1.drawString(var9, var3 + var2.width / 2 - var1.getFontMetrics().stringWidth(var9) / 2, var3 + var4 * 7 / 10);
+		g.setFont(font2);
+		g.drawString(var9, var3 + dimension.width / 2 - g.getFontMetrics().stringWidth(var9) / 2, var3 + var4 * 7 / 10);
 		var9 = "– " + var5 + " von " + var6 + " –";
-		var1.setFont(var7);
-		var1.drawString(var9, var3 + var2.width / 2 - var1.getFontMetrics().stringWidth(var9) / 2, var3 + var2.height - var4 * 4 / 10);
+		g.setFont(font);
+		g.drawString(var9, var3 + dimension.width / 2 - g.getFontMetrics().stringWidth(var9) / 2, var3 + dimension.height - var4 * 4 / 10);
 	}
 }

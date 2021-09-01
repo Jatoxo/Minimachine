@@ -10,7 +10,7 @@ import model.minilanguage.ParserEinfach;
 import model.minilanguage.ParserErweitert;
 import res.R;
 
-class Controller implements KontrolleurInterface {
+class Controller implements ControllerInterface {
 	private Cpu cpu;
 	private Cpu cpuSimple;
 	private Cpu cpuDetail;
@@ -43,7 +43,7 @@ class Controller implements KontrolleurInterface {
 	public boolean assemble(String assemblyText, Editor editor) {
 		FehlerVerwaltung fehlerVerwaltung = new FehlerVerwaltung();
 
-		this.cpu.Assemblieren(assemblyText, fehlerVerwaltung);
+		this.cpu.assemble(assemblyText, fehlerVerwaltung);
 
 		if (fehlerVerwaltung.FehlerAufgetreten()) {
 			editor.FehlerAnzeigen(fehlerVerwaltung.FehlertextMelden(), fehlerVerwaltung.FehlerpositionMelden());
@@ -115,13 +115,13 @@ class Controller implements KontrolleurInterface {
 	public void ÖffnenAusführen() {
 		Editor editor = new Editor(this);
 		this.windowManager.EditorEintragen(editor);
-		editor.DateiLesen();
+		editor.readFile();
 	}
 
 	public void ÖffnenAusführen(String path) {
 		Editor editor = new Editor(this);
 		this.windowManager.EditorEintragen(editor);
-		editor.DateiLesen(path);
+		editor.readFile(path);
 	}
 
 	public void SchließenAusführen(Anzeige var1) {
@@ -159,8 +159,8 @@ class Controller implements KontrolleurInterface {
 		this.windowManager.setCpuDisplayMode(this.cpu == this.cpuDetail, this.erweitert);
 	}
 
-	public void ZeitschrankeSetzen(int var1) {
-		this.cpu.AbbruchSchrankeSetzen(var1);
+	public void setTimeout(int var1) {
+		this.cpu.setTimeout(var1);
 	}
 
 	public void BeendenAusführen() {

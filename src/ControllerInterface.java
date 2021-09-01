@@ -3,7 +3,7 @@
 // (powered by Fernflower decompiler)
 //
 
-interface KontrolleurInterface {
+interface ControllerInterface {
 	void CpuHexaSetzen(boolean var1);
 
 	void CpuInvalidieren();
@@ -44,7 +44,7 @@ interface KontrolleurInterface {
 
 	void ErweiterungenEinschalten(boolean var1);
 
-	void ZeitschrankeSetzen(int var1);
+	void setTimeout(int var1);
 
 	void BeendenAusführen();
 }

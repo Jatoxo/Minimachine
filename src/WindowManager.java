@@ -27,7 +27,7 @@ class WindowManager {
 	void EditorEintragen(Anzeige var1) {
 		int var2;
 		for(var2 = 0; var2 < this.offen.size(); ++var2) {
-			var1.FenstereintragHinzufügen(var2, (Anzeige)this.offen.get(var2));
+			var1.addWindowMenuEntry(var2, (Anzeige)this.offen.get(var2));
 		}
 
 		this.offen.add(var1);
@@ -36,11 +36,11 @@ class WindowManager {
 
 		while(var3.hasNext()) {
 			Anzeige var4 = (Anzeige)var3.next();
-			var4.FenstereintragHinzufügen(var2, var1);
+			var4.addWindowMenuEntry(var2, var1);
 		}
 
-		this.cpuDisplay.FenstereintragHinzufügen(var2, var1);
-		this.speicheranzeige.FenstereintragHinzufügen(var2, var1);
+		this.cpuDisplay.addWindowMenuEntry(var2, var1);
+		this.speicheranzeige.addWindowMenuEntry(var2, var1);
 	}
 
 	void EditorAustragen(Anzeige var1) {
@@ -50,11 +50,11 @@ class WindowManager {
 
 		while(var3.hasNext()) {
 			Anzeige var4 = (Anzeige)var3.next();
-			var4.FenstereintragEntfernen(var2);
+			var4.removeWindowMenuEntry(var2);
 		}
 
-		this.cpuDisplay.FenstereintragEntfernen(var2);
-		this.speicheranzeige.FenstereintragEntfernen(var2);
+		this.cpuDisplay.removeWindowMenuEntry(var2);
+		this.speicheranzeige.removeWindowMenuEntry(var2);
 	}
 
 	void EditorTitelÄndern(Anzeige var1) {
@@ -63,11 +63,11 @@ class WindowManager {
 
 		while(var3.hasNext()) {
 			Anzeige var4 = (Anzeige)var3.next();
-			var4.FenstereintragÄndern(var2, var1);
+			var4.editWindowMenuEntry(var2, var1);
 		}
 
-		this.cpuDisplay.FenstereintragÄndern(var2, var1);
-		this.speicheranzeige.FenstereintragÄndern(var2, var1);
+		this.cpuDisplay.editWindowMenuEntry(var2, var1);
+		this.speicheranzeige.editWindowMenuEntry(var2, var1);
 	}
 
 	void CpuFensterAuswählen() {
@@ -104,7 +104,7 @@ class WindowManager {
 
 	void BeendenMitteilen() {
 		for(Anzeige display : this.offen) {
-			display.BeendenMitteilen();
+			display.notifyClose();
 		}
 
 

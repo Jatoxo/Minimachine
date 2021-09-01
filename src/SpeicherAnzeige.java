@@ -4,7 +4,7 @@
 //
 
 import model.AssemblerBefehle;
-import model.SpeicherBeobachter;
+import model.MemoryListener;
 import model.SpeicherLesen;
 import res.R;
 
@@ -15,14 +15,12 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableModel;
 
-class SpeicherAnzeige extends Anzeige implements SpeicherBeobachter {
+class SpeicherAnzeige extends Anzeige implements MemoryListener {
 	private JScrollPane scroll;
 	private TableModel dataModel;
 	private JTable table;
@@ -38,7 +36,7 @@ class SpeicherAnzeige extends Anzeige implements SpeicherBeobachter {
 	private boolean opcodeDarstellung = false;
 	private JPanel content;
 
-	SpeicherAnzeige(KontrolleurInterface var1) {
+	SpeicherAnzeige(ControllerInterface var1) {
 		super(var1);
 	}
 
@@ -209,28 +207,28 @@ class SpeicherAnzeige extends Anzeige implements SpeicherBeobachter {
 		this.saveAsMenuItem.setEnabled(false);
 		this.printMenuItem.setEnabled(false);
 		JMenuItem var1 = new JMenuItem(R.getResources().getString("edit_menu_undo"), 90);
-		var1.setAccelerator(KeyStroke.getKeyStroke(90, kommando));
+		var1.setAccelerator(KeyStroke.getKeyStroke(90, cmdKey));
 		var1.setEnabled(false);
 		this.editMenu.add(var1);
 		var1 = new JMenuItem(R.getResources().getString("edit_menu_redo"));
-		var1.setAccelerator(KeyStroke.getKeyStroke(90, 64 + kommando));
+		var1.setAccelerator(KeyStroke.getKeyStroke(90, 64 + cmdKey));
 		var1.setEnabled(false);
 		this.editMenu.add(var1);
 		this.editMenu.addSeparator();
 		var1 = new JMenuItem(R.getResources().getString("edit_menu_cut"), 88);
-		var1.setAccelerator(KeyStroke.getKeyStroke(88, kommando));
+		var1.setAccelerator(KeyStroke.getKeyStroke(88, cmdKey));
 		var1.setEnabled(false);
 		this.editMenu.add(var1);
 		var1 = new JMenuItem(R.getResources().getString("edit_menu_copy"), 67);
-		var1.setAccelerator(KeyStroke.getKeyStroke(67, kommando));
+		var1.setAccelerator(KeyStroke.getKeyStroke(67, cmdKey));
 		var1.setEnabled(false);
 		this.editMenu.add(var1);
 		var1 = new JMenuItem(R.getResources().getString("edit_menu_paste"), 86);
-		var1.setAccelerator(KeyStroke.getKeyStroke(86, kommando));
+		var1.setAccelerator(KeyStroke.getKeyStroke(86, cmdKey));
 		var1.setEnabled(false);
 		this.editMenu.add(var1);
 		var1 = new JMenuItem(R.getResources().getString("edit_menu_select_all"), 65);
-		var1.setAccelerator(KeyStroke.getKeyStroke(65, kommando));
+		var1.setAccelerator(KeyStroke.getKeyStroke(65, cmdKey));
 		var1.setEnabled(false);
 		this.editMenu.add(var1);
 		this.toolsMenu.addSeparator();
@@ -299,7 +297,7 @@ class SpeicherAnzeige extends Anzeige implements SpeicherBeobachter {
 		this.content.revalidate();
 	}
 
-	public void SpeicherGeändertMelden(int var1) {
+	public void memoryChanged(int var1) {
 		this.geändert = var1;
 		this.scrollpane.invalidate();
 		this.scrollpane.repaint();

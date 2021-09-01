@@ -21,9 +21,9 @@ import javax.swing.border.EmptyBorder;
 class SetTimeoutDialog {
 	private JDialog dialog;
 	private static SetTimeoutDialog timeoutDialog = null;
-	private KontrolleurInterface kontrolleur;
+	private ControllerInterface kontrolleur;
 
-	private SetTimeoutDialog(KontrolleurInterface controller) {
+	private SetTimeoutDialog(ControllerInterface controller) {
 		this.kontrolleur = controller;
 		this.dialog = new JDialog((JFrame)null);
 		this.dialog.setTitle(R.getResources().getString("dialog_timeout_title"));
@@ -54,7 +54,7 @@ class SetTimeoutDialog {
 			public void actionPerformed(ActionEvent var1) {
 				try {
 					int var2 = Integer.parseInt(inputField.getText());
-					SetTimeoutDialog.this.kontrolleur.ZeitschrankeSetzen(var2);
+					SetTimeoutDialog.this.kontrolleur.setTimeout(var2);
 					SetTimeoutDialog.this.dialog.setVisible(false);
 				} catch (Exception var3) {
 					inputField.selectAll();
@@ -69,7 +69,7 @@ class SetTimeoutDialog {
 		this.dialog.setVisible(false);
 	}
 
-	static void show(KontrolleurInterface controller) {
+	static void show(ControllerInterface controller) {
 		if (timeoutDialog == null) {
 			timeoutDialog = new SetTimeoutDialog(controller);
 		}

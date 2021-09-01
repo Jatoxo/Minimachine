@@ -24,6 +24,7 @@ class AboutDialog {
 	private AboutDialog() {
 		this.dialog.setTitle(R.getResources().getString("aboutMM"));
 
+
 		JPanel contentPane = (JPanel)this.dialog.getContentPane();
 		contentPane.setLayout(new BorderLayout());
 
@@ -67,6 +68,7 @@ class AboutDialog {
 		this.dialog.setModal(true);
 		this.dialog.setResizable(false);
 		this.dialog.pack();
+		this.dialog.setLocationRelativeTo(null);
 		this.dialog.setVisible(false);
 	}
 

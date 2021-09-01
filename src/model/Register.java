@@ -27,7 +27,7 @@ class Register {
 		this.wert = var1;
 	}
 
-	void Inkrementieren(int var1) {
+	void increment(int var1) {
 		this.wert += var1;
 		if (this.wert > 32767) {
 			this.wert -= 65536;
@@ -35,7 +35,7 @@ class Register {
 
 	}
 
-	void Dekrementieren(int var1) {
+	void decrement(int var1) {
 		this.wert -= var1;
 		if (this.wert < -32268) {
 			this.wert += 65536;

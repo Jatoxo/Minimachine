@@ -24,7 +24,7 @@ class Minimaschine {
 		cpuDetail.Registrieren(cpuAnzeigeDetail);
 
 		cpuEinfach.Registrieren(cpuExtendedDisplay);
-		cpuEinfach.SpeicherbeobachterSetzen(speicherAnzeige);
+		cpuEinfach.addMemoryListener(speicherAnzeige);
 
 		if (!Anzeige.IstMacOS()) {
 			for(int var10 = 0; var10 < args.length; ++var10) {

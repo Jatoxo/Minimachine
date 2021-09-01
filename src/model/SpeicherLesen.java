@@ -10,18 +10,18 @@ public abstract class SpeicherLesen {
 	}
 
 	public static int WortOhneVorzeichenGeben(int var0) {
-		return Speicher.SpeicherGeben().WortOhneVorzeichenGeben(var0);
+		return Speicher.getMemory().WortOhneVorzeichenGeben(var0);
 	}
 
 	public static int WortMitVorzeichenGeben(int var0) {
-		return Speicher.SpeicherGeben().WortMitVorzeichenGeben(var0);
+		return Speicher.getMemory().WortMitVorzeichenGeben(var0);
 	}
 
 	public static void WortSetzen(int var0, int var1) {
-		Speicher.SpeicherGeben().WortSetzen(var0, var1);
+		Speicher.getMemory().WortSetzen(var0, var1);
 	}
 
 	public static void SpeicherLöschen() {
-		Speicher.SpeicherGeben().SpeicherLöschen();
+		Speicher.getMemory().clearMemory();
 	}
 }

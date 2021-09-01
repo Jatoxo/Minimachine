@@ -5,6 +5,6 @@
 
 package model;
 
-public interface SpeicherBeobachter {
-	void SpeicherGeändertMelden(int var1);
+public interface MemoryListener {
+	void memoryChanged(int var1);
 }

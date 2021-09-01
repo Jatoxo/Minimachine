@@ -462,13 +462,13 @@ public abstract class Cpu implements CpuMeldungsErzeuger {
 
 	public static Cpu CpuErzeugen(String type) {
 		if ("einfach".equals(type)) {
-			return new CpuEinfach(Speicher.SpeicherGeben());
+			return new CpuEinfach(Speicher.getMemory());
 		} else {
-			return "detail" == type ? new CpuDetail(Speicher.SpeicherGeben()) : null;
+			return "detail" == type ? new CpuDetail(Speicher.getMemory()) : null;
 		}
 	}
 
-	public void Assemblieren(String var1, FehlerVerwaltung var2) {
+	public void assemble(String var1, FehlerVerwaltung var2) {
 		(new Parser(new Scanner(var1), this.speicher, var2, this.erweitert)).Parse();
 	}
 
@@ -481,17 +481,17 @@ public abstract class Cpu implements CpuMeldungsErzeuger {
 		}
 
 		if (!var2.FehlerAufgetreten()) {
-			this.speicher.SpeicherLöschen();
+			this.speicher.clearMemory();
 			(new Parser(new Scanner(var3), this.speicher, var2, this.erweitert)).Parse();
 		}
 
 	}
 
-	public void AbbruchSchrankeSetzen(int var1) {
-		this.schranke = (long)var1;
+	public void setTimeout(int seconds) {
+		this.schranke = (long)seconds;
 	}
 
-	public void SpeicherbeobachterSetzen(SpeicherBeobachter var1) {
-		this.speicher.Registrieren(var1);
+	public void addMemoryListener(MemoryListener memoryListener) {
+		this.speicher.Registrieren(memoryListener);
 	}
 }

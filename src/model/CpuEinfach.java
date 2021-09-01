@@ -14,12 +14,12 @@ class CpuEinfach extends Cpu {
 
 	public void Schritt() {
 		this.befehlscode = this.speicher.WortOhneVorzeichenGeben(this.pc.WertGeben());
-		this.pc.Inkrementieren(1);
+		this.pc.increment(1);
 		this.adressmodus = this.befehlscode / 256;
 		this.befehlscode %= 256;
 		this.adresse = this.speicher.WortMitVorzeichenGeben(this.pc.WertGeben());
 		this.OpcodeTesten();
-		this.pc.Inkrementieren(1);
+		this.pc.increment(1);
 		int var1;
 		int var2;
 		int var3;
@@ -30,7 +30,7 @@ class CpuEinfach extends Cpu {
 				break;
 			case 1:
 				this.ZurückSetzen();
-				this.speicher.SpeicherLöschen();
+				this.speicher.clearMemory();
 				break;
 			case 2:
 			case 3:
@@ -110,27 +110,27 @@ class CpuEinfach extends Cpu {
 				if (this.erweitert) {
 					switch(this.befehlscode) {
 						case 5:
-							this.sp.Dekrementieren(1);
+							this.sp.decrement(1);
 							this.speicher.WortSetzen(this.sp.WertGeben(), this.pc.WertGeben());
 							this.pc.WertSetzen(this.adresse);
 							break label288;
 						case 6:
 							this.pc.WertSetzen(this.speicher.WortMitVorzeichenGeben(this.sp.WertGeben()));
-							this.sp.Inkrementieren(1);
+							this.sp.increment(1);
 							break label288;
 						case 7:
-							this.sp.Dekrementieren(this.adresse);
+							this.sp.decrement(this.adresse);
 							break label288;
 						case 8:
-							this.sp.Inkrementieren(this.adresse);
+							this.sp.increment(this.adresse);
 							break label288;
 						case 25:
-							this.sp.Dekrementieren(1);
+							this.sp.decrement(1);
 							this.speicher.WortSetzen(this.sp.WertGeben(), this.a.WertGeben());
 							break label288;
 						case 26:
 							this.a.WertSetzen(this.speicher.WortMitVorzeichenGeben(this.sp.WertGeben()));
-							this.sp.Inkrementieren(1);
+							this.sp.increment(1);
 							this.ovflag = false;
 							var3 = this.a.WertGeben();
 							this.ltflag = var3 < 0;

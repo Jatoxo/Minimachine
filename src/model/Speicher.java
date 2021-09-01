@@ -6,45 +6,41 @@
 package model;
 
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.Arrays;
 
 class Speicher implements SpeicherMeldungsErzeuger {
 	private short[] speicher = new short[65536];
-	private int geändert;
-	private ArrayList<SpeicherBeobachter> beobachter = new ArrayList();
+	private int changed;
+	private ArrayList<MemoryListener> listeners = new ArrayList();
 	private static Speicher derSpeicher = new Speicher();
 
-	static Speicher SpeicherGeben() {
+	static Speicher getMemory() {
 		return derSpeicher;
 	}
 
 	private Speicher() {
-		this.SpeicherLöschen();
-		this.geändert = -1;
+		this.clearMemory();
+		this.changed = -1;
 	}
 
-	public void Registrieren(SpeicherBeobachter var1) {
-		this.beobachter.add(var1);
+	public void Registrieren(MemoryListener newListeners) {
+		this.listeners.add(newListeners);
 	}
 
-	public void Abmelden(SpeicherBeobachter var1) {
-		this.beobachter.remove(var1);
+	public void Abmelden(MemoryListener var1) {
+		this.listeners.remove(var1);
 	}
 
 	private void Melden() {
-		Iterator var1 = this.beobachter.iterator();
 
-		while(var1.hasNext()) {
-			SpeicherBeobachter var2 = (SpeicherBeobachter)var1.next();
-			var2.SpeicherGeändertMelden(this.geändert);
+		for(MemoryListener listener : this.listeners) {
+			listener.memoryChanged(this.changed);
 		}
 
 	}
 
-	void SpeicherLöschen() {
-		for(int var1 = 0; var1 < this.speicher.length; ++var1) {
-			this.speicher[var1] = 0;
-		}
+	void clearMemory() {
+		Arrays.fill(this.speicher, (short) 0);
 
 		this.speicher[this.speicher.length - 1] = -1;
 		this.speicher[this.speicher.length - 2] = -1;
@@ -61,7 +57,7 @@ class Speicher implements SpeicherMeldungsErzeuger {
 		}
 
 		this.speicher[var1] = (short)var2;
-		this.geändert = var1;
+		this.changed = var1;
 		this.Melden();
 	}
 

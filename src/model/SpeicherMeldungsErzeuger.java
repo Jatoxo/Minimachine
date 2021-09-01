@@ -6,7 +6,7 @@
 package model;
 
 interface SpeicherMeldungsErzeuger {
-	void Registrieren(SpeicherBeobachter var1);
+	void Registrieren(MemoryListener var1);
 
-	void Abmelden(SpeicherBeobachter var1);
+	void Abmelden(MemoryListener var1);
 }
