@@ -107,17 +107,28 @@ class Editor extends Anzeige {
 
 			}
 		});
+
+
+
+
+		this.scroll = new JScrollPane(this.editor, 20, 30);
+		this.scroll.setRowHeaderView(this.zeilenNummern);
+
 		this.editor.addMouseWheelListener(new MouseWheelListener() {
 			@Override
 			public void mouseWheelMoved(MouseWheelEvent mouseWheelEvent) {
+
 				if(mouseWheelEvent.isControlDown()) {
+
 					int scroll = mouseWheelEvent.getWheelRotation();
 					setFontSize(Math.min(200, Math.max(10, editor.getFont().getSize() - 2 * scroll)));
 				}
+				scroll.dispatchEvent(mouseWheelEvent);
 			}
 		});
-		this.scroll = new JScrollPane(this.editor, 20, 30);
-		this.scroll.setRowHeaderView(this.zeilenNummern);
+
+
+
 		var1.add(this.scroll, "Center");
 		this.status = new JLabel();
 		this.status.setBorder(LineBorder.createGrayLineBorder());
