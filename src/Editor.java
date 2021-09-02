@@ -254,7 +254,8 @@ class Editor extends Anzeige {
 
 	void notifyClose() {
 		if (!this.sicherungsstand.equals(this.editor.getText())) {
-			int dialog = JOptionPane.showConfirmDialog(this.window, new String[]{R.getResources().getString("editor_confirm_exit_unsaved1"), R.getResources().getString("editor_confirm_exit_unsaved2")}, "Änderungen sichern", JOptionPane.YES_NO_OPTION);
+			String[] options = {R.getResources().getString("editor_confirm_exit_button_save"), R.getResources().getString("editor_confirm_exit_button_close")};
+			int dialog = JOptionPane.showConfirmDialog(this.window, new String[]{R.getResources().getString("editor_confirm_exit_unsaved1"), R.getResources().getString("editor_confirm_exit_unsaved2")}, R.getResources().getString("editor_confirm_exit_unsaved_title"), JOptionPane.YES_NO_OPTION);
 			if (dialog == 0) {
 				this.saveFile(false);
 			}

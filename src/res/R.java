@@ -8,8 +8,8 @@ public class R {
 
 
 	public static ResourceBundle getResources() {
-		return ResourceBundle.getBundle("res.lang", Locale.GERMAN);
-		//return ResourceBundle.getBundle("res.lang", Locale.getDefault());
+		//return ResourceBundle.getBundle("res.lang", Locale.GERMAN);
+		return ResourceBundle.getBundle("res.lang", Locale.getDefault());
 	}
 
 

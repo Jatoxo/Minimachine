@@ -8,17 +8,13 @@ import model.MemoryListener;
 import model.SpeicherLesen;
 import res.R;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableModel;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 class SpeicherAnzeige extends Anzeige implements MemoryListener {
 	private JScrollPane scroll;
@@ -35,12 +31,14 @@ class SpeicherAnzeige extends Anzeige implements MemoryListener {
 	private boolean hexaDarstellung = false;
 	private boolean opcodeDarstellung = false;
 	private JPanel content;
+	MemoryTracker memoryTracker;
 
 	SpeicherAnzeige(ControllerInterface var1) {
 		super(var1);
 	}
 
 	protected void initLayout() {
+		memoryTracker = new MemoryTracker();
 		this.window = new JFrame(R.getResources().getString("window_memory_title"));
 		this.window.setJMenuBar(this.menuBar);
 		this.window.setVisible(true);
@@ -59,13 +57,13 @@ class SpeicherAnzeige extends Anzeige implements MemoryListener {
 				return 6555;
 			}
 
-			public Object getValueAt(int var1, int var2) {
-				if (var2 == 0) {
-					return var1 * 10;
+			public Object getValueAt(int row, int col) {
+				if (col == 0) {
+					return row * 10;
 				} else {
-					int var3 = var1 * 10 + (var2 - 1);
+					int var3 = row * 10 + (col - 1);
 					if (var3 < 65536) {
-						if (SpeicherAnzeige.this.opcodeDarstellung && var2 % 2 != 0) {
+						if (SpeicherAnzeige.this.opcodeDarstellung && col % 2 != 0) {
 							int var8 = SpeicherLesen.WortOhneVorzeichenGeben(var3);
 							int var6 = var8 / 256;
 							String var7 = AssemblerBefehle.AssemblerbefehleGeben().MnemonicGeben(var8 % 256);
@@ -80,7 +78,7 @@ class SpeicherAnzeige extends Anzeige implements MemoryListener {
 							String var4 = "0000" + Integer.toHexString(SpeicherLesen.WortOhneVorzeichenGeben(var3)).toUpperCase();
 							return var4.substring(var4.length() - 4);
 						} else {
-							return new Integer(SpeicherLesen.WortMitVorzeichenGeben(var3));
+							return SpeicherLesen.WortMitVorzeichenGeben(var3);
 						}
 					} else {
 						return "";
@@ -88,31 +86,31 @@ class SpeicherAnzeige extends Anzeige implements MemoryListener {
 				}
 			}
 
-			public boolean isCellEditable(int var1, int var2) {
-				return SpeicherAnzeige.this.editierbar && var2 != 0;
+			public boolean isCellEditable(int row, int col) {
+				return SpeicherAnzeige.this.editierbar && col != 0;
 			}
 
-			public void setValueAt(Object var1, int var2, int var3) {
-				if (var1 instanceof String) {
+			public void setValueAt(Object val, int row, int col) {
+				if (val instanceof String) {
 					try {
-						String var5 = (String)var1;
-						int var4;
+						String value = (String) val;
+						int number;
 						if (SpeicherAnzeige.this.hexaDarstellung) {
-							if (var5.startsWith("0x")) {
-								var5 = var5.substring(2);
+							if (value.startsWith("0x")) {
+								value = value.substring(2);
 							}
 
-							var4 = Integer.parseInt(var5, 16);
+							number = Integer.parseInt(value, 16);
 						} else {
-							var4 = Integer.parseInt(var5);
+							number = Integer.parseInt(value);
 						}
 
-						if (-32768 <= var4 && var4 <= 65535) {
+						if (-32768 <= number && number <= 65535) {
 							SpeicherAnzeige.this.geändert = -1;
-							SpeicherLesen.WortSetzen(var2 * 10 + (var3 - 1), var4);
+							SpeicherLesen.WortSetzen(row * 10 + (col - 1), number);
 							SpeicherAnzeige.this.geändert = -1;
 						}
-					} catch (Exception var6) {
+					} catch (Exception ex) {
 					}
 				}
 
@@ -129,27 +127,27 @@ class SpeicherAnzeige extends Anzeige implements MemoryListener {
 			private Font f = null;
 			private Font fbold = null;
 
-			public Component getTableCellRendererComponent(JTable var1, Object var2, boolean var3, boolean var4, int var5, int var6) {
-				Component var7 = super.getTableCellRendererComponent(var1, var2, var3, var4, var5, var6);
+			public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+				Component component = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 				if (this.f == null) {
-					this.f = var7.getFont();
+					this.f = component.getFont();
 					this.fbold = this.f.deriveFont(1);
 				}
 
-				if (var6 == 0) {
-					var7.setBackground(Color.gray);
-					var7.setFont(this.fbold);
+				if (column == 0) {
+					component.setBackground(Color.gray);
+					component.setFont(this.fbold);
 				} else {
-					var7.setBackground(Color.lightGray);
-					var7.setFont(this.f);
-					if (var5 * 10 + (var6 - 1) == SpeicherAnzeige.this.geändert) {
-						var7.setForeground(Color.red);
+					component.setBackground(Color.lightGray);
+					component.setFont(this.f);
+					if (row * 10 + (column - 1) == SpeicherAnzeige.this.geändert) {
+						component.setForeground(Color.red);
 					} else {
-						var7.setForeground(Color.black);
+						component.setForeground(Color.black);
 					}
 				}
 
-				return var7;
+				return component;
 			}
 		});
 
@@ -279,6 +277,15 @@ class SpeicherAnzeige extends Anzeige implements MemoryListener {
 			}
 		});
 		this.toolsMenu.add(this.editItem);
+
+		JMenuItem memoryTrackerItem = new JMenuItem(R.getResources().getString("memory_track_window_title"));
+		memoryTrackerItem.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent actionEvent) {
+				memoryTracker.setVisible(true);
+			}
+		});
+		this.windowsMenu.add(memoryTrackerItem);
 	}
 
 	protected void resetDisplaySize(boolean var1) {
@@ -298,6 +305,7 @@ class SpeicherAnzeige extends Anzeige implements MemoryListener {
 	}
 
 	public void memoryChanged(int var1) {
+		memoryTracker.memoryChanged();
 		this.geändert = var1;
 		this.scrollpane.invalidate();
 		this.scrollpane.repaint();
