@@ -193,6 +193,7 @@ public class MemoryTracker extends JFrame {
 
 
 		pack();
+		setLocationRelativeTo(null);
 		setMinimumSize(getSize());
 
 		//setResizable(false);
