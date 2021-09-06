@@ -1,0 +1,20 @@
+Start:
+	LOAD	FakNum
+	JMPNP	END
+	MUL	Result
+	STORE	Result
+	LOAD	FakNum
+	SUBI	1
+	STORE	FakNum
+	JMP	Start
+	
+END:
+	LOAD	Result
+	HOLD
+
+
+
+FakNum:
+	WORD	3
+Result:
+	WORD	1
