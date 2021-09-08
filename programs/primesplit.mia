@@ -1,12 +1,67 @@
-LOADI	1	#The number to check
-PUSH
-CALL	isPrime
-POP
-HOLD
+	LOAD	Num
+	CMPI	2
+	#If the number is 2 or less, return just the number
+	JMPNP	LESSEREQUAL2
+	
+LOOPSTART:
+	LOAD	Counter
+	PUSH
+	CALL	isPrime
+	POP
+	JMPZ	CONTINUE
+	# If we get here we know Counter is prime
+	# Now check if the number is divisble by this prime number
+	LOAD	Num
+	MOD	Counter
+	JMPNZ	CONTINUE
+	# If we get here we know Counter is the smallest prime number dividing Num
+	# Using the stack to store the factors, add this one.
+	LOAD	Counter
+	PUSH
+	LOAD	Num
+	DIV	Counter
+	STORE	Num
+	# If this number is prime, add it to stack and we're done
+	PUSH
+	CALL	isPrime
+	POP
+	JMPP	FINISH
+	LOADI	2
+	STORE	Counter
+	JMP	LOOPSTART
+	
+		
+CONTINUE:  #Restarts the loop incrementing the counter
+	LOAD	Counter
+	ADDI	1
+	STORE	Counter
+	JMP	LOOPSTART
+	
+LESSEREQUAL2:
+	PUSH
+	JMP	END
+	
+FINISH:
+	LOAD	Num
+	PUSH
+	JMP	END
+
+END:
+	LOADI	0
+	PUSH
+	PUSH
+	PUSH		
+	HOLD
+
+	
+	
 
 
 
-
+Num:
+	WORD	900  #Die Zahl, die zerlegt werden soll <-----------------------------------------------------------------------------
+Counter:
+	WORD	2  #The counter we use in the loop
 
 isPrime:	
 	#Start value for loop
@@ -40,7 +95,6 @@ ISPRIMELOOP1:
 	PUSH
 	JMP	ISPRIMELOOP1
 		
-
 ISPRIMETRUE:
 	POP
 	#Stores 1 in passed argument to indicate prime
