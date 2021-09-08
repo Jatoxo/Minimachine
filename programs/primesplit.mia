@@ -1,0 +1,61 @@
+LOADI	1	#The number to check
+PUSH
+CALL	isPrime
+POP
+HOLD
+
+
+
+
+
+isPrime:	
+	#Start value for loop
+	LOADI	2
+	PUSH
+
+	#Argument is stored before return address and loop start value in SP
+	LOAD	2(SP)
+	#If argument is smaller than 2, not prime, else if equal to 2, prime
+	CMPI	2
+	JMPZ	ISPRIMETRUE
+	JMPN	ISPRIMEFALSE
+	
+	
+
+ISPRIMELOOP1:
+	LOAD	(SP)
+	MUL	(SP)
+	#Original argument is on 2SP because of loop counter and function return address on stack
+	CMP	2(SP)
+	#Keep going until we found a divisor or we exceed square root of value
+	JMPP	ISPRIMETRUE
+	#If value is divisible by current iteration, not prime
+	LOAD	2(SP)
+	MOD	(SP)
+	JMPZ	ISPRIMEFALSE
+	
+	#Increment iterator and repeat...
+	POP	
+	ADDI	1
+	PUSH
+	JMP	ISPRIMELOOP1
+		
+
+ISPRIMETRUE:
+	POP
+	#Stores 1 in passed argument to indicate prime
+	LOADI	1
+	STORE	1(SP)
+	RETURN	
+
+ISPRIMEFALSE:
+	POP
+	#Stores 0 in passed argument to indicate not prime
+	LOADI	0
+	STORE	1(SP)
+	RETURN
+
+
+
+
+
