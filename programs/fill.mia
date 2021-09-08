@@ -1,10 +1,12 @@
-LOAD Num
-STORE (CurCell)
-LOAD CurCell
-ADDI 1
-STORE CurCell
-JMP 0
-HOLD
+	LOAD	Num
+	STORE	(CurCell)
+	LOAD	CurCell
+	ADDI	1
+	JMPV	END
+	STORE	CurCell
+	JMP 0
+END:	
+	HOLD
 
 
 CurCell: 	word 	16
