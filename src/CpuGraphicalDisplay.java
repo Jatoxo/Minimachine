@@ -10,6 +10,8 @@ import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import javax.swing.*;
 
 class CpuGraphicalDisplay extends Anzeige implements CpuBeobachter {
@@ -58,6 +60,12 @@ class CpuGraphicalDisplay extends Anzeige implements CpuBeobachter {
 		});
 		this.content.doLayout();
 
+
+		this.window.addWindowListener(new WindowAdapter() {
+			public void windowClosing(WindowEvent var1) {
+				controller.BeendenAusführen();
+			}
+		});
 		this.window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		this.window.setSize(600, 400);
 		this.window.setLocationRelativeTo(null);

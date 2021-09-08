@@ -12,16 +12,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.util.Properties;
 import java.util.prefs.Preferences;
-import javax.swing.JEditorPane;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.KeyStroke;
+import javax.swing.*;
 import javax.swing.border.LineBorder;
 import javax.swing.event.UndoableEditEvent;
 import javax.swing.undo.UndoManager;
@@ -72,8 +63,8 @@ class Editor extends Anzeige {
 
 	protected void initLayout() {
 		this.undo = new UndoManager() {
-			public void undoableEditHappened(UndoableEditEvent var1) {
-				super.undoableEditHappened(var1);
+			public void undoableEditHappened(UndoableEditEvent undoableEditEvent) {
+				super.undoableEditHappened(undoableEditEvent);
 				Editor.this.undoItem.setEnabled(this.canUndo());
 				Editor.this.redoItem.setEnabled(this.canRedo());
 			}
@@ -139,10 +130,10 @@ class Editor extends Anzeige {
 		this.window.setSize(400, 200);
 		this.window.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent var1) {
-				Editor.this.close(false);
+				Editor.this.close(true);
 			}
 		});
-		this.window.setDefaultCloseOperation(2);
+		this.window.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 
 		//this.fileChooser = new JFileChooser();
 		this.fileDialog = new FileDialog((Frame) null, R.getResources().getString("file_picker_open_title"));
@@ -254,7 +245,6 @@ class Editor extends Anzeige {
 
 	void notifyClose() {
 		if (!this.sicherungsstand.equals(this.editor.getText())) {
-			String[] options = {R.getResources().getString("editor_confirm_exit_button_save"), R.getResources().getString("editor_confirm_exit_button_close")};
 			int dialog = JOptionPane.showConfirmDialog(this.window, new String[]{R.getResources().getString("editor_confirm_exit_unsaved1"), R.getResources().getString("editor_confirm_exit_unsaved2")}, R.getResources().getString("editor_confirm_exit_unsaved_title"), JOptionPane.YES_NO_OPTION);
 			if (dialog == 0) {
 				this.saveFile(false);
