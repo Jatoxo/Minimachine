@@ -28,7 +28,7 @@ class Parser {
 		this.fehler = exceptionHandler;
 		this.erweitert = extended;
 		this.pc = 0;
-		this.befehle = AssemblerBefehle.AssemblerbefehleGeben();
+		this.befehle = AssemblerBefehle.getAssemblyInstructions();
 		this.marken = new HashMap(40);
 		this.fixierungen = new HashMap(80);
 		this.aktToken = this.scanner.NächstesToken();
@@ -40,52 +40,47 @@ class Parser {
 				this.aktToken = this.scanner.NächstesToken();
 			}
 
-			Scanner var10001 = this.scanner;
 			if (this.aktToken != 2) {
 				if (this.aktToken != 0) {
-					this.fehler.FehlerEintragen(R.getResources().getString("parse_error_expected_label_name"), this.scanner.PositionGeben());
+					this.fehler.FehlerEintragen(R.string("parse_error_expected_label_name"), this.scanner.PositionGeben());
 					this.Überspringen();
 				}
 			} else {
 				String label = this.scanner.BezeichnerGeben();
 				int var6 = this.scanner.PositionGeben();
 				this.aktToken = this.scanner.NächstesToken();
-				var10001 = this.scanner;
 				if (this.aktToken == 4) {
 					if (this.marken.containsKey(label)) {
-						this.fehler.FehlerEintragen(R.getResources().getString("parse_error_label_exists"), this.scanner.PositionGeben());
+						this.fehler.FehlerEintragen(R.string("parse_error_label_exists"), this.scanner.PositionGeben());
 					} else if (!this.erweitert || !label.equals("SP") && !label.equals("sp")) {
 						this.marken.put(label, this.pc);
 					} else {
-						this.fehler.FehlerEintragen(R.getResources().getString("parse_error_invalid_label") + ": " + label, this.scanner.PositionGeben());
+						this.fehler.FehlerEintragen(R.string("parse_error_invalid_label") + ": " + label, this.scanner.PositionGeben());
 					}
 
 					this.aktToken = this.scanner.NächstesToken();
-					var10001 = this.scanner;
 					if (this.aktToken == 2) {
 						label = this.scanner.BezeichnerGeben();
 						var6 = this.scanner.PositionGeben();
 						this.aktToken = this.scanner.NächstesToken();
 					} else {
-						var10001 = this.scanner;
 						if (this.aktToken == 0) {
 							continue;
 						}
 
-						var10001 = this.scanner;
 						if (this.aktToken == 5) {
 							continue;
 						}
 
-						this.fehler.FehlerEintragen(R.getResources().getString("parse_error_expected_label_name"), this.scanner.PositionGeben());
+						this.fehler.FehlerEintragen(R.string("parse_error_expected_label_name"), this.scanner.PositionGeben());
 					}
 				}
 
-				if (!this.befehle.BezeichnerTesten(label)) {
-					this.fehler.FehlerEintragen(R.getResources().getString("parse_error_invalid_instruction") + ": " + label, var6);
+				if (!this.befehle.hasInstruction(label)) {
+					this.fehler.FehlerEintragen(R.string("parse_error_invalid_instruction") + ": " + label, var6);
 					this.Überspringen();
 				} else {
-					int var2 = this.befehle.OpcodeGeben(label);
+					int var2 = this.befehle.getOpcode(label);
 					byte var3 = 0;
 					byte var5;
 					if (var2 < 0) {
@@ -104,7 +99,7 @@ class Parser {
 						} else {
 							this.speicher.WortSetzen(this.pc, 0);
 							++this.pc;
-							this.fehler.FehlerEintragen(R.getResources().getString("parse_error_expected_number"), this.scanner.PositionGeben());
+							this.fehler.FehlerEintragen(R.string("parse_error_expected_number"), this.scanner.PositionGeben());
 						}
 					} else {
 						int var4;
@@ -114,42 +109,36 @@ class Parser {
 							var3 = 2;
 							var2 -= 300;
 							var5 = 1;
-							var10001 = this.scanner;
 							if (this.aktToken == 2) {
 								label = this.scanner.BezeichnerGeben();
 								if (this.marken.containsKey(label)) {
-									var4 = (Integer)this.marken.get(label);
+									var4 = this.marken.get(label);
 								} else {
 									this.fixierungen.put(this.pc + 1, label);
 								}
 
 								this.aktToken = this.scanner.NächstesToken();
 							} else {
-								var10001 = this.scanner;
 								if (this.aktToken == 7) {
 									var5 = -1;
 									this.aktToken = this.scanner.NächstesToken();
 								} else {
-									var10001 = this.scanner;
 									if (this.aktToken == 6) {
 										this.aktToken = this.scanner.NächstesToken();
 									}
 								}
 
-								var10001 = this.scanner;
 								if (this.aktToken == 3) {
 									var4 = var5 * this.scanner.ZahlGeben();
 									this.aktToken = this.scanner.NächstesToken();
 								} else {
-									this.fehler.FehlerEintragen(R.getResources().getString("parse_error_expected_number"), this.scanner.PositionGeben());
+									this.fehler.FehlerEintragen(R.string("parse_error_expected_number"), this.scanner.PositionGeben());
 								}
 							}
 
 						} else {
 							var3 = 0;
-							var10001 = this.scanner;
 							if (this.aktToken != 9) {
-								var10001 = this.scanner;
 								if (this.aktToken == 2) {
 									var3 = 1;
 									label = this.scanner.BezeichnerGeben();
@@ -161,48 +150,41 @@ class Parser {
 
 									this.aktToken = this.scanner.NächstesToken();
 								} else {
-									var10001 = this.scanner;
 									if (this.aktToken == 3) {
 										var3 = 1;
 										var4 = this.scanner.ZahlGeben();
 										this.aktToken = this.scanner.NächstesToken();
 										if (this.erweitert) {
-											var10001 = this.scanner;
 											if (this.aktToken == 9) {
 												var3 = 4;
 												this.aktToken = this.scanner.NächstesToken();
-												var10001 = this.scanner;
 												if (this.aktToken == 2) {
 													if (!this.scanner.BezeichnerGeben().equals("SP") && !this.scanner.BezeichnerGeben().equals("sp")) {
-														this.fehler.FehlerEintragen("'SP' " + R.getResources().getString("parse_error_x_expected"), this.scanner.PositionGeben());
+														this.fehler.FehlerEintragen("'SP' " + R.string("parse_error_x_expected"), this.scanner.PositionGeben());
 													}
 
 													this.aktToken = this.scanner.NächstesToken();
 												} else {
-													var10001 = this.scanner;
 													if (this.aktToken == 3) {
-														this.fehler.FehlerEintragen("'SP' " + R.getResources().getString("parse_error_x_expected"), this.scanner.PositionGeben());
+														this.fehler.FehlerEintragen("'SP' " + R.string("parse_error_x_expected"), this.scanner.PositionGeben());
 														this.aktToken = this.scanner.NächstesToken();
 													} else {
-														this.fehler.FehlerEintragen("'SP' " + R.getResources().getString("parse_error_x_expected"), this.scanner.PositionGeben());
+														this.fehler.FehlerEintragen("'SP' " + R.string("parse_error_x_expected"), this.scanner.PositionGeben());
 													}
 												}
 
-												var10001 = this.scanner;
 												if (this.aktToken == 10) {
 													this.aktToken = this.scanner.NächstesToken();
 												} else {
-													this.fehler.FehlerEintragen("')' " + R.getResources().getString("parse_error_x_expected"), this.scanner.PositionGeben());
+													this.fehler.FehlerEintragen("')' " + R.string("parse_error_x_expected"), this.scanner.PositionGeben());
 												}
 											}
 										}
 									} else {
-										var10001 = this.scanner;
 										if (this.aktToken == 8) {
 											var3 = 2;
 											this.aktToken = this.scanner.NächstesToken();
 											var5 = 1;
-											var10001 = this.scanner;
 											if (this.aktToken == 2) {
 												label = this.scanner.BezeichnerGeben();
 												if (this.marken.containsKey(label)) {
@@ -213,78 +195,66 @@ class Parser {
 
 												this.aktToken = this.scanner.NächstesToken();
 											} else {
-												var10001 = this.scanner;
 												if (this.aktToken == 7) {
 													var5 = -1;
 													this.aktToken = this.scanner.NächstesToken();
 												} else {
-													var10001 = this.scanner;
 													if (this.aktToken == 6) {
 														this.aktToken = this.scanner.NächstesToken();
 													}
 												}
 
-												var10001 = this.scanner;
 												if (this.aktToken == 3) {
 													var4 = var5 * this.scanner.ZahlGeben();
 													this.aktToken = this.scanner.NächstesToken();
 													if (this.erweitert) {
-														var10001 = this.scanner;
 														if (this.aktToken == 9) {
 															var3 = 6;
 															this.aktToken = this.scanner.NächstesToken();
-															var10001 = this.scanner;
 															if (this.aktToken == 2) {
 																if (!this.scanner.BezeichnerGeben().equals("SP") && !this.scanner.BezeichnerGeben().equals("sp")) {
-																	this.fehler.FehlerEintragen("'SP' " + R.getResources().getString("parse_error_x_expected"), this.scanner.PositionGeben());
+																	this.fehler.FehlerEintragen("'SP' " + R.string("parse_error_x_expected"), this.scanner.PositionGeben());
 																}
 
 																this.aktToken = this.scanner.NächstesToken();
 															} else {
-																this.fehler.FehlerEintragen("'SP' " + R.getResources().getString("parse_error_x_expected"), this.scanner.PositionGeben());
+																this.fehler.FehlerEintragen("'SP' " + R.string("parse_error_x_expected"), this.scanner.PositionGeben());
 															}
 
-															var10001 = this.scanner;
 															if (this.aktToken == 10) {
 																this.aktToken = this.scanner.NächstesToken();
 															} else {
-																this.fehler.FehlerEintragen("')' " + R.getResources().getString("parse_error_x_expected"), this.scanner.PositionGeben());
+																this.fehler.FehlerEintragen("')' " + R.string("parse_error_x_expected"), this.scanner.PositionGeben());
 															}
 														}
 													}
 												} else {
-													this.fehler.FehlerEintragen(R.getResources().getString("parse_error_expected_number"), this.scanner.PositionGeben());
+													this.fehler.FehlerEintragen(R.string("parse_error_expected_number"), this.scanner.PositionGeben());
 												}
 											}
 										} else if (this.erweitert) {
-											var10001 = this.scanner;
 											if (this.aktToken == 11) {
 												var3 = 5;
 												this.aktToken = this.scanner.NächstesToken();
-												var10001 = this.scanner;
 												if (this.aktToken == 3) {
 													var4 = this.scanner.ZahlGeben();
 													this.aktToken = this.scanner.NächstesToken();
 												} else {
-													var10001 = this.scanner;
 													if (this.aktToken == 2) {
-														this.fehler.FehlerEintragen(R.getResources().getString("parse_error_expected_number"), this.scanner.PositionGeben());
+														this.fehler.FehlerEintragen(R.string("parse_error_expected_number"), this.scanner.PositionGeben());
 														this.aktToken = this.scanner.NächstesToken();
 													}
 												}
 
-												var10001 = this.scanner;
 												if (this.aktToken == 9) {
 													this.aktToken = this.scanner.NächstesToken();
-													var10001 = this.scanner;
 													if (this.aktToken == 2) {
 														if (!this.scanner.BezeichnerGeben().equals("SP") && !this.scanner.BezeichnerGeben().equals("sp")) {
-															this.fehler.FehlerEintragen("'SP' " + R.getResources().getString("parse_error_x_expected"), this.scanner.PositionGeben());
+															this.fehler.FehlerEintragen("'SP' " + R.string("parse_error_x_expected"), this.scanner.PositionGeben());
 														}
 
 														this.aktToken = this.scanner.NächstesToken();
 													} else {
-														var10001 = this.scanner;
 														if (this.aktToken == 3) {
 															this.fehler.FehlerEintragen("'SP' " + R.getResources().getString("parse_error_x_expected"), this.scanner.PositionGeben());
 															this.aktToken = this.scanner.NächstesToken();
@@ -293,7 +263,6 @@ class Parser {
 														}
 													}
 
-													var10001 = this.scanner;
 													if (this.aktToken == 10) {
 														this.aktToken = this.scanner.NächstesToken();
 													} else {
@@ -309,21 +278,19 @@ class Parser {
 							} else {
 								this.aktToken = this.scanner.NächstesToken();
 								var3 = 3;
-								var10001 = this.scanner;
 								if (this.aktToken == 2) {
 									label = this.scanner.BezeichnerGeben();
 									if (this.erweitert && (label.equals("SP") || label.equals("sp"))) {
 										var3 = 4;
 										var4 = 0;
 									} else if (this.marken.containsKey(label)) {
-										var4 = (Integer)this.marken.get(label);
+										var4 = this.marken.get(label);
 									} else {
 										this.fixierungen.put(this.pc + 1, label);
 									}
 
 									this.aktToken = this.scanner.NächstesToken();
 								} else {
-									var10001 = this.scanner;
 									if (this.aktToken == 3) {
 										var4 = this.scanner.ZahlGeben();
 										this.aktToken = this.scanner.NächstesToken();
@@ -332,7 +299,6 @@ class Parser {
 									}
 								}
 
-								var10001 = this.scanner;
 								if (this.aktToken == 10) {
 									this.aktToken = this.scanner.NächstesToken();
 								} else {

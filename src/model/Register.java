@@ -8,6 +8,7 @@ package model;
 class Register {
 	private int wert = 0;
 
+
 	Register() {
 	}
 

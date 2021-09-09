@@ -19,6 +19,7 @@ import res.R;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -114,9 +115,9 @@ abstract class Anzeige {
 	protected void initMenus() {
 
 		this.menuBar = new JMenuBar();
-		this.fileMenu = new JMenu(R.getResources().getString("file_menu"));
+		this.fileMenu = new JMenu(R.string("file_menu"));
 		this.menuBar.add(this.fileMenu);
-		JMenuItem menu = new JMenuItem(R.getResources().getString("file_menu_new"), 78);
+		JMenuItem menu = new JMenuItem(R.string("file_menu_new"), 78);
 		menu.setAccelerator(KeyStroke.getKeyStroke(78, cmdKey));
 		menu.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent var1) {
@@ -124,7 +125,7 @@ abstract class Anzeige {
 			}
 		});
 		this.fileMenu.add(menu);
-		menu = new JMenuItem(R.getResources().getString("file_menu_open"), 79);
+		menu = new JMenuItem(R.string("file_menu_open"), 79);
 		menu.setAccelerator(KeyStroke.getKeyStroke(79, cmdKey));
 		menu.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent var1) {
@@ -136,26 +137,26 @@ abstract class Anzeige {
 
 		this.fileMenu.addSeparator();
 
-		this.closeMenuItem = new JMenuItem(R.getResources().getString("file_menu_close"), 87);
+		this.closeMenuItem = new JMenuItem(R.string("file_menu_close"), 87);
 		this.closeMenuItem.setAccelerator(KeyStroke.getKeyStroke(87, cmdKey));
 		this.fileMenu.add(this.closeMenuItem);
 
-		this.saveMenuItem = new JMenuItem(R.getResources().getString("file_menu_save"), 83);
+		this.saveMenuItem = new JMenuItem(R.string("file_menu_save"), 83);
 		this.saveMenuItem.setAccelerator(KeyStroke.getKeyStroke(83, cmdKey));
 		this.fileMenu.add(this.saveMenuItem);
 
-		this.saveAsMenuItem = new JMenuItem(R.getResources().getString("file_menu_save_as"));
+		this.saveAsMenuItem = new JMenuItem(R.string("file_menu_save_as"));
 		this.saveAsMenuItem.setAccelerator(KeyStroke.getKeyStroke(83, cmdKey + 64));
 		this.fileMenu.add(this.saveAsMenuItem);
 
 		this.fileMenu.addSeparator();
 
-		this.printMenuItem = new JMenuItem(R.getResources().getString("file_menu_print"));
+		this.printMenuItem = new JMenuItem(R.string("file_menu_print"));
 		this.printMenuItem.setAccelerator(KeyStroke.getKeyStroke('P', cmdKey));
 		this.fileMenu.add(this.printMenuItem);
 		if (!isMac) {
 			this.fileMenu.addSeparator();
-			menu = new JMenuItem(R.getResources().getString("file_menu_quit"), 81);
+			menu = new JMenuItem(R.string("file_menu_quit"), 81);
 			menu.setAccelerator(KeyStroke.getKeyStroke(81, cmdKey));
 			menu.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent var1) {
@@ -165,11 +166,11 @@ abstract class Anzeige {
 			this.fileMenu.add(menu);
 		}
 
-		this.editMenu = new JMenu(R.getResources().getString("edit_menu"));
+		this.editMenu = new JMenu(R.string("edit_menu"));
 		this.menuBar.add(this.editMenu);
-		this.toolsMenu = new JMenu(R.getResources().getString("tools_menu"));
+		this.toolsMenu = new JMenu(R.string("tools_menu"));
 		this.menuBar.add(this.toolsMenu);
-		this.sizeMenuItem = new JCheckBoxMenuItem(R.getResources().getString("tools_menu_increase_size"));
+		this.sizeMenuItem = new JCheckBoxMenuItem(R.string("tools_menu_increase_size"));
 		this.sizeMenuItem.setEnabled(true);
 		this.sizeMenuItem.setSelected(false);
 		this.sizeMenuItem.addActionListener(new ActionListener() {
@@ -178,8 +179,10 @@ abstract class Anzeige {
 			}
 		});
 		this.toolsMenu.add(this.sizeMenuItem);
-		this.windowsMenu = new JMenu(R.getResources().getString("windows_menu"));
-		JMenuItem helpMenuItem = new JMenuItem(R.getResources().getString("windows_menu_open_doc"));
+		this.windowsMenu = new JMenu(R.string("windows_menu"));
+		JMenuItem helpMenuItem = new JMenuItem(R.string("windows_menu_open_doc"), KeyEvent.VK_F1);
+		helpMenuItem.setAccelerator(KeyStroke.getKeyStroke("F1"));
+
 		this.windowsMenu.add(helpMenuItem);
 		helpMenuItem.addActionListener(new ActionListener() {
 			@Override
@@ -195,7 +198,7 @@ abstract class Anzeige {
 		});
 		this.menuBar.add(this.windowsMenu);
 		if (!isMac) {
-			menu = new JMenuItem(R.getResources().getString("windows_menu_about"));
+			menu = new JMenuItem(R.string("windows_menu_about"));
 			menu.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent var1) {
 					AboutDialog.show();
@@ -205,14 +208,14 @@ abstract class Anzeige {
 			this.windowsMenu.addSeparator();
 		}
 
-		menu = new JMenuItem(R.getResources().getString("windows_menu_cpu"));
+		menu = new JMenuItem(R.string("windows_menu_cpu"));
 		menu.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent var1) {
 				Anzeige.this.controller.CpuFensterAuswählen();
 			}
 		});
 		this.windowsMenu.add(menu);
-		menu = new JMenuItem(R.getResources().getString("windows_menu_memory"));
+		menu = new JMenuItem(R.string("windows_menu_memory"));
 		menu.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent var1) {
 				Anzeige.this.controller.SpeicherFensterAuswählen();

@@ -28,7 +28,7 @@ public class MemoryTracker extends JFrame {
 	ArrayList<TrackedVariable> trackedVariables;
 
 	public MemoryTracker() {
-		super(R.getResources().getString("memory_track_window_title"));
+		super(R.string("memory_track_window_title"));
 
 		URL iconURL = getClass().getResource("/res/img/icon.png");
 		System.out.println(iconURL);
@@ -55,11 +55,11 @@ public class MemoryTracker extends JFrame {
 			public String getColumnName(int column) {
 				switch(column) {
 					case 0:
-						return R.getResources().getString("memory_track_table_label");
+						return R.string("memory_track_table_label");
 					case 1:
-						return R.getResources().getString("memory_track_table_value");
+						return R.string("memory_track_table_value");
 					case 2:
-						return R.getResources().getString("memory_track_table_address");
+						return R.string("memory_track_table_address");
 					default:
 						return "";
 				}
@@ -85,7 +85,7 @@ public class MemoryTracker extends JFrame {
 				if(aValue instanceof String && ((String) aValue).trim().length() > 0){
 					trackedVariables.get(rowIndex).label = (String) aValue;
 				} else if(trackedVariables.get(rowIndex).label.trim().length() == 0) {
-					trackedVariables.get(rowIndex).label = R.getResources().getString("memory_track_table_default_label");
+					trackedVariables.get(rowIndex).label = R.string("memory_track_table_default_label");
 				}
 			}
 
@@ -106,7 +106,7 @@ public class MemoryTracker extends JFrame {
 		table.setFocusable(false);
 
 		JPopupMenu popup = new JPopupMenu();
-		JMenuItem clearItem = new JMenuItem(R.getResources().getString("clear_all"));
+		JMenuItem clearItem = new JMenuItem(R.string("clear_all"));
 		clearItem.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent actionEvent) {
@@ -217,7 +217,7 @@ public class MemoryTracker extends JFrame {
 	public void addTrackedVariable() {
 		int address = -1;
 		while(address == -1) {
-			String choice =  JOptionPane.showInputDialog(this, R.getResources().getString("memory_track_input_address_prompt"), R.getResources().getString("memory_track_input_address_title"), JOptionPane.QUESTION_MESSAGE);
+			String choice =  JOptionPane.showInputDialog(this, R.string("memory_track_input_address_prompt"), R.string("memory_track_input_address_title"), JOptionPane.QUESTION_MESSAGE);
 			if(choice == null) {
 				break;
 			}

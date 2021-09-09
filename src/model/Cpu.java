@@ -90,7 +90,7 @@ public abstract class Cpu implements CpuMeldungsErzeuger {
 		this.a = new Register();
 		this.sp = new Register();
 		this.sp.WertSetzen(-2);
-		this.mnemos = AssemblerBefehle.AssemblerbefehleGeben();
+		this.mnemos = AssemblerBefehle.getAssemblyInstructions();
 		this.beobachter = new ArrayList();
 		this.ZurückSetzen();
 		this.schranke = 5L;
@@ -198,7 +198,7 @@ public abstract class Cpu implements CpuMeldungsErzeuger {
 			}
 		}
 
-		String var17 = this.mnemos.MnemonicGeben(this.befehlscode);
+		String var17 = this.mnemos.getMnemonic(this.befehlscode);
 		Iterator var15 = this.beobachter.iterator();
 
 		while(var15.hasNext()) {

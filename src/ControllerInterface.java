@@ -10,7 +10,7 @@ interface ControllerInterface {
 
 	boolean assemble(String assemblyText, Editor editor);
 
-	boolean Übersetzen(String var1, Editor var2);
+	boolean Übersetzen(String code, Editor editor);
 
 	boolean AssemblertextZeigen(String var1, Editor var2);
 
@@ -32,7 +32,7 @@ interface ControllerInterface {
 
 	void SchließenAusführen(Anzeige var1);
 
-	void FensterTitelÄndernWeitergeben(Anzeige var1);
+	void windowNameChanged(Anzeige var1);
 
 	void CpuFensterAuswählen();
 

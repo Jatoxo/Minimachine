@@ -26,7 +26,7 @@ class SetTimeoutDialog {
 	private SetTimeoutDialog(ControllerInterface controller) {
 		this.kontrolleur = controller;
 		this.dialog = new JDialog((JFrame)null);
-		this.dialog.setTitle(R.getResources().getString("dialog_timeout_title"));
+		this.dialog.setTitle(R.string("dialog_timeout_title"));
 
 		JPanel contentPane = (JPanel) this.dialog.getContentPane();
 		contentPane.setLayout(new BorderLayout());
@@ -37,7 +37,7 @@ class SetTimeoutDialog {
 		panel.setBorder(new EmptyBorder(10, 20, 10, 20));
 		contentPane.add(panel, "Center");
 
-		JLabel label = new JLabel(R.getResources().getString("dialog_timeout_prompt"));
+		JLabel label = new JLabel(R.string("dialog_timeout_prompt"));
 		panel.add(label);
 		final JTextField inputField = new JTextField();
 		inputField.setColumns(3);
