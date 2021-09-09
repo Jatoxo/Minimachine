@@ -66,7 +66,7 @@ class Editor extends Anzeige {
 
 		CompletionProvider provider = createCompletionProvider();
 		AutoCompletion ac = new AutoCompletion(provider);
-		
+
 		ac.setAutoCompleteEnabled(true);
 		ac.setAutoActivationEnabled(true);
 		ac.setAutoCompleteSingleChoices(true);
@@ -299,7 +299,9 @@ class Editor extends Anzeige {
 		Font font = codeEditor.getFont();
 		Font newFont = new Font(font.getName(), font.getStyle(), newSize);
 		codeEditor.setFont(newFont);
-		//this.zeilenNummern.setFont(newFont);
+		font = codeScrollPane.getGutter().getLineNumberFont();
+		newFont = new Font(font.getName(), font.getStyle(), newSize);
+		codeScrollPane.getGutter().setLineNumberFont(newFont);
 	}
 
 	void readFile() {
