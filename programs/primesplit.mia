@@ -1,50 +1,50 @@
-	LOAD	Num
-	CMPI	2
+	LOAD		Num
+	CMPI		2
 	#If the number is 2 or less, return just the number
 	JMPNP	LESSEREQUAL2
 	
 LOOPSTART:
-	LOAD	Counter
+	LOAD		Counter
 	PUSH
-	CALL	isPrime
+	CALL		isPrime
 	POP
-	JMPZ	CONTINUE
+	JMPZ		CONTINUE
 	# If we get here we know Counter is prime
 	# Now check if the number is divisble by this prime number
-	LOAD	Num
-	MOD	Counter
+	LOAD		Num
+	MOD		Counter
 	JMPNZ	CONTINUE
 	# If we get here we know Counter is the smallest prime number dividing Num
 	# Using the stack to store the factors, add this one.
-	LOAD	Counter
+	LOAD		Counter
 	PUSH
-	LOAD	Num
-	DIV	Counter
+	LOAD		Num
+	DIV		Counter
 	STORE	Num
 	# If this number is prime, add it to stack and we're done
 	PUSH
-	CALL	isPrime
+	CALL		isPrime
 	POP
-	JMPP	FINISH
+	JMPP		FINISH
 	LOADI	2
 	STORE	Counter
-	JMP	LOOPSTART
+	JMP		LOOPSTART
 	
 		
 CONTINUE:  #Restarts the loop incrementing the counter
-	LOAD	Counter
-	ADDI	1
+	LOAD		Counter
+	ADDI		1
 	STORE	Counter
-	JMP	LOOPSTART
+	JMP		LOOPSTART
 	
 LESSEREQUAL2:
 	PUSH
-	JMP	END
+	JMP		END
 	
 FINISH:
-	LOAD	Num
+	LOAD		Num
 	PUSH
-	JMP	END
+	JMP		END
 
 END:
 	LOADI	0
@@ -59,9 +59,9 @@ END:
 
 
 Num:
-	WORD	900  #Die Zahl, die zerlegt werden soll <-----------------------------------------------------------------------------
+	WORD		4  #Die Zahl, die zerlegt werden soll <-----------------------------------------------------------------------------
 Counter:
-	WORD	2  #The counter we use in the loop
+	WORD		2  #The counter we use in the loop
 
 isPrime:	
 	#Start value for loop
@@ -69,31 +69,31 @@ isPrime:
 	PUSH
 
 	#Argument is stored before return address and loop start value in SP
-	LOAD	2(SP)
+	LOAD		2(SP)
 	#If argument is smaller than 2, not prime, else if equal to 2, prime
-	CMPI	2
-	JMPZ	ISPRIMETRUE
-	JMPN	ISPRIMEFALSE
+	CMPI		2
+	JMPZ		ISPRIMETRUE
+	JMPN		ISPRIMEFALSE
 	
 	
 
 ISPRIMELOOP1:
-	LOAD	(SP)
-	MUL	(SP)
+	LOAD		(SP)
+	MUL		(SP)
 	#Original argument is on 2SP because of loop counter and function return address on stack
-	CMP	2(SP)
+	CMP		2(SP)
 	#Keep going until we found a divisor or we exceed square root of value
-	JMPP	ISPRIMETRUE
+	JMPP		ISPRIMETRUE
 	#If value is divisible by current iteration, not prime
-	LOAD	2(SP)
-	MOD	(SP)
-	JMPZ	ISPRIMEFALSE
+	LOAD		2(SP)
+	MOD		(SP)
+	JMPZ		ISPRIMEFALSE
 	
 	#Increment iterator and repeat...
 	POP	
-	ADDI	1
+	ADDI		1
 	PUSH
-	JMP	ISPRIMELOOP1
+	JMP		ISPRIMELOOP1
 		
 ISPRIMETRUE:
 	POP

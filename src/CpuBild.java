@@ -107,7 +107,7 @@ class CpuBild extends JComponent {
 		var1.setColor(Color.red);
 		var1.drawLine(10, this.höheKasten + 10, var2 - 10, this.höheKasten + 10);
 		var1.drawLine(10, this.höheKasten + 11, var2 - 10, this.höheKasten + 11);
-		var1.drawString(R.getResources().getString("cpu_data_bus"), 15, this.höheKasten);
+		var1.drawString(R.string("cpu_data_bus"), 15, this.höheKasten);
 		var1.drawLine(190, this.höheKasten + 10, 190, var3 / 2 - this.höheCpu / 2 - 1);
 		var1.drawLine(191, this.höheKasten + 10, 191, var3 / 2 - this.höheCpu / 2 - 1);
 		var1.drawLine(var2 - 90, this.höheKasten + 10, var2 - 90, var3 / 2 - this.höheSpeicher / 2 - 1);
@@ -118,7 +118,7 @@ class CpuBild extends JComponent {
 
 		var1.setColor(Color.black);
 		if (!this.mikroschritt.equals("")) {
-			var1.drawString(R.getResources().getString("cpu_micro_step_label") + ": " + this.mikroschritt, 200, (this.höheKasten + var3 / 2 - this.höheCpu / 2) / 2 + 10);
+			var1.drawString(R.string("cpu_micro_step_label") + ": " + this.mikroschritt, 200, (this.höheKasten + var3 / 2 - this.höheCpu / 2) / 2 + 10);
 		}
 
 		var1.drawRect(10, var3 / 2 - this.höheCpu / 2, this.breiteCpu, this.höheCpu);
@@ -185,7 +185,7 @@ class CpuBild extends JComponent {
 		var1.setColor(Color.blue);
 		var1.drawLine(10, var3 - 30, var2 - 10, var3 - 30);
 		var1.drawLine(10, var3 - 29, var2 - 10, var3 - 29);
-		var1.drawString(R.getResources().getString("cpu_address_bus"), 15, var3 - 40);
+		var1.drawString(R.string("cpu_address_bus"), 15, var3 - 40);
 		if (!"".equals(this.adressWert)) {
 			var1.drawString(this.adressWert, this.breiteCpu - 10, var3 - 40);
 		}
@@ -194,12 +194,12 @@ class CpuBild extends JComponent {
 		var1.drawLine(191, var3 - 30, 191, var3 / 2 + this.höheCpu / 2 + 1);
 		var1.drawLine(var2 - 90, var3 - 30, var2 - 90, var3 / 2 + this.höheSpeicher / 2 + 1);
 		var1.drawLine(var2 - 89, var3 - 30, var2 - 89, var3 / 2 + this.höheSpeicher / 2 + 1);
-		var1.drawString(R.getResources().getString("cpu_accumulator"), 25, var3 / 2 - this.höheCpu / 2 + this.höheKasten);
-		var1.drawString(R.getResources().getString("cpu_status"), 25, var3 / 2 + this.höheCpu / 2 - (this.höheKasten + 20));
-		var1.drawString(R.getResources().getString("cpu_instruction_reg"), this.breiteCpu - 2 * this.breiteKasten + 5, var3 / 2 - this.höheCpu / 2 + this.höheKasten);
-		var1.drawString(R.getResources().getString("cpu_program_counter"), this.breiteCpu - 2 * this.breiteKasten + 5, var3 / 2 - this.höheCpu / 2 + 3 * this.höheKasten + 20);
+		var1.drawString(R.string("cpu_accumulator"), 25, var3 / 2 - this.höheCpu / 2 + this.höheKasten);
+		var1.drawString(R.string("cpu_status"), 25, var3 / 2 + this.höheCpu / 2 - (this.höheKasten + 20));
+		var1.drawString(R.string("cpu_instruction_reg"), this.breiteCpu - 2 * this.breiteKasten + 5, var3 / 2 - this.höheCpu / 2 + this.höheKasten);
+		var1.drawString(R.string("cpu_program_counter"), this.breiteCpu - 2 * this.breiteKasten + 5, var3 / 2 - this.höheCpu / 2 + 3 * this.höheKasten + 20);
 		if (this.erweitert) {
-			var1.drawString(R.getResources().getString("cpu_stack_pointer"), this.breiteCpu - 2 * this.breiteKasten + 5, var3 / 2 - this.höheCpu / 2 + 5 * this.höheKasten + 40);
+			var1.drawString(R.string("cpu_stack_pointer"), this.breiteCpu - 2 * this.breiteKasten + 5, var3 / 2 - this.höheCpu / 2 + 5 * this.höheKasten + 40);
 		}
 
 		for(var5 = 0; var5 < this.progmem.length; ++var5) {

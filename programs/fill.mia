@@ -1,16 +1,18 @@
-	LOAD	Num
+	LOAD		Num
 	STORE	(CurCell)
-	LOAD	CurCell
-	ADDI	1
-	JMPV	END
+	LOAD		CurCell
+	ADDI		1
+	JMPV		END
 	STORE	CurCell
-	JMP 0
+	JMP 		0
 END:	
 	HOLD
 
 
-CurCell: 	word 	16
-Num:	     word 	522
+CurCell: 	
+	word 	16
+Num:	     
+	word 	522
 
 
 

@@ -22,7 +22,7 @@ class AboutDialog {
 	private static AboutDialog aboutDialog = null;
 
 	private AboutDialog() {
-		this.dialog.setTitle(R.getResources().getString("aboutMM"));
+		this.dialog.setTitle(R.string("aboutMM"));
 
 
 		JPanel contentPane = (JPanel)this.dialog.getContentPane();
@@ -34,18 +34,18 @@ class AboutDialog {
 		contentPane.add(panel, "Center");
 		panel.setLayout(new GridLayout(6, 1));
 
-		JLabel label = new JLabel(R.getResources().getString("appName"));
+		JLabel label = new JLabel(R.string("appName"));
 		label.setHorizontalAlignment(0);
 		panel.add(label);
 
-		label = new JLabel(R.getResources().getString("version"));
+		label = new JLabel(R.string("version"));
 		label.setHorizontalAlignment(0);
 		panel.add(label);
 
 		label = new JLabel(" ");
 		panel.add(label);
 
-		label = new JLabel(R.getResources().getString("aboutDetail"));
+		label = new JLabel(R.string("aboutDetail"));
 		label.setHorizontalAlignment(0);
 		panel.add(label);
 

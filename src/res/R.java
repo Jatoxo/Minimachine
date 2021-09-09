@@ -12,5 +12,9 @@ public class R {
 		return ResourceBundle.getBundle("res.lang", Locale.getDefault());
 	}
 
+	public static String string(String key) {
+		return getResources().getString(key);
+	}
+
 
 }

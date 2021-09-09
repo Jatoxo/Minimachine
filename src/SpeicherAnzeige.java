@@ -33,13 +33,13 @@ class SpeicherAnzeige extends Anzeige implements MemoryListener {
 	private JPanel content;
 	MemoryTracker memoryTracker;
 
-	SpeicherAnzeige(ControllerInterface var1) {
-		super(var1);
+	SpeicherAnzeige(ControllerInterface controller) {
+		super(controller);
 	}
 
 	protected void initLayout() {
 		memoryTracker = new MemoryTracker();
-		this.window = new JFrame(R.getResources().getString("window_memory_title"));
+		this.window = new JFrame(R.string("window_memory_title"));
 		this.window.setJMenuBar(this.menuBar);
 		this.window.setVisible(true);
 		this.content = (JPanel)this.window.getContentPane();
@@ -66,7 +66,7 @@ class SpeicherAnzeige extends Anzeige implements MemoryListener {
 						if (SpeicherAnzeige.this.opcodeDarstellung && col % 2 != 0) {
 							int var8 = SpeicherLesen.WortOhneVorzeichenGeben(var3);
 							int var6 = var8 / 256;
-							String var7 = AssemblerBefehle.AssemblerbefehleGeben().MnemonicGeben(var8 % 256);
+							String var7 = AssemblerBefehle.getAssemblyInstructions().getMnemonic(var8 % 256);
 							if (var6 == 2) {
 								var7 = var7 + "I";
 							} else if (var6 == 3) {
@@ -140,9 +140,12 @@ class SpeicherAnzeige extends Anzeige implements MemoryListener {
 				} else {
 					component.setBackground(Color.lightGray);
 					component.setFont(this.f);
-					if (row * 10 + (column - 1) == SpeicherAnzeige.this.geändert) {
+					int index = row * 10 + (column - 1);
+					if(index == SpeicherAnzeige.this.geändert) {
 						component.setForeground(Color.red);
-					} else {
+					} else if(false) {
+
+					}else {
 						component.setForeground(Color.black);
 					}
 				}
@@ -204,20 +207,20 @@ class SpeicherAnzeige extends Anzeige implements MemoryListener {
 		this.saveMenuItem.setEnabled(false);
 		this.saveAsMenuItem.setEnabled(false);
 		this.printMenuItem.setEnabled(false);
-		JMenuItem var1 = new JMenuItem(R.getResources().getString("edit_menu_undo"), 90);
+		JMenuItem var1 = new JMenuItem(R.string("edit_menu_undo"), 90);
 		var1.setAccelerator(KeyStroke.getKeyStroke(90, cmdKey));
 		var1.setEnabled(false);
 		this.editMenu.add(var1);
-		var1 = new JMenuItem(R.getResources().getString("edit_menu_redo"));
+		var1 = new JMenuItem(R.string("edit_menu_redo"));
 		var1.setAccelerator(KeyStroke.getKeyStroke(90, 64 + cmdKey));
 		var1.setEnabled(false);
 		this.editMenu.add(var1);
 		this.editMenu.addSeparator();
-		var1 = new JMenuItem(R.getResources().getString("edit_menu_cut"), 88);
+		var1 = new JMenuItem(R.string("edit_menu_cut"), 88);
 		var1.setAccelerator(KeyStroke.getKeyStroke(88, cmdKey));
 		var1.setEnabled(false);
 		this.editMenu.add(var1);
-		var1 = new JMenuItem(R.getResources().getString("edit_menu_copy"), 67);
+		var1 = new JMenuItem(R.string("edit_menu_copy"), 67);
 		var1.setAccelerator(KeyStroke.getKeyStroke(67, cmdKey));
 		var1.setEnabled(false);
 		this.editMenu.add(var1);

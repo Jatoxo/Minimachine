@@ -48,18 +48,18 @@ class Controller implements ControllerInterface {
 		if (fehlerVerwaltung.FehlerAufgetreten()) {
 			editor.FehlerAnzeigen(fehlerVerwaltung.FehlertextMelden(), fehlerVerwaltung.FehlerpositionMelden());
 		} else {
-			editor.displayStatusMessage(R.getResources().getString("editor_assembly_success"));
+			editor.displayStatusMessage(R.string("editor_assembly_success"));
 			this.cpu.ZurückSetzen();
 		}
 
 		return !fehlerVerwaltung.FehlerAufgetreten();
 	}
 
-	public boolean Übersetzen(String var1, Editor var2) {
+	public boolean Übersetzen(String code, Editor editor) {
 		FehlerVerwaltung var3 = new FehlerVerwaltung();
-		this.cpu.Übersetzen(var1, var3);
+		this.cpu.Übersetzen(code, var3);
 		if (var3.FehlerAufgetreten()) {
-			var2.FehlerAnzeigen(var3.FehlertextMelden(), var3.FehlerpositionMelden());
+			editor.FehlerAnzeigen(var3.FehlertextMelden(), var3.FehlerpositionMelden());
 		} else {
 			this.cpu.ZurückSetzen();
 		}
@@ -128,7 +128,7 @@ class Controller implements ControllerInterface {
 		this.windowManager.EditorAustragen(var1);
 	}
 
-	public void FensterTitelÄndernWeitergeben(Anzeige var1) {
+	public void windowNameChanged(Anzeige var1) {
 		this.windowManager.EditorTitelÄndern(var1);
 	}
 
