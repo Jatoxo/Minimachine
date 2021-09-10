@@ -1,3 +1,7 @@
+	LOADI	20	#The number to split
+	STORE	Num
+	
+START:
 	LOAD		Num
 	CMPI		2
 	#If the number is 2 or less, return just the number
@@ -51,15 +55,15 @@ END:
 	PUSH
 	PUSH
 	PUSH		
+NOPE:
 	HOLD
+	JMP		NOPE
+	
 
 	
-	
-
-
 
 Num:
-	WORD		4  #Die Zahl, die zerlegt werden soll <-----------------------------------------------------------------------------
+	WORD		0  #The number to split into prime factors 
 Counter:
 	WORD		2  #The counter we use in the loop
 

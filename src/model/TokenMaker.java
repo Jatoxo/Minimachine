@@ -11,7 +11,7 @@ public class TokenMaker extends AbstractTokenMaker {
 	public TokenMap getWordsToHighlight() {
 		TokenMap tokenMap = new TokenMap(true);
 		tokenMap.put("WORD",  Token.RESERVED_WORD);
-		tokenMap.put("(SP)", Token.DATA_TYPE);
+		tokenMap.put("(SP)", Token.MARKUP_CDATA);
 
 		for(String instruction : AssemblerBefehle.getAssemblyInstructions().getMnemonics()) {
 			tokenMap.put(instruction, Token.FUNCTION);
@@ -68,10 +68,6 @@ public class TokenMaker extends AbstractTokenMaker {
 							currentTokenType = Token.WHITESPACE;
 							break;
 
-						case '"':
-							currentTokenType = Token.LITERAL_STRING_DOUBLE_QUOTE;
-							break;
-
 						case '#':
 							currentTokenType = Token.COMMENT_EOL;
 							break;
@@ -101,12 +97,6 @@ public class TokenMaker extends AbstractTokenMaker {
 						case ' ':
 						case '\t':
 							break;   // Still whitespace.
-
-						case '"':
-							addToken(text, currentTokenStart,i-1, Token.WHITESPACE, newStartOffset+currentTokenStart);
-							currentTokenStart = i;
-							currentTokenType = Token.LITERAL_STRING_DOUBLE_QUOTE;
-							break;
 
 						case '#':
 							addToken(text, currentTokenStart,i-1, Token.WHITESPACE, newStartOffset+currentTokenStart);
@@ -147,11 +137,6 @@ public class TokenMaker extends AbstractTokenMaker {
 							currentTokenType = Token.WHITESPACE;
 							break;
 
-						case '"':
-							addToken(text, currentTokenStart,i-1, Token.IDENTIFIER, newStartOffset+currentTokenStart);
-							currentTokenStart = i;
-							currentTokenType = Token.LITERAL_STRING_DOUBLE_QUOTE;
-							break;
 
 						default:
 							if (RSyntaxUtilities.isLetterOrDigit(curChar) || curChar=='/' || curChar=='_') {
@@ -181,10 +166,12 @@ public class TokenMaker extends AbstractTokenMaker {
 							break;
 
 						case 'x':
-							addToken(text, currentTokenStart,i-1, Token.LITERAL_NUMBER_HEXADECIMAL, newStartOffset+currentTokenStart);
-							currentTokenStart = i;
-							currentTokenType = Token.LITERAL_NUMBER_HEXADECIMAL;
-							break;
+							if(array[i-1] == '0') {
+								addToken(text, currentTokenStart,i-1, Token.LITERAL_NUMBER_HEXADECIMAL, newStartOffset+currentTokenStart);
+								currentTokenStart = i;
+								currentTokenType = Token.LITERAL_NUMBER_HEXADECIMAL;
+								break;
+							}
 
 						default:
 
@@ -208,12 +195,6 @@ public class TokenMaker extends AbstractTokenMaker {
 					currentTokenType = Token.NULL;
 					break;
 
-				case Token.LITERAL_STRING_DOUBLE_QUOTE:
-					if (curChar=='"') {
-						addToken(text, currentTokenStart,i, Token.LITERAL_STRING_DOUBLE_QUOTE, newStartOffset+currentTokenStart);
-						currentTokenType = Token.NULL;
-					}
-					break;
 
 				case Token.LITERAL_NUMBER_HEXADECIMAL:
 					switch (curChar) {
@@ -223,12 +204,6 @@ public class TokenMaker extends AbstractTokenMaker {
 							addToken(text, currentTokenStart,i-1, Token.LITERAL_NUMBER_HEXADECIMAL, newStartOffset+currentTokenStart);
 							currentTokenStart = i;
 							currentTokenType = Token.WHITESPACE;
-							break;
-
-						case '"':
-							addToken(text, currentTokenStart,i-1, Token.LITERAL_NUMBER_HEXADECIMAL, newStartOffset+currentTokenStart);
-							currentTokenStart = i;
-							currentTokenType = Token.LITERAL_STRING_DOUBLE_QUOTE;
 							break;
 
 
@@ -254,9 +229,9 @@ public class TokenMaker extends AbstractTokenMaker {
 		switch (currentTokenType) {
 
 			// Remember what token type to begin the next line with.
-			case Token.LITERAL_STRING_DOUBLE_QUOTE:
-				addToken(text, currentTokenStart,end-1, currentTokenType, newStartOffset+currentTokenStart);
-				break;
+			//case Token.LITERAL_STRING_DOUBLE_QUOTE:
+			//	addToken(text, currentTokenStart,end-1, currentTokenType, newStartOffset+currentTokenStart);
+			//	break;
 
 			// Do nothing if everything was okay.
 			case Token.NULL:
