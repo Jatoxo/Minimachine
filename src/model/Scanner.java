@@ -6,33 +6,34 @@
 package model;
 
 class Scanner {
-	static final int eof = 0;
-	static final int illegal = 1;
-	static final int bezeichner = 2;
-	static final int zahl = 3;
-	static final int doppelpunkt = 4;
-	static final int trennung = 5;
-	static final int plus = 6;
-	static final int minus = 7;
-	static final int raute = 8;
-	static final int klammerauf = 9;
-	static final int klammerzu = 10;
-	static final int at = 11;
-	private char[] quelle;
+	static final int EOF = 0;
+	static final int ILLEGAL = 1;
+	static final int LABEL = 2;
+	static final int NUMBER = 3;
+	static final int COLON = 4;
+	static final int WHITESPACE = 5;
+	static final int PLUS = 6;
+	static final int MINUS = 7;
+	static final int HASHTAG = 8;
+	static final int OPEN_BRACKET = 9;
+	static final int CLOSE_BRACKET = 10;
+	static final int AT_SYMBOL = 11;
+
+	private char[] source;
 	private int pos;
 	private char ch;
 	private int zahlenwert;
 	private String name;
 
 	Scanner(String var1) {
-		this.quelle = var1.toCharArray();
+		this.source = var1.toCharArray();
 		this.pos = 0;
 		this.NächstesZeichen();
 	}
 
 	private void NächstesZeichen() {
-		if (this.pos < this.quelle.length) {
-			this.ch = this.quelle[this.pos++];
+		if (this.pos < this.source.length) {
+			this.ch = this.source[this.pos++];
 		} else {
 			this.ch = 0;
 		}
@@ -47,7 +48,7 @@ class Scanner {
 			this.NächstesZeichen();
 		}
 
-		this.name = new String(this.quelle, var1, var2);
+		this.name = new String(this.source, var1, var2);
 	}
 
 	private void Zahl() {
@@ -89,59 +90,59 @@ class Scanner {
 
 		if (this.ch == 0) {
 			this.NächstesZeichen();
-			return 0;
+			return EOF;
 		} else if (this.ch == ':') {
 			this.NächstesZeichen();
-			return 4;
+			return COLON;
 		} else if (this.ch == '(') {
 			this.NächstesZeichen();
-			return 9;
+			return OPEN_BRACKET;
 		} else if (this.ch == ')') {
 			this.NächstesZeichen();
-			return 10;
+			return CLOSE_BRACKET;
 		} else if (this.ch == '@') {
 			this.NächstesZeichen();
-			return 11;
+			return AT_SYMBOL;
 		} else if (this.ch == '\r') {
 			this.NächstesZeichen();
 			if (this.ch == '\n') {
 				this.NächstesZeichen();
 			}
 
-			return 5;
+			return WHITESPACE;
 		} else if (this.ch == '\n') {
 			this.NächstesZeichen();
-			return 5;
+			return WHITESPACE;
 		} else if (this.ch == '+') {
 			this.NächstesZeichen();
-			return 6;
+			return PLUS;
 		} else if (this.ch == '-') {
 			this.NächstesZeichen();
-			return 7;
+			return MINUS;
 		} else if (this.ch == '$') {
 			this.NächstesZeichen();
-			return 8;
+			return HASHTAG;
 		} else if ('1' <= this.ch && this.ch <= '9') {
 			this.Zahl();
-			return 3;
+			return NUMBER;
 		} else if ('0' == this.ch) {
 			this.NächstesZeichen();
 			if (Character.toLowerCase(this.ch) == 'x') {
 				this.NächstesZeichen();
 				if (!this.HexZahl()) {
-					return 1;
+					return ILLEGAL;
 				}
 			} else {
 				this.Zahl();
 			}
 
-			return 3;
+			return NUMBER;
 		} else if (('a' > this.ch || this.ch > 'z') && ('A' > this.ch || this.ch > 'Z') && this.ch != '_' && this.ch != '$') {
 			this.NächstesZeichen();
-			return 1;
+			return ILLEGAL;
 		} else {
 			this.Bezeichner();
-			return 2;
+			return LABEL;
 		}
 	}
 

@@ -8,8 +8,10 @@ import org.fife.ui.autocomplete.AutoCompletion;
 import org.fife.ui.autocomplete.BasicCompletion;
 import org.fife.ui.autocomplete.CompletionProvider;
 import org.fife.ui.autocomplete.DefaultCompletionProvider;
+import org.fife.ui.rsyntaxtextarea.AbstractTokenMakerFactory;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
+import org.fife.ui.rsyntaxtextarea.TokenMakerFactory;
 import org.fife.ui.rtextarea.RTextArea;
 import org.fife.ui.rtextarea.RTextScrollPane;
 import res.R;
@@ -68,6 +70,10 @@ class Editor extends Anzeige {
 		codeEditor.setCodeFoldingEnabled(true);
 
 		codeEditor.setCurrentLineHighlightColor(new Color(0, 0, 0, 15));
+
+		AbstractTokenMakerFactory tokenMakerFactory = (AbstractTokenMakerFactory) TokenMakerFactory.getDefaultInstance();
+		tokenMakerFactory.putMapping("text/mimaAssembler", "model.TokenMaker");
+		codeEditor.setSyntaxEditingStyle("text/mimaAssembler");
 
 		CompletionProvider provider = createCompletionProvider();
 		AutoCompletion ac = new AutoCompletion(provider);
@@ -158,8 +164,11 @@ class Editor extends Anzeige {
 		// that is needed in the majority of cases.
 		DefaultCompletionProvider provider = new DefaultCompletionProvider();
 
-		for(String instruction : AssemblerBefehle.getAssemblyInstructions().instructionMap.keySet()) {
+
+		for(String instruction : AssemblerBefehle.getAssemblyInstructions().getMnemonics()) {
+
 			provider.addCompletion(new BasicCompletion(provider, instruction));
+
 		}
 		provider.setAutoActivationRules(true, null);
 
@@ -204,9 +213,16 @@ class Editor extends Anzeige {
 		}
 
 		try {
+			String code = codeEditor.getText().replaceAll("\r", "");
+
+			Files.write(Paths.get(this.file.getAbsolutePath()), code.getBytes());
+
+			/*
 			FileWriter fw = new FileWriter(this.file);
 			this.codeEditor.write(fw);
 			fw.close();
+			 */
+
 			displayStatusMessage(R.string("editor_saved"));
 			this.sicherungsstand = this.codeEditor.getText();
 			this.window.setTitle(this.file.getPath());
@@ -336,6 +352,7 @@ class Editor extends Anzeige {
 			try {
 				//FileReader fr = new FileReader(this.file);
 				String code = rf(this.file.getAbsolutePath(), Charset.defaultCharset());
+
 				codeEditor.setText(code);
 				//fr.close();
 
