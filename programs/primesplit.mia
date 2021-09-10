@@ -1,4 +1,4 @@
-	LOADI	20	#The number to split
+	LOADI	2048	#The number to split
 	STORE	Num
 	
 START:
@@ -6,6 +6,11 @@ START:
 	CMPI		2
 	#If the number is 2 or less, return just the number
 	JMPNP	LESSEREQUAL2
+	#If the number is prime, it can't be further divided, return just the number
+	PUSH
+	CALL		isPrime
+	POP
+	JMPP		FINISH
 	
 LOOPSTART:
 	LOAD		Counter
@@ -18,7 +23,7 @@ LOOPSTART:
 	LOAD		Num
 	MOD		Counter
 	JMPNZ	CONTINUE
-	# If we get here we know Counter is the smallest prime number dividing Num
+	# If we get here we know Counter is the smallest prime number dividing Num  (1 < Counter < Num)
 	# Using the stack to store the factors, add this one.
 	LOAD		Counter
 	PUSH
