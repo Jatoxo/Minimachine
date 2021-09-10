@@ -51,9 +51,9 @@ public class TokenMaker extends AbstractTokenMaker {
 		int currentTokenStart = offset;
 		int currentTokenType  = startTokenType;
 
-		for (int i=offset; i<end; i++) {
+		for (int i = offset; i < end; i++) {
 
-			char c = array[i];
+			char curChar = array[i];
 
 			switch (currentTokenType) {
 
@@ -61,7 +61,7 @@ public class TokenMaker extends AbstractTokenMaker {
 
 					currentTokenStart = i;   // Starting a new token here.
 
-					switch (c) {
+					switch (curChar) {
 
 						case ' ':
 						case '\t':
@@ -77,11 +77,11 @@ public class TokenMaker extends AbstractTokenMaker {
 							break;
 
 						default:
-							if (RSyntaxUtilities.isDigit(c)) {
+							if (RSyntaxUtilities.isDigit(curChar)) {
 								currentTokenType = Token.LITERAL_NUMBER_DECIMAL_INT;
 								break;
 							}
-							else if (RSyntaxUtilities.isLetter(c) || c=='/' || c=='_') {
+							else if (RSyntaxUtilities.isLetter(curChar) || curChar=='/' || curChar=='_') {
 								currentTokenType = Token.IDENTIFIER;
 								break;
 							}
@@ -96,7 +96,7 @@ public class TokenMaker extends AbstractTokenMaker {
 
 				case Token.WHITESPACE:
 
-					switch (c) {
+					switch (curChar) {
 
 						case ' ':
 						case '\t':
@@ -119,11 +119,11 @@ public class TokenMaker extends AbstractTokenMaker {
 							addToken(text, currentTokenStart,i-1, Token.WHITESPACE, newStartOffset+currentTokenStart);
 							currentTokenStart = i;
 
-							if (RSyntaxUtilities.isDigit(c)) {
+							if (RSyntaxUtilities.isDigit(curChar)) {
 								currentTokenType = Token.LITERAL_NUMBER_DECIMAL_INT;
 								break;
 							}
-							else if (RSyntaxUtilities.isLetter(c) || c=='/' || c=='_') {
+							else if (RSyntaxUtilities.isLetter(curChar) || curChar=='/' || curChar=='_') {
 								currentTokenType = Token.IDENTIFIER;
 								break;
 							}
@@ -138,7 +138,7 @@ public class TokenMaker extends AbstractTokenMaker {
 				default: // Should never happen
 				case Token.IDENTIFIER:
 
-					switch (c) {
+					switch (curChar) {
 
 						case ' ':
 						case '\t':
@@ -154,7 +154,7 @@ public class TokenMaker extends AbstractTokenMaker {
 							break;
 
 						default:
-							if (RSyntaxUtilities.isLetterOrDigit(c) || c=='/' || c=='_') {
+							if (RSyntaxUtilities.isLetterOrDigit(curChar) || curChar=='/' || curChar=='_') {
 								break;   // Still an identifier of some type.
 							}
 							// Otherwise, we're still an identifier (?).
@@ -165,7 +165,7 @@ public class TokenMaker extends AbstractTokenMaker {
 
 				case Token.LITERAL_NUMBER_DECIMAL_INT:
 
-					switch (c) {
+					switch (curChar) {
 
 						case ' ':
 						case '\t':
@@ -180,9 +180,15 @@ public class TokenMaker extends AbstractTokenMaker {
 							currentTokenType = Token.LITERAL_STRING_DOUBLE_QUOTE;
 							break;
 
+						case 'x':
+							addToken(text, currentTokenStart,i-1, Token.LITERAL_NUMBER_HEXADECIMAL, newStartOffset+currentTokenStart);
+							currentTokenStart = i;
+							currentTokenType = Token.LITERAL_NUMBER_HEXADECIMAL;
+							break;
+
 						default:
 
-							if (RSyntaxUtilities.isDigit(c)) {
+							if (RSyntaxUtilities.isDigit(curChar)) {
 								break;   // Still a literal number.
 							}
 
@@ -203,10 +209,42 @@ public class TokenMaker extends AbstractTokenMaker {
 					break;
 
 				case Token.LITERAL_STRING_DOUBLE_QUOTE:
-					if (c=='"') {
+					if (curChar=='"') {
 						addToken(text, currentTokenStart,i, Token.LITERAL_STRING_DOUBLE_QUOTE, newStartOffset+currentTokenStart);
 						currentTokenType = Token.NULL;
 					}
+					break;
+
+				case Token.LITERAL_NUMBER_HEXADECIMAL:
+					switch (curChar) {
+
+						case ' ':
+						case '\t':
+							addToken(text, currentTokenStart,i-1, Token.LITERAL_NUMBER_HEXADECIMAL, newStartOffset+currentTokenStart);
+							currentTokenStart = i;
+							currentTokenType = Token.WHITESPACE;
+							break;
+
+						case '"':
+							addToken(text, currentTokenStart,i-1, Token.LITERAL_NUMBER_HEXADECIMAL, newStartOffset+currentTokenStart);
+							currentTokenStart = i;
+							currentTokenType = Token.LITERAL_STRING_DOUBLE_QUOTE;
+							break;
+
+
+						default:
+
+							if (RSyntaxUtilities.isDigit(curChar)) {
+								break;   // Still a literal number.
+							}
+
+							// Otherwise, remember this was a number and start over.
+							addToken(text, currentTokenStart,i-1, Token.LITERAL_NUMBER_HEXADECIMAL, newStartOffset+currentTokenStart);
+							i--;
+							currentTokenType = Token.NULL;
+
+					} // End of switch (c).
+
 					break;
 
 			} // End of switch (currentTokenType).
