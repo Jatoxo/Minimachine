@@ -1,18 +1,23 @@
-	LOAD		Num
-	STORE	(CurCell)
-	LOAD		CurCell
-	ADDI		1
-	JMPV		END
-	STORE	CurCell
-	JMP 		0
-END:	
-	HOLD
+	LOADI	DUPSTART
+	STORE	CurCell		
 
-
-CurCell: 	
-	word 	16
-Num:	     
-	word 	522
-
-
-
+START:
+	LOAD		Num
+	STORE	(CurCell)
+	LOAD		CurCell
+	ADDI		1
+	JMPV		END
+	STORE	CurCell
+	JMP 		START
+END:	
+	HOLD
+
+
+CurCell: 	
+	word 	0
+Num:	     
+	word 	522
+
+DUPSTART:
+
+
