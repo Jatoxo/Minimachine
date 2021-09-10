@@ -9,7 +9,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 class Speicher implements SpeicherMeldungsErzeuger {
-	private short[] speicher = new short[65536];
+	public static int MEMORY_SIZE = 1 << 16;
+	public static int WORD_SIZE = 1 << 16;
+
+	private short[] speicher = new short[MEMORY_SIZE];
 	private int changed;
 	private ArrayList<MemoryListener> listeners = new ArrayList();
 	private static Speicher derSpeicher = new Speicher();
