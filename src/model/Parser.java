@@ -1,8 +1,3 @@
-//
-// Source code recreated from a .class file by IntelliJ IDEA
-// (powered by Fernflower decompiler)
-//
-
 package model;
 
 import res.R;
@@ -16,7 +11,7 @@ class Parser {
 	private Speicher speicher;
 	private FehlerVerwaltung fehler;
 	private AssemblerBefehle befehle;
-	private int aktToken;
+	private int curToken;
 	private int pc;
 	private HashMap<String, Integer> marken;
 	private HashMap<Integer, String> fixierungen;
@@ -29,27 +24,28 @@ class Parser {
 		this.erweitert = extended;
 		this.pc = 0;
 		this.befehle = AssemblerBefehle.getAssemblyInstructions();
-		this.marken = new HashMap(40);
-		this.fixierungen = new HashMap(80);
-		this.aktToken = this.scanner.NächstesToken();
+		this.marken = new HashMap<>(40);
+		this.fixierungen = new HashMap<>(80);
+		this.curToken = this.scanner.NächstesToken();
 	}
 
 	void Parse() {
-		while(this.aktToken != 0) {
-			while(this.aktToken == 5) {
-				this.aktToken = this.scanner.NächstesToken();
+		while(this.curToken != Scanner.EOF) {
+			while(this.curToken == Scanner.WHITESPACE) {
+				this.curToken = this.scanner.NächstesToken();
 			}
 
-			if (this.aktToken != 2) {
-				if (this.aktToken != 0) {
+			if (this.curToken != Scanner.LABEL) {
+				if (this.curToken != Scanner.EOF) {
 					this.fehler.FehlerEintragen(R.string("parse_error_expected_label_name"), this.scanner.PositionGeben());
 					this.Überspringen();
 				}
 			} else {
 				String label = this.scanner.BezeichnerGeben();
-				int var6 = this.scanner.PositionGeben();
-				this.aktToken = this.scanner.NächstesToken();
-				if (this.aktToken == 4) {
+				int position = this.scanner.PositionGeben();
+
+				this.curToken = this.scanner.NächstesToken();
+				if (this.curToken == Scanner.COLON) {
 					if (this.marken.containsKey(label)) {
 						this.fehler.FehlerEintragen(R.string("parse_error_label_exists"), this.scanner.PositionGeben());
 					} else if (!this.erweitert || !label.equals("SP") && !label.equals("sp")) {
@@ -58,17 +54,17 @@ class Parser {
 						this.fehler.FehlerEintragen(R.string("parse_error_invalid_label") + ": " + label, this.scanner.PositionGeben());
 					}
 
-					this.aktToken = this.scanner.NächstesToken();
-					if (this.aktToken == 2) {
+					this.curToken = this.scanner.NächstesToken();
+					if (this.curToken == Scanner.LABEL) {
 						label = this.scanner.BezeichnerGeben();
-						var6 = this.scanner.PositionGeben();
-						this.aktToken = this.scanner.NächstesToken();
+						position = this.scanner.PositionGeben();
+						this.curToken = this.scanner.NächstesToken();
 					} else {
-						if (this.aktToken == 0) {
+						if (this.curToken == Scanner.EOF) {
 							continue;
 						}
 
-						if (this.aktToken == 5) {
+						if (this.curToken == Scanner.WHITESPACE) {
 							continue;
 						}
 
@@ -77,152 +73,152 @@ class Parser {
 				}
 
 				if (!this.befehle.hasInstruction(label)) {
-					this.fehler.FehlerEintragen(R.string("parse_error_invalid_instruction") + ": " + label, var6);
+					this.fehler.FehlerEintragen(R.string("parse_error_invalid_instruction") + ": " + label, position);
 					this.Überspringen();
 				} else {
-					int var2 = this.befehle.getOpcode(label);
-					byte var3 = 0;
-					byte var5;
-					if (var2 < 0) {
-						var5 = 1;
-						if (this.aktToken == 7) {
-							var5 = -1;
-							this.aktToken = this.scanner.NächstesToken();
-						} else if (this.aktToken == 6) {
-							this.aktToken = this.scanner.NächstesToken();
+					int opcode = this.befehle.getOpcode(label);
+					byte addressingMode = 0;
+					byte multiplier;
+					if (opcode < 0) {
+						multiplier = 1;
+						if (this.curToken == Scanner.MINUS) {
+							multiplier = -1;
+							this.curToken = this.scanner.NächstesToken();
+						} else if (this.curToken == Scanner.PLUS) {
+							this.curToken = this.scanner.NächstesToken();
 						}
 
-						if (this.aktToken == 3) {
-							this.speicher.WortSetzen(this.pc, var5 * this.scanner.ZahlGeben());
+						if (this.curToken == Scanner.NUMBER) {
+							this.speicher.WortSetzen(this.pc, multiplier * this.scanner.ZahlGeben());
 							++this.pc;
-							this.aktToken = this.scanner.NächstesToken();
+							this.curToken = this.scanner.NächstesToken();
 						} else {
 							this.speicher.WortSetzen(this.pc, 0);
 							++this.pc;
 							this.fehler.FehlerEintragen(R.string("parse_error_expected_number"), this.scanner.PositionGeben());
 						}
 					} else {
-						int var4;
-						var4 = 0;
+						int address;
+						address = 0;
 
-						if (var2 >= 300) {
-							var3 = 2;
-							var2 -= 300;
-							var5 = 1;
-							if (this.aktToken == 2) {
+						if (opcode >= 300) {
+							addressingMode = 2;
+							opcode -= 300;
+							multiplier = 1;
+							if (this.curToken == Scanner.LABEL) {
 								label = this.scanner.BezeichnerGeben();
 								if (this.marken.containsKey(label)) {
-									var4 = this.marken.get(label);
+									address = this.marken.get(label);
 								} else {
 									this.fixierungen.put(this.pc + 1, label);
 								}
 
-								this.aktToken = this.scanner.NächstesToken();
+								this.curToken = this.scanner.NächstesToken();
 							} else {
-								if (this.aktToken == 7) {
-									var5 = -1;
-									this.aktToken = this.scanner.NächstesToken();
+								if (this.curToken == Scanner.MINUS) {
+									multiplier = -1;
+									this.curToken = this.scanner.NächstesToken();
 								} else {
-									if (this.aktToken == 6) {
-										this.aktToken = this.scanner.NächstesToken();
+									if (this.curToken == Scanner.PLUS) {
+										this.curToken = this.scanner.NächstesToken();
 									}
 								}
 
-								if (this.aktToken == 3) {
-									var4 = var5 * this.scanner.ZahlGeben();
-									this.aktToken = this.scanner.NächstesToken();
+								if (this.curToken == Scanner.NUMBER) {
+									address = multiplier * this.scanner.ZahlGeben();
+									this.curToken = this.scanner.NächstesToken();
 								} else {
 									this.fehler.FehlerEintragen(R.string("parse_error_expected_number"), this.scanner.PositionGeben());
 								}
 							}
 
 						} else {
-							var3 = 0;
-							if (this.aktToken != 9) {
-								if (this.aktToken == 2) {
-									var3 = 1;
+							addressingMode = 0;
+							if (this.curToken != Scanner.OPEN_BRACKET) {
+								if (this.curToken == Scanner.LABEL) {
+									addressingMode = 1;
 									label = this.scanner.BezeichnerGeben();
 									if (this.marken.containsKey(label)) {
-										var4 = (Integer)this.marken.get(label);
+										address = this.marken.get(label);
 									} else {
 										this.fixierungen.put(this.pc + 1, label);
 									}
 
-									this.aktToken = this.scanner.NächstesToken();
+									this.curToken = this.scanner.NächstesToken();
 								} else {
-									if (this.aktToken == 3) {
-										var3 = 1;
-										var4 = this.scanner.ZahlGeben();
-										this.aktToken = this.scanner.NächstesToken();
+									if (this.curToken == Scanner.NUMBER) {
+										addressingMode = 1;
+										address = this.scanner.ZahlGeben();
+										this.curToken = this.scanner.NächstesToken();
 										if (this.erweitert) {
-											if (this.aktToken == 9) {
-												var3 = 4;
-												this.aktToken = this.scanner.NächstesToken();
-												if (this.aktToken == 2) {
+											if (this.curToken == Scanner.OPEN_BRACKET) {
+												addressingMode = 4;
+												this.curToken = this.scanner.NächstesToken();
+												if (this.curToken == Scanner.LABEL) {
 													if (!this.scanner.BezeichnerGeben().equals("SP") && !this.scanner.BezeichnerGeben().equals("sp")) {
 														this.fehler.FehlerEintragen("'SP' " + R.string("parse_error_x_expected"), this.scanner.PositionGeben());
 													}
 
-													this.aktToken = this.scanner.NächstesToken();
+													this.curToken = this.scanner.NächstesToken();
 												} else {
-													if (this.aktToken == 3) {
+													if (this.curToken == Scanner.NUMBER) {
 														this.fehler.FehlerEintragen("'SP' " + R.string("parse_error_x_expected"), this.scanner.PositionGeben());
-														this.aktToken = this.scanner.NächstesToken();
+														this.curToken = this.scanner.NächstesToken();
 													} else {
 														this.fehler.FehlerEintragen("'SP' " + R.string("parse_error_x_expected"), this.scanner.PositionGeben());
 													}
 												}
 
-												if (this.aktToken == 10) {
-													this.aktToken = this.scanner.NächstesToken();
+												if (this.curToken == Scanner.CLOSE_BRACKET) {
+													this.curToken = this.scanner.NächstesToken();
 												} else {
 													this.fehler.FehlerEintragen("')' " + R.string("parse_error_x_expected"), this.scanner.PositionGeben());
 												}
 											}
 										}
 									} else {
-										if (this.aktToken == 8) {
-											var3 = 2;
-											this.aktToken = this.scanner.NächstesToken();
-											var5 = 1;
-											if (this.aktToken == 2) {
+										if (this.curToken == Scanner.HASHTAG) {
+											addressingMode = 2;
+											this.curToken = this.scanner.NächstesToken();
+											multiplier = 1;
+											if (this.curToken == Scanner.LABEL) {
 												label = this.scanner.BezeichnerGeben();
 												if (this.marken.containsKey(label)) {
-													var4 = (Integer)this.marken.get(label);
+													address = this.marken.get(label);
 												} else {
 													this.fixierungen.put(this.pc + 1, label);
 												}
 
-												this.aktToken = this.scanner.NächstesToken();
+												this.curToken = this.scanner.NächstesToken();
 											} else {
-												if (this.aktToken == 7) {
-													var5 = -1;
-													this.aktToken = this.scanner.NächstesToken();
+												if (this.curToken == Scanner.MINUS) {
+													multiplier = -1;
+													this.curToken = this.scanner.NächstesToken();
 												} else {
-													if (this.aktToken == 6) {
-														this.aktToken = this.scanner.NächstesToken();
+													if (this.curToken == Scanner.PLUS) {
+														this.curToken = this.scanner.NächstesToken();
 													}
 												}
 
-												if (this.aktToken == 3) {
-													var4 = var5 * this.scanner.ZahlGeben();
-													this.aktToken = this.scanner.NächstesToken();
+												if (this.curToken == Scanner.NUMBER) {
+													address = multiplier * this.scanner.ZahlGeben();
+													this.curToken = this.scanner.NächstesToken();
 													if (this.erweitert) {
-														if (this.aktToken == 9) {
-															var3 = 6;
-															this.aktToken = this.scanner.NächstesToken();
-															if (this.aktToken == 2) {
+														if (this.curToken == Scanner.OPEN_BRACKET) {
+															addressingMode = 6;
+															this.curToken = this.scanner.NächstesToken();
+															if (this.curToken == Scanner.LABEL) {
 																if (!this.scanner.BezeichnerGeben().equals("SP") && !this.scanner.BezeichnerGeben().equals("sp")) {
 																	this.fehler.FehlerEintragen("'SP' " + R.string("parse_error_x_expected"), this.scanner.PositionGeben());
 																}
 
-																this.aktToken = this.scanner.NächstesToken();
+																this.curToken = this.scanner.NächstesToken();
 															} else {
 																this.fehler.FehlerEintragen("'SP' " + R.string("parse_error_x_expected"), this.scanner.PositionGeben());
 															}
 
-															if (this.aktToken == 10) {
-																this.aktToken = this.scanner.NächstesToken();
+															if (this.curToken == Scanner.CLOSE_BRACKET) {
+																this.curToken = this.scanner.NächstesToken();
 															} else {
 																this.fehler.FehlerEintragen("')' " + R.string("parse_error_x_expected"), this.scanner.PositionGeben());
 															}
@@ -233,38 +229,38 @@ class Parser {
 												}
 											}
 										} else if (this.erweitert) {
-											if (this.aktToken == 11) {
-												var3 = 5;
-												this.aktToken = this.scanner.NächstesToken();
-												if (this.aktToken == 3) {
-													var4 = this.scanner.ZahlGeben();
-													this.aktToken = this.scanner.NächstesToken();
+											if (this.curToken == Scanner.AT_SYMBOL) {
+												addressingMode = 5;
+												this.curToken = this.scanner.NächstesToken();
+												if (this.curToken == Scanner.NUMBER) {
+													address = this.scanner.ZahlGeben();
+													this.curToken = this.scanner.NächstesToken();
 												} else {
-													if (this.aktToken == 2) {
+													if (this.curToken == Scanner.LABEL) {
 														this.fehler.FehlerEintragen(R.string("parse_error_expected_number"), this.scanner.PositionGeben());
-														this.aktToken = this.scanner.NächstesToken();
+														this.curToken = this.scanner.NächstesToken();
 													}
 												}
 
-												if (this.aktToken == 9) {
-													this.aktToken = this.scanner.NächstesToken();
-													if (this.aktToken == 2) {
+												if (this.curToken == Scanner.OPEN_BRACKET) {
+													this.curToken = this.scanner.NächstesToken();
+													if (this.curToken == Scanner.LABEL) {
 														if (!this.scanner.BezeichnerGeben().equals("SP") && !this.scanner.BezeichnerGeben().equals("sp")) {
 															this.fehler.FehlerEintragen("'SP' " + R.string("parse_error_x_expected"), this.scanner.PositionGeben());
 														}
 
-														this.aktToken = this.scanner.NächstesToken();
+														this.curToken = this.scanner.NächstesToken();
 													} else {
-														if (this.aktToken == 3) {
+														if (this.curToken == Scanner.NUMBER) {
 															this.fehler.FehlerEintragen("'SP' " + R.getResources().getString("parse_error_x_expected"), this.scanner.PositionGeben());
-															this.aktToken = this.scanner.NächstesToken();
+															this.curToken = this.scanner.NächstesToken();
 														} else {
 															this.fehler.FehlerEintragen("'SP' " + R.getResources().getString("parse_error_x_expected"), this.scanner.PositionGeben());
 														}
 													}
 
-													if (this.aktToken == 10) {
-														this.aktToken = this.scanner.NächstesToken();
+													if (this.curToken == Scanner.CLOSE_BRACKET) {
+														this.curToken = this.scanner.NächstesToken();
 													} else {
 														this.fehler.FehlerEintragen("')' " + R.getResources().getString("parse_error_x_expected"), this.scanner.PositionGeben());
 													}
@@ -276,47 +272,47 @@ class Parser {
 									}
 								}
 							} else {
-								this.aktToken = this.scanner.NächstesToken();
-								var3 = 3;
-								if (this.aktToken == 2) {
+								this.curToken = this.scanner.NächstesToken();
+								addressingMode = 3;
+								if (this.curToken == Scanner.LABEL) {
 									label = this.scanner.BezeichnerGeben();
 									if (this.erweitert && (label.equals("SP") || label.equals("sp"))) {
-										var3 = 4;
-										var4 = 0;
+										addressingMode = 4;
+										address = 0;
 									} else if (this.marken.containsKey(label)) {
-										var4 = this.marken.get(label);
+										address = this.marken.get(label);
 									} else {
 										this.fixierungen.put(this.pc + 1, label);
 									}
 
-									this.aktToken = this.scanner.NächstesToken();
+									this.curToken = this.scanner.NächstesToken();
 								} else {
-									if (this.aktToken == 3) {
-										var4 = this.scanner.ZahlGeben();
-										this.aktToken = this.scanner.NächstesToken();
+									if (this.curToken == Scanner.NUMBER) {
+										address = this.scanner.ZahlGeben();
+										this.curToken = this.scanner.NächstesToken();
 									} else {
 										this.fehler.FehlerEintragen(R.getResources().getString("parse_error_expected_number_or_label"), this.scanner.PositionGeben());
 									}
 								}
 
-								if (this.aktToken == 10) {
-									this.aktToken = this.scanner.NächstesToken();
+								if (this.curToken == Scanner.CLOSE_BRACKET) {
+									this.curToken = this.scanner.NächstesToken();
 								} else {
 									this.fehler.FehlerEintragen("')' " + R.getResources().getString("parse_error_x_expected"), this.scanner.PositionGeben());
 								}
 							}
 
 						}
-						this.speicher.WortSetzen(this.pc, var3 * 256 + var2);
+						this.speicher.WortSetzen(this.pc, addressingMode * 256 + opcode);
 						++this.pc;
-						this.speicher.WortSetzen(this.pc, var4);
+						this.speicher.WortSetzen(this.pc, address);
 						++this.pc;
 					}
 
-					switch(var2) {
+					switch(opcode) {
 						case 1:
 						case 99:
-							if (var3 != 0) {
+							if (addressingMode != 0) {
 								this.fehler.FehlerEintragen(R.getResources().getString("parse_error_invalid_address"), this.scanner.PositionGeben());
 							}
 						case 2:
@@ -399,9 +395,9 @@ class Parser {
 						default:
 							break;
 						case 5:
-							if (var3 == 0) {
+							if (addressingMode == 0) {
 								this.fehler.FehlerEintragen(R.getResources().getString("parse_error_missing_address"), this.scanner.PositionGeben());
-							} else if (var3 == 2) {
+							} else if (addressingMode == 2) {
 								this.fehler.FehlerEintragen(R.getResources().getString("parse_error_invalid_address_mode"), this.scanner.PositionGeben());
 							}
 
@@ -412,7 +408,7 @@ class Parser {
 						case 6:
 						case 25:
 						case 26:
-							if (var3 != 0) {
+							if (addressingMode != 0) {
 								this.fehler.FehlerEintragen(R.getResources().getString("parse_error_invalid_address"), this.scanner.PositionGeben());
 							}
 
@@ -422,7 +418,7 @@ class Parser {
 							break;
 						case 7:
 						case 8:
-							if (var3 != 2) {
+							if (addressingMode != 2) {
 								this.fehler.FehlerEintragen(R.getResources().getString("parse_error_invalid_address"), this.scanner.PositionGeben());
 							}
 							break;
@@ -432,7 +428,7 @@ class Parser {
 						case 13:
 						case 15:
 						case 20:
-							if (var3 == 0) {
+							if (addressingMode == 0) {
 								this.fehler.FehlerEintragen(R.getResources().getString("parse_error_missing_address"), this.scanner.PositionGeben());
 							}
 							break;
@@ -444,14 +440,14 @@ class Parser {
 						case 34:
 						case 35:
 						case 36:
-							if (var3 == 0) {
+							if (addressingMode == 0) {
 								this.fehler.FehlerEintragen(R.getResources().getString("parse_error_missing_address"), this.scanner.PositionGeben());
-							} else if (var3 == 2) {
+							} else if (addressingMode == 2) {
 								this.fehler.FehlerEintragen(R.getResources().getString("parse_error_invalid_address_mode"), this.scanner.PositionGeben());
 							}
 					}
 
-					if (this.aktToken != 0 && this.aktToken != 5) {
+					if (this.curToken != 0 && this.curToken != 5) {
 						this.fehler.FehlerEintragen(R.getResources().getString("parse_error_unnecessary_address"), this.scanner.PositionGeben());
 					}
 				}
@@ -488,8 +484,8 @@ class Parser {
 	}
 
 	private void Überspringen() {
-		while(this.aktToken != 0 && this.aktToken != 5) {
-			this.aktToken = this.scanner.NächstesToken();
+		while(this.curToken != Scanner.EOF && this.curToken != Scanner.WHITESPACE) {
+			this.curToken = this.scanner.NächstesToken();
 		}
 
 	}

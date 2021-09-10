@@ -6,10 +6,12 @@
 package model;
 
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 
 public class AssemblerBefehle {
 	public HashMap<String, Integer> instructionMap = new HashMap<>(80);
-	private HashMap<Integer, String> reverseInstructionMap = new HashMap<>(40);
+	public HashMap<Integer, String> reverseInstructionMap = new HashMap<>(40);
 	private static AssemblerBefehle dasObjekt = new AssemblerBefehle();
 
 	public static AssemblerBefehle getAssemblyInstructions() {
@@ -176,5 +178,18 @@ public class AssemblerBefehle {
 		} else {
 			return this.reverseInstructionMap.getOrDefault(opcode, "---");
 		}
+	}
+
+	public List<String> getMnemonics() {
+		List<String> mnemonics = new LinkedList<>();
+
+		for(String mnemonic : instructionMap.keySet()) {
+
+			if(mnemonic.contains(mnemonic.toUpperCase())) {
+				mnemonics.add(mnemonic);
+			}
+		}
+
+		return mnemonics;
 	}
 }
