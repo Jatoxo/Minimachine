@@ -7,6 +7,8 @@ package model;
 
 import model.minilanguage.ParserEinfach;
 import model.minilanguage.ParserErweitert;
+import model.Speicher;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -115,18 +117,18 @@ public abstract class Cpu implements CpuMeldungsErzeuger {
 		this.erweitert = var1;
 	}
 
-	private String HexaString(String var1) {
-		if (var1.length() > 0 && !" ".equals(var1)) {
-			int var2 = Integer.parseInt(var1);
-			if (var2 < 0) {
-				var2 += 65536;
+	private String HexaString(String decimalString) {
+		if (decimalString.length() > 0 && !" ".equals(decimalString)) {
+			int num = Integer.parseInt(decimalString);
+			if (num < 0) {
+				num += Speicher.WORD_SIZE;
 			}
 
-			var1 = "0000" + Integer.toHexString(var2);
-			var1 = var1.substring(var1.length() - 4);
+			decimalString = "0000" + Integer.toHexString(num);
+			decimalString = decimalString.substring(decimalString.length() - 4);
 		}
 
-		return var1;
+		return decimalString;
 	}
 
 	protected void Melden(String data, String address, String alu1, String alu2, String alu3, boolean var6, int var7, int var8, int var9, String microStepName) {
@@ -167,43 +169,41 @@ public abstract class Cpu implements CpuMeldungsErzeuger {
 			this.stackAdrAlt = var9;
 		}
 
-		int var14;
-		for(var14 = 0; var14 < this.progmem.length; ++var14) {
-			this.progadr[var14] = "" + (this.progAdrAlt + var14 < 0 ? 65536 + this.progAdrAlt + var14 : this.progAdrAlt + var14);
+
+		for(int i = 0; i < this.progmem.length; i++) {
+			this.progadr[i] = "" + (this.progAdrAlt + i < 0 ? Speicher.MEMORY_SIZE + this.progAdrAlt + i : this.progAdrAlt + i);
 			if (this.hexaAnzeige) {
-				this.progmem[var14] = "0000" + Integer.toHexString(this.speicher.WortOhneVorzeichenGeben(this.progAdrAlt + var14));
-				this.progmem[var14] = this.progmem[var14].substring(this.progmem[var14].length() - 4);
+				this.progmem[i] = "0000" + Integer.toHexString(this.speicher.WortOhneVorzeichenGeben(this.progAdrAlt + i));
+				this.progmem[i] = this.progmem[i].substring(this.progmem[i].length() - 4);
 			} else {
-				this.progmem[var14] = "" + this.speicher.WortMitVorzeichenGeben(this.progAdrAlt + var14);
+				this.progmem[i] = "" + this.speicher.WortMitVorzeichenGeben(this.progAdrAlt + i);
 			}
 		}
 
-		for(var14 = 0; var14 < this.datamem.length; ++var14) {
-			this.dataadr[var14] = "" + (this.dataAdrAlt + var14 < 0 ? 65536 + this.dataAdrAlt + var14 : this.dataAdrAlt + var14);
+		for(int i = 0; i < this.datamem.length; i++) {
+			this.dataadr[i] = "" + (this.dataAdrAlt + i < 0 ? Speicher.MEMORY_SIZE + this.dataAdrAlt + i : this.dataAdrAlt + i);
 			if (this.hexaAnzeige) {
-				this.datamem[var14] = "0000" + Integer.toHexString(this.speicher.WortOhneVorzeichenGeben(this.dataAdrAlt + var14));
-				this.datamem[var14] = this.datamem[var14].substring(this.datamem[var14].length() - 4);
+				this.datamem[i] = "0000" + Integer.toHexString(this.speicher.WortOhneVorzeichenGeben(this.dataAdrAlt + i));
+				this.datamem[i] = this.datamem[i].substring(this.datamem[i].length() - 4);
 			} else {
-				this.datamem[var14] = "" + this.speicher.WortMitVorzeichenGeben(this.dataAdrAlt + var14);
+				this.datamem[i] = "" + this.speicher.WortMitVorzeichenGeben(this.dataAdrAlt + i);
 			}
 		}
 
-		for(var14 = 0; var14 < this.stackmem.length; ++var14) {
-			this.stackadr[var14] = "" + (this.stackAdrAlt + var14 < 0 ? 65536 + this.stackAdrAlt + var14 : this.stackAdrAlt + var14);
+		for(int i = 0; i < this.stackmem.length; ++i) {
+			this.stackadr[i] = "" + (this.stackAdrAlt + i < 0 ? Speicher.MEMORY_SIZE + this.stackAdrAlt + i : this.stackAdrAlt + i);
 			if (this.hexaAnzeige) {
-				this.stackmem[var14] = "0000" + Integer.toHexString(this.speicher.WortOhneVorzeichenGeben(this.stackAdrAlt + var14));
-				this.stackmem[var14] = this.stackmem[var14].substring(this.stackmem[var14].length() - 4);
+				this.stackmem[i] = "0000" + Integer.toHexString(this.speicher.WortOhneVorzeichenGeben(this.stackAdrAlt + i));
+				this.stackmem[i] = this.stackmem[i].substring(this.stackmem[i].length() - 4);
 			} else {
-				this.stackmem[var14] = "" + this.speicher.WortMitVorzeichenGeben(this.stackAdrAlt + var14);
+				this.stackmem[i] = "" + this.speicher.WortMitVorzeichenGeben(this.stackAdrAlt + i);
 			}
 		}
 
-		String var17 = this.mnemos.getMnemonic(this.befehlscode);
-		Iterator var15 = this.beobachter.iterator();
+		String mnemonic = this.mnemos.getMnemonic(this.befehlscode);
 
-		while(var15.hasNext()) {
-			CpuBeobachter var16 = (CpuBeobachter)var15.next();
-			var16.Befehlsmeldung(data, address, alu1, alu2, alu3, var11, this.sp.WertGeben() < 0 ? "" + (this.sp.WertGeben() + 65536) : "" + this.sp.WertGeben(), this.eqflag, this.ltflag, this.ovflag, var6 ? (this.adressmodus == 2 ? var17 + "I" : var17) : var13, var12, "" + this.pc.WertGeben(), this.progadr, this.progmem, this.dataadr, this.datamem, this.stackadr, this.stackmem, microStepName);
+		for(CpuBeobachter listeners : this.beobachter) {
+			listeners.Befehlsmeldung(data, address, alu1, alu2, alu3, var11, this.sp.WertGeben() < 0 ? "" + (this.sp.WertGeben() + Speicher.MEMORY_SIZE) : "" + this.sp.WertGeben(), this.eqflag, this.ltflag, this.ovflag, var6 ? (this.adressmodus == 2 ? mnemonic + "I" : mnemonic) : var13, var12, "" + this.pc.WertGeben(), this.progadr, this.progmem, this.dataadr, this.datamem, this.stackadr, this.stackmem, microStepName);
 		}
 
 	}
