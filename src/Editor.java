@@ -279,7 +279,18 @@ class Editor extends Anzeige {
 
 		this.toolsMenu.addSeparator();
 
-		JMenuItem menuEntry = new JMenuItem(R.string("edit_menu_translate"));
+		JMenuItem menuEntry = new JMenuItem(R.getResources().getString("editor_assemble"));
+		menuEntry.setAccelerator(KeyStroke.getKeyStroke(65, cmdKey + 512));
+		menuEntry.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent var1) {
+				Editor.this.status.setText("");
+				Editor.this.controller.assemble(Editor.this.codeEditor.getText(), (Editor)Editor.this.self);
+			}
+		});
+		this.toolsMenu.add(menuEntry);
+		this.toolsMenu.addSeparator();
+
+		menuEntry = new JMenuItem(R.string("edit_menu_translate"));
 		menuEntry.setAccelerator(KeyStroke.getKeyStroke(85, cmdKey + 512));
 		menuEntry.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent var1) {
