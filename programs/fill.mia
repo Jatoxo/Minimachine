@@ -6,7 +6,7 @@ START:
 	STORE	(CurCell)
 	LOAD		CurCell
 	ADDI		1
-	JMPV		END
+	JMPZ		END
 	STORE	CurCell
 	JMP 		START
 END:	
