@@ -65,12 +65,13 @@ NOPE:
 	JMP		NOPE
 	
 
-	
 
 Num:
 	WORD		0  #The number to split into prime factors 
 Counter:
 	WORD		2  #The counter we use in the loop
+
+
 
 isPrime:	
 	#Start value for loop
