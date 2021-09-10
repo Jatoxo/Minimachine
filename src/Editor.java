@@ -19,6 +19,11 @@ import java.awt.event.*;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Map;
 import java.util.Properties;
 import java.util.prefs.Preferences;
@@ -70,7 +75,8 @@ class Editor extends Anzeige {
 		ac.setAutoCompleteEnabled(true);
 		ac.setAutoActivationEnabled(true);
 		ac.setAutoCompleteSingleChoices(true);
-		ac.setAutoActivationDelay(10);
+
+		ac.setAutoActivationDelay(800);
 
 		ac.install(codeEditor);
 
@@ -155,6 +161,8 @@ class Editor extends Anzeige {
 		for(String instruction : AssemblerBefehle.getAssemblyInstructions().instructionMap.keySet()) {
 			provider.addCompletion(new BasicCompletion(provider, instruction));
 		}
+		provider.setAutoActivationRules(true, null);
+
 
 		/*
 		// Add a couple of "shorthand" completions. These completions don't
@@ -326,9 +334,10 @@ class Editor extends Anzeige {
 			this.file = new File(file);//this.fileChooser.getSelectedFile();
 
 			try {
-				FileReader fr = new FileReader(this.file);
-				codeEditor.read(fr, null);
-				fr.close();
+				//FileReader fr = new FileReader(this.file);
+				String code = rf(this.file.getAbsolutePath(), Charset.defaultCharset());
+				codeEditor.setText(code);
+				//fr.close();
 
 				this.sicherungsstand = codeEditor.getText();
 				this.window.setTitle(this.file.getPath());
@@ -362,9 +371,11 @@ class Editor extends Anzeige {
 		this.file = new File(path);
 
 		try {
-			FileReader fr = new FileReader(this.file);
-			codeEditor.read(fr, null);
-			fr.close();
+			//FileReader fr = new FileReader(this.file);
+			//codeEditor.read(fr, null);
+			String code = rf(this.file.getAbsolutePath(), Charset.defaultCharset());
+			codeEditor.setText(code);
+			//fr.close();
 			this.sicherungsstand = codeEditor.getText();
 			this.window.setTitle(this.file.getPath());
 		} catch (Exception ex) {
@@ -375,6 +386,11 @@ class Editor extends Anzeige {
 		//this.undoItem.setEnabled(false);
 		//this.redoItem.setEnabled(false);
 		this.controller.windowNameChanged(this.self);
+	}
+
+	private static String rf(String path, Charset encoding) throws IOException {
+		byte[] encoded = Files.readAllBytes(Paths.get(path));
+		return new String(encoded, encoding);
 	}
 
 	void FehlerAnzeigen(String message, int position) {

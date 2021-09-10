@@ -122,6 +122,7 @@ class Controller implements ControllerInterface {
 		Editor editor = new Editor(this);
 		this.windowManager.EditorEintragen(editor);
 		editor.readFile(path);
+		editor.show();
 	}
 
 	public void SchließenAusführen(Anzeige var1) {
