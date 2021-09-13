@@ -14,7 +14,7 @@ class Speicher implements SpeicherMeldungsErzeuger {
 
 	private short[] speicher = new short[MEMORY_SIZE];
 	private int changed;
-	private ArrayList<MemoryListener> listeners = new ArrayList();
+	private ArrayList<MemoryListener> listeners = new ArrayList<>();
 	private static Speicher derSpeicher = new Speicher();
 
 	static Speicher getMemory() {
