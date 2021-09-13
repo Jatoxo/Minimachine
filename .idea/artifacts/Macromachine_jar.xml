@@ -3,7 +3,9 @@
     <output-path>$PROJECT_DIR$/out/artifacts/Macromachine_jar</output-path>
     <root id="archive" name="Macromachine.jar">
       <element id="module-output" name="Macromachine" />
-      <element id="extracted-dir" path="$PROJECT_DIR$/flatlaf-1.5.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/libs/rsyntaxtextarea-3.1.3.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/libs/autocomplete/autocomplete-3.0.6-20200118.165022-1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/libs/flatlaf-1.5.jar" path-in-jar="/" />
     </root>
   </artifact>
 </component>

@@ -1,11 +1,11 @@
-	LOADI	2048	#The number to split
+	LOADI	1	#The number to split
 	STORE	Num
 	
 START:
 	LOAD		Num
 	CMPI		2
 	#If the number is 2 or less, return just the number
-	JMPNP	LESSEREQUAL2
+	JMPNP	FINISH
 	#If the number is prime, it can't be further divided, return just the number
 	PUSH
 	CALL		isPrime
@@ -46,9 +46,6 @@ CONTINUE:  #Restarts the loop incrementing the counter
 	STORE	Counter
 	JMP		LOOPSTART
 	
-LESSEREQUAL2:
-	PUSH
-	JMP		END
 	
 FINISH:
 	LOAD		Num
@@ -118,8 +115,6 @@ ISPRIMEFALSE:
 	LOADI	0
 	STORE	1(SP)
 	RETURN
-
-
 
 
 
