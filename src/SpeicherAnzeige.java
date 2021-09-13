@@ -224,16 +224,16 @@ class SpeicherAnzeige extends Anzeige implements MemoryListener {
 		var1.setAccelerator(KeyStroke.getKeyStroke(67, cmdKey));
 		var1.setEnabled(false);
 		this.editMenu.add(var1);
-		var1 = new JMenuItem(R.getResources().getString("edit_menu_paste"), 86);
+		var1 = new JMenuItem(R.string("edit_menu_paste"), 86);
 		var1.setAccelerator(KeyStroke.getKeyStroke(86, cmdKey));
 		var1.setEnabled(false);
 		this.editMenu.add(var1);
-		var1 = new JMenuItem(R.getResources().getString("edit_menu_select_all"), 65);
+		var1 = new JMenuItem(R.string("edit_menu_select_all"), 65);
 		var1.setAccelerator(KeyStroke.getKeyStroke(65, cmdKey));
 		var1.setEnabled(false);
 		this.editMenu.add(var1);
 		this.toolsMenu.addSeparator();
-		var1 = new JMenuItem(R.getResources().getString("memory_clear_memory"), 65);
+		var1 = new JMenuItem(R.string("memory_clear_memory"), 65);
 		var1.setEnabled(true);
 		var1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent var1) {
@@ -242,7 +242,7 @@ class SpeicherAnzeige extends Anzeige implements MemoryListener {
 		});
 		this.toolsMenu.add(var1);
 		this.toolsMenu.addSeparator();
-		this.hexaItem = new JCheckBoxMenuItem(R.getResources().getString("memory_display_hex"));
+		this.hexaItem = new JCheckBoxMenuItem(R.string("memory_display_hex"));
 		this.hexaItem.setEnabled(true);
 		this.hexaItem.setSelected(false);
 		this.hexaItem.addActionListener(new ActionListener() {
@@ -256,7 +256,7 @@ class SpeicherAnzeige extends Anzeige implements MemoryListener {
 				SpeicherAnzeige.this.controller.CpuInvalidieren();
 			}
 		});
-		this.opcodeItem = new JCheckBoxMenuItem(R.getResources().getString("memory_display_op"));
+		this.opcodeItem = new JCheckBoxMenuItem(R.string("memory_display_op"));
 		this.opcodeItem.setEnabled(true);
 		this.opcodeItem.setSelected(false);
 		this.opcodeItem.addActionListener(new ActionListener() {
@@ -271,7 +271,7 @@ class SpeicherAnzeige extends Anzeige implements MemoryListener {
 		this.toolsMenu.add(this.hexaItem);
 		this.toolsMenu.add(this.opcodeItem);
 		this.toolsMenu.addSeparator();
-		this.editItem = new JCheckBoxMenuItem(R.getResources().getString("memory_edit"));
+		this.editItem = new JCheckBoxMenuItem(R.string("memory_edit"));
 		this.editItem.setEnabled(true);
 		this.editItem.setSelected(false);
 		this.editItem.addActionListener(new ActionListener() {
@@ -281,7 +281,7 @@ class SpeicherAnzeige extends Anzeige implements MemoryListener {
 		});
 		this.toolsMenu.add(this.editItem);
 
-		JMenuItem memoryTrackerItem = new JMenuItem(R.getResources().getString("memory_track_window_title"));
+		JMenuItem memoryTrackerItem = new JMenuItem(R.string("memory_track_window_title"));
 		memoryTrackerItem.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent actionEvent) {

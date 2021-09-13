@@ -50,7 +50,7 @@ class CpuDisplay extends Anzeige implements CpuBeobachter {
 	}
 
 	protected void initLayout() {
-		this.window = new JFrame(R.getResources().getString("window_cpu_title"));
+		this.window = new JFrame(R.string("window_cpu_title"));
 		this.window.setJMenuBar(this.menuBar);
 		this.window.setLayout((LayoutManager)null);
 		JPanel var1 = (JPanel)this.window.getContentPane();
@@ -386,33 +386,33 @@ class CpuDisplay extends Anzeige implements CpuBeobachter {
 		this.saveMenuItem.setEnabled(false);
 		this.saveAsMenuItem.setEnabled(false);
 		this.printMenuItem.setEnabled(false);
-		JMenuItem var1 = new JMenuItem(R.getResources().getString("edit_menu_undo"), 90);
+		JMenuItem var1 = new JMenuItem(R.string("edit_menu_undo"), 90);
 		var1.setAccelerator(KeyStroke.getKeyStroke(90, cmdKey));
 		var1.setEnabled(false);
 		this.editMenu.add(var1);
-		var1 = new JMenuItem(R.getResources().getString("edit_menu_redo"));
+		var1 = new JMenuItem(R.string("edit_menu_redo"));
 		var1.setAccelerator(KeyStroke.getKeyStroke(90, 64 + cmdKey));
 		var1.setEnabled(false);
 		this.editMenu.add(var1);
 		this.editMenu.addSeparator();
-		var1 = new JMenuItem(R.getResources().getString("edit_menu_cut"), 88);
+		var1 = new JMenuItem(R.string("edit_menu_cut"), 88);
 		var1.setAccelerator(KeyStroke.getKeyStroke(88, cmdKey));
 		var1.setEnabled(false);
 		this.editMenu.add(var1);
-		var1 = new JMenuItem(R.getResources().getString("edit_menu_copy"), 67);
+		var1 = new JMenuItem(R.string("edit_menu_copy"), 67);
 		var1.setAccelerator(KeyStroke.getKeyStroke(67, cmdKey));
 		var1.setEnabled(false);
 		this.editMenu.add(var1);
-		var1 = new JMenuItem(R.getResources().getString("edit_menu_paste"), 86);
+		var1 = new JMenuItem(R.string("edit_menu_paste"), 86);
 		var1.setAccelerator(KeyStroke.getKeyStroke(86, cmdKey));
 		var1.setEnabled(false);
 		this.editMenu.add(var1);
-		var1 = new JMenuItem(R.getResources().getString("edit_menu_select_all"), 65);
+		var1 = new JMenuItem(R.string("edit_menu_select_all"), 65);
 		var1.setAccelerator(KeyStroke.getKeyStroke(65, cmdKey));
 		var1.setEnabled(false);
 		this.editMenu.add(var1);
 		this.toolsMenu.addSeparator();
-		var1 = new JMenuItem(R.getResources().getString("tools_menu_simple_view"));
+		var1 = new JMenuItem(R.string("tools_menu_simple_view"));
 		var1.setAccelerator(KeyStroke.getKeyStroke(69, cmdKey + 512));
 		var1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent var1) {
@@ -420,7 +420,7 @@ class CpuDisplay extends Anzeige implements CpuBeobachter {
 			}
 		});
 		this.toolsMenu.add(var1);
-		var1 = new JMenuItem(R.getResources().getString("tools_menu_graphical_view"));
+		var1 = new JMenuItem(R.string("tools_menu_graphical_view"));
 		var1.setAccelerator(KeyStroke.getKeyStroke(68, cmdKey + 512));
 		var1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent var1) {
@@ -429,7 +429,7 @@ class CpuDisplay extends Anzeige implements CpuBeobachter {
 		});
 		this.toolsMenu.add(var1);
 		this.toolsMenu.addSeparator();
-		var1 = new JMenuItem(R.getResources().getString("tools_menu_set_timeout"));
+		var1 = new JMenuItem(R.string("tools_menu_set_timeout"));
 		var1.setAccelerator(KeyStroke.getKeyStroke(65, cmdKey + 512));
 		var1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent var1) {
@@ -438,7 +438,7 @@ class CpuDisplay extends Anzeige implements CpuBeobachter {
 		});
 		this.toolsMenu.add(var1);
 		this.toolsMenu.addSeparator();
-		var1 = new JMenuItem(R.getResources().getString("tools_menu_reset_cpu"));
+		var1 = new JMenuItem(R.string("tools_menu_reset_cpu"));
 		var1.setAccelerator(KeyStroke.getKeyStroke(82, cmdKey + 512));
 		var1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent var1) {
@@ -447,7 +447,7 @@ class CpuDisplay extends Anzeige implements CpuBeobachter {
 		});
 		this.toolsMenu.add(var1);
 		this.toolsMenu.addSeparator();
-		this.erweiterungenItem = new JCheckBoxMenuItem(R.getResources().getString("tools_menu_extended"));
+		this.erweiterungenItem = new JCheckBoxMenuItem(R.string("tools_menu_extended"));
 		this.erweiterungenItem.setEnabled(true);
 		this.erweiterungenItem.setSelected(false);
 		this.erweiterungenItem.addActionListener(new ActionListener() {

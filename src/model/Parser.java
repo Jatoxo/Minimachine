@@ -252,17 +252,17 @@ class Parser {
 														this.curToken = this.scanner.NächstesToken();
 													} else {
 														if (this.curToken == Scanner.NUMBER) {
-															this.fehler.FehlerEintragen("'SP' " + R.getResources().getString("parse_error_x_expected"), this.scanner.PositionGeben());
+															this.fehler.FehlerEintragen("'SP' " + R.string("parse_error_x_expected"), this.scanner.PositionGeben());
 															this.curToken = this.scanner.NächstesToken();
 														} else {
-															this.fehler.FehlerEintragen("'SP' " + R.getResources().getString("parse_error_x_expected"), this.scanner.PositionGeben());
+															this.fehler.FehlerEintragen("'SP' " + R.string("parse_error_x_expected"), this.scanner.PositionGeben());
 														}
 													}
 
 													if (this.curToken == Scanner.CLOSE_BRACKET) {
 														this.curToken = this.scanner.NächstesToken();
 													} else {
-														this.fehler.FehlerEintragen("')' " + R.getResources().getString("parse_error_x_expected"), this.scanner.PositionGeben());
+														this.fehler.FehlerEintragen("')' " + R.string("parse_error_x_expected"), this.scanner.PositionGeben());
 													}
 												} else {
 													this.fehler.FehlerEintragen("(", this.scanner.PositionGeben());
@@ -291,14 +291,14 @@ class Parser {
 										address = this.scanner.ZahlGeben();
 										this.curToken = this.scanner.NächstesToken();
 									} else {
-										this.fehler.FehlerEintragen(R.getResources().getString("parse_error_expected_number_or_label"), this.scanner.PositionGeben());
+										this.fehler.FehlerEintragen(R.string("parse_error_expected_number_or_label"), this.scanner.PositionGeben());
 									}
 								}
 
 								if (this.curToken == Scanner.CLOSE_BRACKET) {
 									this.curToken = this.scanner.NächstesToken();
 								} else {
-									this.fehler.FehlerEintragen("')' " + R.getResources().getString("parse_error_x_expected"), this.scanner.PositionGeben());
+									this.fehler.FehlerEintragen("')' " + R.string("parse_error_x_expected"), this.scanner.PositionGeben());
 								}
 							}
 
@@ -313,7 +313,7 @@ class Parser {
 						case 1:
 						case 99:
 							if (addressingMode != 0) {
-								this.fehler.FehlerEintragen(R.getResources().getString("parse_error_invalid_address"), this.scanner.PositionGeben());
+								this.fehler.FehlerEintragen(R.string("parse_error_invalid_address"), this.scanner.PositionGeben());
 							}
 						case 2:
 						case 3:
@@ -396,30 +396,30 @@ class Parser {
 							break;
 						case 5:
 							if (addressingMode == 0) {
-								this.fehler.FehlerEintragen(R.getResources().getString("parse_error_missing_address"), this.scanner.PositionGeben());
+								this.fehler.FehlerEintragen(R.string("parse_error_missing_address"), this.scanner.PositionGeben());
 							} else if (addressingMode == 2) {
-								this.fehler.FehlerEintragen(R.getResources().getString("parse_error_invalid_address_mode"), this.scanner.PositionGeben());
+								this.fehler.FehlerEintragen(R.string("parse_error_invalid_address_mode"), this.scanner.PositionGeben());
 							}
 
 							if (!this.erweitert) {
-								this.fehler.FehlerEintragen(R.getResources().getString("parse_error_extended_instruction"), this.scanner.PositionGeben());
+								this.fehler.FehlerEintragen(R.string("parse_error_extended_instruction"), this.scanner.PositionGeben());
 							}
 							break;
 						case 6:
 						case 25:
 						case 26:
 							if (addressingMode != 0) {
-								this.fehler.FehlerEintragen(R.getResources().getString("parse_error_invalid_address"), this.scanner.PositionGeben());
+								this.fehler.FehlerEintragen(R.string("parse_error_invalid_address"), this.scanner.PositionGeben());
 							}
 
 							if (!this.erweitert) {
-								this.fehler.FehlerEintragen(R.getResources().getString("parse_error_extended_instruction"), this.scanner.PositionGeben());
+								this.fehler.FehlerEintragen(R.string("parse_error_extended_instruction"), this.scanner.PositionGeben());
 							}
 							break;
 						case 7:
 						case 8:
 							if (addressingMode != 2) {
-								this.fehler.FehlerEintragen(R.getResources().getString("parse_error_invalid_address"), this.scanner.PositionGeben());
+								this.fehler.FehlerEintragen(R.string("parse_error_invalid_address"), this.scanner.PositionGeben());
 							}
 							break;
 						case 10:
@@ -429,7 +429,7 @@ class Parser {
 						case 15:
 						case 20:
 							if (addressingMode == 0) {
-								this.fehler.FehlerEintragen(R.getResources().getString("parse_error_missing_address"), this.scanner.PositionGeben());
+								this.fehler.FehlerEintragen(R.string("parse_error_missing_address"), this.scanner.PositionGeben());
 							}
 							break;
 						case 21:
@@ -441,14 +441,14 @@ class Parser {
 						case 35:
 						case 36:
 							if (addressingMode == 0) {
-								this.fehler.FehlerEintragen(R.getResources().getString("parse_error_missing_address"), this.scanner.PositionGeben());
+								this.fehler.FehlerEintragen(R.string("parse_error_missing_address"), this.scanner.PositionGeben());
 							} else if (addressingMode == 2) {
-								this.fehler.FehlerEintragen(R.getResources().getString("parse_error_invalid_address_mode"), this.scanner.PositionGeben());
+								this.fehler.FehlerEintragen(R.string("parse_error_invalid_address_mode"), this.scanner.PositionGeben());
 							}
 					}
 
 					if (this.curToken != 0 && this.curToken != 5) {
-						this.fehler.FehlerEintragen(R.getResources().getString("parse_error_unnecessary_address"), this.scanner.PositionGeben());
+						this.fehler.FehlerEintragen(R.string("parse_error_unnecessary_address"), this.scanner.PositionGeben());
 					}
 				}
 			}
@@ -465,7 +465,7 @@ class Parser {
 			if (this.marken.containsKey(var8.getValue())) {
 				this.speicher.WortSetzen((Integer)var8.getKey(), (Integer)this.marken.get(var8.getValue()));
 			} else {
-				this.fehler.FehlerEintragen(R.getResources().getString("parse_error_label_not_defined") + ": " + (String)var8.getValue(), this.scanner.PositionGeben());
+				this.fehler.FehlerEintragen(R.string("parse_error_label_not_defined") + ": " + (String)var8.getValue(), this.scanner.PositionGeben());
 			}
 		}
 

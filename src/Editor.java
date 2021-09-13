@@ -251,7 +251,7 @@ class Editor extends Anzeige {
 
 	void notifyClose() {
 		if (!this.sicherungsstand.equals(this.codeEditor.getText())) {
-			int dialog = JOptionPane.showConfirmDialog(this.window, new String[]{R.string("editor_confirm_exit_unsaved1"), R.getResources().getString("editor_confirm_exit_unsaved2")}, R.getResources().getString("editor_confirm_exit_unsaved_title"), JOptionPane.YES_NO_OPTION);
+			int dialog = JOptionPane.showConfirmDialog(this.window, new String[]{R.string("editor_confirm_exit_unsaved1"), R.string("editor_confirm_exit_unsaved2")}, R.string("editor_confirm_exit_unsaved_title"), JOptionPane.YES_NO_OPTION);
 			if (dialog == 0) {
 				this.saveFile(false);
 			}
@@ -279,7 +279,7 @@ class Editor extends Anzeige {
 
 		this.toolsMenu.addSeparator();
 
-		JMenuItem menuEntry = new JMenuItem(R.getResources().getString("editor_assemble"));
+		JMenuItem menuEntry = new JMenuItem(R.string("editor_assemble"));
 		menuEntry.setAccelerator(KeyStroke.getKeyStroke(65, cmdKey + 512));
 		menuEntry.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent var1) {
@@ -344,7 +344,7 @@ class Editor extends Anzeige {
 
 		fileDialog.setMode(FileDialog.LOAD);
 		fileDialog.setMultipleMode(false);
-		fileDialog.setTitle(R.getResources().getString("file_picker_open_title"));
+		fileDialog.setTitle(R.string("file_picker_open_title"));
 		if(lastFolder != null) {
 			fileDialog.setDirectory(lastFolder.getAbsolutePath());
 		}
