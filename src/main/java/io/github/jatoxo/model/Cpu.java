@@ -463,7 +463,7 @@ public abstract class Cpu implements CpuMeldungsErzeuger {
 		if ("einfach".equals(type)) {
 			return new CpuEinfach(Speicher.getMemory());
 		} else {
-			return "detail" == type ? new CpuDetail(Speicher.getMemory()) : null;
+			return "detail".equals(type) ? new CpuDetail(Speicher.getMemory()) : null;
 		}
 	}
 
