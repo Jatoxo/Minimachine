@@ -3,10 +3,10 @@
 // (powered by Fernflower decompiler)
 //
 
-package main.java.io.github.jatoxo.model;
+package io.github.jatoxo.model;
 
-import main.java.io.github.jatoxo.model.minilanguage.ParserEinfach;
-import main.java.io.github.jatoxo.model.minilanguage.ParserErweitert;
+import io.github.jatoxo.model.minilanguage.ParserEinfach;
+import io.github.jatoxo.model.minilanguage.ParserErweitert;
 
 import java.util.ArrayList;
 import java.util.Iterator;

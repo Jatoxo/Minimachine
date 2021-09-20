@@ -3,7 +3,7 @@
 // (powered by Fernflower decompiler)
 //
 
-package main.java.io.github.jatoxo.model.minilanguage;
+package io.github.jatoxo.model.minilanguage;
 
 class AblageStackHilf extends AblageStack {
 	AblageStackHilf(StackVerwaltung var1, boolean var2, boolean var3) {

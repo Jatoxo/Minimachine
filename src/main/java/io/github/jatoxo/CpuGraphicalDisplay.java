@@ -1,9 +1,9 @@
-package main.java.io.github.jatoxo;//
+package io.github.jatoxo;//
 // Source code recreated from a .class file by IntelliJ IDEA
 // (powered by Fernflower decompiler)
 //
 
-import main.java.io.github.jatoxo.model.CpuBeobachter;
+import io.github.jatoxo.model.CpuBeobachter;
 
 import javax.swing.*;
 import java.awt.*;

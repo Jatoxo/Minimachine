@@ -1,4 +1,4 @@
-package main.java.io.github.jatoxo.model;
+package io.github.jatoxo.model;
 
 import org.fife.ui.rsyntaxtextarea.*;
 

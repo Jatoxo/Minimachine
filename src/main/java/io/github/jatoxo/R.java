@@ -1,4 +1,4 @@
-package main.java.io.github.jatoxo;
+package io.github.jatoxo;
 
 import java.util.Locale;
 import java.util.ResourceBundle;

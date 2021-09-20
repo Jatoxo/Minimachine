@@ -1,11 +1,11 @@
-package main.java.io.github.jatoxo;//
+package io.github.jatoxo;//
 // Source code recreated from a .class file by IntelliJ IDEA
 // (powered by Fernflower decompiler)
 //
 
-import main.java.io.github.jatoxo.model.AssemblerBefehle;
-import main.java.io.github.jatoxo.model.MemoryListener;
-import main.java.io.github.jatoxo.model.SpeicherLesen;
+import io.github.jatoxo.model.AssemblerBefehle;
+import io.github.jatoxo.model.MemoryListener;
+import io.github.jatoxo.model.SpeicherLesen;
 
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;

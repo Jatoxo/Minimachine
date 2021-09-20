@@ -3,7 +3,7 @@
 // (powered by Fernflower decompiler)
 //
 
-package main.java.io.github.jatoxo.model;
+package io.github.jatoxo.model;
 
 public abstract class SpeicherLesen {
 	public SpeicherLesen() {
