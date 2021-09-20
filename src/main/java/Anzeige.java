@@ -1,8 +1,3 @@
-//
-// Source code recreated from a .class file by IntelliJ IDEA
-// (powered by Fernflower decompiler)
-//
-
 /*
 import com.apple.eawt.AboutHandler;
 import com.apple.eawt.Application;
