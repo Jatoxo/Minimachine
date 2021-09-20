@@ -14,7 +14,7 @@ import com.apple.eawt.AppEvent.OpenFilesEvent;
 import com.apple.eawt.AppEvent.QuitEvent;
  */
 
-importa R.R;
+import R.R;
 import com.formdev.flatlaf.FlatLightLaf;
 
 import java.awt.*;
