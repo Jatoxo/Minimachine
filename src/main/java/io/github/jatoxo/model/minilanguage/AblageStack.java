@@ -3,7 +3,7 @@
 // (powered by Fernflower decompiler)
 //
 
-package io.github.jatoxo.model.minilanguage;
+package main.java.io.github.jatoxo.model.minilanguage;
 
 class AblageStack extends Ablage {
 	protected int offset;

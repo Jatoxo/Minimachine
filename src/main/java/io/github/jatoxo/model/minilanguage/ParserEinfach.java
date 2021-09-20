@@ -3,9 +3,9 @@
 // (powered by Fernflower decompiler)
 //
 
-package io.github.jatoxo.model.minilanguage;
+package main.java.io.github.jatoxo.model.minilanguage;
 
-import io.github.jatoxo.model.FehlerVerwaltung;
+import main.java.io.github.jatoxo.model.FehlerVerwaltung;
 import java.util.HashSet;
 import java.util.Iterator;
 

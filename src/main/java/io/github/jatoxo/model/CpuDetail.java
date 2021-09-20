@@ -1,7 +1,7 @@
 
-package io.github.jatoxo.model;
+package main.java.io.github.jatoxo.model;
 
-import io.github.jatoxo.R;
+import main.java.io.github.jatoxo.R;
 
 class CpuDetail extends Cpu {
 	private MikroSchritte mikroStatus;

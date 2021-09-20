@@ -1,6 +1,6 @@
-package io.github.jatoxo;
+package main.java.io.github.jatoxo;
 
-import io.github.jatoxo.model.SpeicherLesen;
+import main.java.io.github.jatoxo.model.SpeicherLesen;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;

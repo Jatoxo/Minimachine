@@ -1,9 +1,9 @@
-package io.github.jatoxo;//
+package main.java.io.github.jatoxo;//
 // Source code recreated from a .class file by IntelliJ IDEA
 // (powered by Fernflower decompiler)
 //
 
-import io.github.jatoxo.model.AssemblerBefehle;
+import main.java.io.github.jatoxo.model.AssemblerBefehle;
 import org.fife.ui.autocomplete.AutoCompletion;
 import org.fife.ui.autocomplete.BasicCompletion;
 import org.fife.ui.autocomplete.CompletionProvider;

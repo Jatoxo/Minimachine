@@ -1,13 +1,13 @@
-package io.github.jatoxo;//
+package main.java.io.github.jatoxo;//
 // Source code recreated from a .class file by IntelliJ IDEA
 // (powered by Fernflower decompiler)
 //
 
-import io.github.jatoxo.model.Cpu;
-import io.github.jatoxo.model.FehlerVerwaltung;
-import io.github.jatoxo.model.SpeicherLesen;
-import io.github.jatoxo.model.minilanguage.ParserEinfach;
-import io.github.jatoxo.model.minilanguage.ParserErweitert;
+import main.java.io.github.jatoxo.model.Cpu;
+import main.java.io.github.jatoxo.model.FehlerVerwaltung;
+import main.java.io.github.jatoxo.model.SpeicherLesen;
+import main.java.io.github.jatoxo.model.minilanguage.ParserEinfach;
+import main.java.io.github.jatoxo.model.minilanguage.ParserErweitert;
 
 class Controller implements ControllerInterface {
 	private Cpu cpu;
