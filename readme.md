@@ -1,8 +1,6 @@
 # Macromachine
 ## _The ultimatly best Assembly Emulator_
 
-[![N|Solid](https://cldup.com/dTxpPi9lDf.thumb.png)](https://nodesource.com/products/nsolid)
-
 ![Build Status](https://app.travis-ci.com/Jojojihn/Macromachine.svg?branch=master)
 
 Macromachine is an Assembly one core CPU emulator.
@@ -18,7 +16,8 @@ Macromachine is an Assembly one core CPU emulator.
 
 Macromachine is the best Assembly emulator, using efficient code as well 
 as an nice looking and clean UI. Even people new to Assembly will have no problem
-learning it using the Macromachine
+learning it using the Macromachine.
+
 As Lead Programmer [Jatoxo] says
 > I love writing assembly in the Macromachine,
 > it just feels natural and intuitive.
