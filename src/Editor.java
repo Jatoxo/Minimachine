@@ -407,6 +407,7 @@ class Editor extends Anzeige {
 			//FileReader fr = new FileReader(this.file);
 			//codeEditor.read(fr, null);
 			String code = rf(this.file.getAbsolutePath(), Charset.defaultCharset());
+			code = code.replaceAll("\r", "");
 			codeEditor.setText(code);
 			//fr.close();
 			this.sicherungsstand = codeEditor.getText();
