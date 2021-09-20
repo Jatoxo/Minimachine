@@ -1,8 +1,3 @@
-//
-// Source code recreated from a .class file by IntelliJ IDEA
-// (powered by Fernflower decompiler)
-//
-
 /*
 import com.apple.eawt.AboutHandler;
 import com.apple.eawt.Application;
@@ -14,9 +9,9 @@ import com.apple.eawt.AppEvent.OpenFilesEvent;
 import com.apple.eawt.AppEvent.QuitEvent;
  */
 
-import R.R;
-import com.formdev.flatlaf.FlatLightLaf;
 
+import com.formdev.flatlaf.FlatLightLaf;
+import R.R;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
