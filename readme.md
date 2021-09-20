@@ -55,7 +55,7 @@ We will try to handle pull requests asap.
 
 | Version | Supported          |
 | ------- | ------------------ |
-|  2.0m   | :white_check_mark: |
+|  2.5m   | :white_check_mark: |
 |  2.4    | :white_check_mark:                |
 |  2.5    | :white_check_mark: |
 | < 2.4   | :x:                |

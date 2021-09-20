@@ -10,5 +10,8 @@
         <module name="MacroMachineMaven" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="Minimachine" target="8" />
+    </bytecodeTargetLevel>
   </component>
 </project>
