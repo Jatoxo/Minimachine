@@ -1,0 +1,92 @@
+	JMP		PRE
+
+CurIndex:
+	WORD		0
+CurStart:
+	WORD		0
+LoopIndex:
+	WORD 	0
+ContJump:
+	WORD		0
+CurContJump:
+	WORD		0
+LoopJump:
+	WORD		0
+CurLoopJump:
+	WORD		0
+NextInd:
+	WORD		0	
+
+Length:
+	WORD		0
+JumpProgram:
+	WORD		0
+
+PRE:
+	LOADI	START
+	STORE	CurStart
+	STORE	CurIndex
+
+
+	LOADI 	END
+	SUBI	    	START
+	ADDI	   	2
+	STORE	Length
+
+	LOADI	CONTINUE
+	SUBI	    	START
+	STORE	ContJump
+
+	LOADI	LOOP
+	SUBI	    	START
+	STORE	LoopJump
+
+	JMP	    	START
+
+
+START:
+	#Determine position to jump to for false condition and to loop to
+	LOAD		CurStart
+	ADD		ContJump
+	STORE	CurContJump
+
+	LOAD		CurStart
+	ADD		LoopJump
+	STORE	CurLoopJump
+
+LOOP:
+	#If the current index is the last instruction in the program jump to next
+	LOAD		CurIndex
+	SUB	    	CurStart
+	CMP		Length
+	JMPZ		CurContJump
+	
+	#Determine location to copy instruction to
+	LOAD		CurIndex
+	ADD	  	Length
+	STORE	NextInd
+
+	#Store the instruction	
+	LOAD		(CurIndex)
+	STORE	(NextInd)
+
+	#Increment the curindex
+	LOAD		CurIndex
+	ADDI		1
+	STORE	CurIndex
+	JMP		(CurLoopJump)
+	
+			
+	
+CONTINUE:
+	HOLD
+	LOAD		CurStart
+	ADD		Length
+	STORE	CurStart
+	JMP 		CurStart
+	
+	
+	
+END:
+	HOLD
+

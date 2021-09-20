@@ -1,0 +1,37 @@
+	LOADI	48
+	PUSH
+	LOADI	936
+	PUSH
+	
+	CALL		GGT
+	POP
+	POP
+	
+END:
+	HOLD
+	JMP		END
+
+
+
+GGT:
+	#NumB = 1(SP) NumA = 2(SP)
+	
+	LOAD		1(SP)
+	JMPZ		RET
+
+	PUSH
+	#NumB = 2(SP) NumA = 3(SP)
+	LOAD		3(SP)
+	MOD		2(SP)
+	PUSH		
+	
+	CALL		GGT
+
+	POP
+	POP
+	
+
+RET:
+	LOAD		2(SP)
+	RETURN
+	

@@ -3,18 +3,16 @@
 // (powered by Fernflower decompiler)
 //
 
-import R.R;
 import model.AssemblerBefehle;
 import org.fife.ui.autocomplete.AutoCompletion;
 import org.fife.ui.autocomplete.BasicCompletion;
 import org.fife.ui.autocomplete.CompletionProvider;
 import org.fife.ui.autocomplete.DefaultCompletionProvider;
-import org.fife.ui.rsyntaxtextarea.AbstractTokenMakerFactory;
-import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
-import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
-import org.fife.ui.rsyntaxtextarea.TokenMakerFactory;
+import org.fife.ui.rsyntaxtextarea.*;
+import org.fife.ui.rsyntaxtextarea.parser.TaskTagParser;
 import org.fife.ui.rtextarea.RTextArea;
 import org.fife.ui.rtextarea.RTextScrollPane;
+import R.R;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -55,11 +53,10 @@ class Editor extends Anzeige {
 	}
 
 
-
 	protected void initLayout() {
 		this.window = new JFrame(R.string("window_editor_title"));
 		this.window.setJMenuBar(this.menuBar);
-		JPanel contentPane = (JPanel)this.window.getContentPane();
+		JPanel contentPane = (JPanel) this.window.getContentPane();
 		contentPane.setLayout(new BorderLayout());
 
 		codeEditor.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_NONE);
@@ -69,6 +66,7 @@ class Editor extends Anzeige {
 
 		AbstractTokenMakerFactory tokenMakerFactory = (AbstractTokenMakerFactory) TokenMakerFactory.getDefaultInstance();
 		tokenMakerFactory.putMapping("text/mimaAssembler", "model.TokenMaker");
+		//FoldParserManager.get().addFoldParserMapping("text/mimaAssembler", new LinesWithContentFoldParser());
 		codeEditor.setSyntaxEditingStyle("text/mimaAssembler");
 
 		CompletionProvider provider = createCompletionProvider();
@@ -82,8 +80,14 @@ class Editor extends Anzeige {
 
 		ac.install(codeEditor);
 
+		codeEditor.addParser(new TaskTagParser());
+
 		codeScrollPane = new RTextScrollPane(codeEditor);
 		contentPane.add(codeScrollPane);
+
+		ErrorStrip strip = new ErrorStrip(codeEditor);
+		contentPane.add(strip, BorderLayout.LINE_END);
+
 
 		codeEditor.getDocument().addDocumentListener(new DocumentListener() {
 			@Override
@@ -119,6 +123,7 @@ class Editor extends Anzeige {
 
 			@Override
 			public void keyPressed(KeyEvent keyEvent) {
+
 				if(keyEvent.getKeyCode() == KeyEvent.VK_A && keyEvent.isAltDown() && keyEvent.isControlDown()) {
 					Editor.this.status.setText("");
 					codeEditor.removeAllLineHighlights();
@@ -354,14 +359,18 @@ class Editor extends Anzeige {
 		if(file != null) {
 			file = fileDialog.getDirectory() + file;
 			System.out.println(file + " chosen.");
-			this.file = new File(file);//this.fileChooser.getSelectedFile();
-
+			this.file = new File(file);
 			try {
 				//FileReader fr = new FileReader(this.file);
-				String code = rf(this.file.getAbsolutePath(), Charset.defaultCharset());
+				//codeEditor.read(fr, null);
 
+				//FileReader fr = new FileReader(this.file);
+				String code = rf(this.file.getAbsolutePath(), Charset.defaultCharset());
+				code = code.replaceAll("\r", "");
+				//System.out.println(code);
 				codeEditor.setText(code);
 				//fr.close();
+
 
 				this.sicherungsstand = codeEditor.getText();
 				this.window.setTitle(this.file.getPath());
@@ -398,6 +407,7 @@ class Editor extends Anzeige {
 			//FileReader fr = new FileReader(this.file);
 			//codeEditor.read(fr, null);
 			String code = rf(this.file.getAbsolutePath(), Charset.defaultCharset());
+			code = code.replaceAll("\r", "");
 			codeEditor.setText(code);
 			//fr.close();
 			this.sicherungsstand = codeEditor.getText();
