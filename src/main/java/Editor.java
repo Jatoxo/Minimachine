@@ -12,7 +12,7 @@ import org.fife.ui.rsyntaxtextarea.*;
 import org.fife.ui.rsyntaxtextarea.parser.TaskTagParser;
 import org.fife.ui.rtextarea.RTextArea;
 import org.fife.ui.rtextarea.RTextScrollPane;
-import res.R;
+import R.R;
 
 import java.awt.*;
 import java.awt.event.*;
