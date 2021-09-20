@@ -11,5 +11,8 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="formdev.flatlaf" level="project" />
+    <orderEntry type="library" name="fifesoft.rsyntaxtextarea" level="project" />
+    <orderEntry type="library" name="fifesoft.autocomplete" level="project" />
   </component>
 </module>
