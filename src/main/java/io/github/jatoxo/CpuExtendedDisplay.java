@@ -1,7 +1,5 @@
 package io.github.jatoxo;//
-// Source code recreated from a .class file by IntelliJ IDEA
-// (powered by Fernflower decompiler)
-//
+
 
 import javax.swing.JLabel;
 import javax.swing.border.LineBorder;

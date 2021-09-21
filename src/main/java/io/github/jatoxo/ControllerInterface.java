@@ -1,12 +1,11 @@
 package io.github.jatoxo;//
-// Source code recreated from a .class file by IntelliJ IDEA
-// (powered by Fernflower decompiler)
-//
+
 
 interface ControllerInterface {
 	void CpuHexaSetzen(boolean var1);
 
 	void CpuInvalidieren();
+
 
 	boolean assemble(String assemblyText, Editor editor);
 

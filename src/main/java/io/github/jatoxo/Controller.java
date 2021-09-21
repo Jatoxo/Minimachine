@@ -1,7 +1,4 @@
-package io.github.jatoxo;//
-// Source code recreated from a .class file by IntelliJ IDEA
-// (powered by Fernflower decompiler)
-//
+package io.github.jatoxo;
 
 import io.github.jatoxo.model.Cpu;
 import io.github.jatoxo.model.FehlerVerwaltung;
