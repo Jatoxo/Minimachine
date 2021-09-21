@@ -1,7 +1,5 @@
 package io.github.jatoxo;//
-// Source code recreated from a .class file by IntelliJ IDEA
-// (powered by Fernflower decompiler)
-//
+
 
 import io.github.jatoxo.model.CpuBeobachter;
 
@@ -157,8 +155,8 @@ class CpuGraphicalDisplay extends Anzeige implements CpuBeobachter {
 		this.toolsMenu.add(this.erweiterungenItem);
 	}
 
-	protected void resetDisplaySize(boolean var1) {
-		if (var1) {
+	protected void resetDisplaySize(boolean increasedSize) {
+		if (increasedSize) {
 			this.content.remove(this.bild);
 			this.content.add(this.bildgross, "Center");
 			this.bildgross.invalidate();

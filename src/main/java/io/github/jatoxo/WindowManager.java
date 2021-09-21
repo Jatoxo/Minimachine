@@ -1,13 +1,14 @@
 package io.github.jatoxo;//
-// Source code recreated from a .class file by IntelliJ IDEA
-// (powered by Fernflower decompiler)
-//
 
+
+import java.awt.*;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Iterator;
 
 class WindowManager {
-	private ArrayList<Anzeige> offen = new ArrayList();
+	private ArrayList<Anzeige> openEditorWindows = new ArrayList<>();
 	private Anzeige cpuDisplay;
 	private Anzeige cpuSimpleDisplay;
 	private Anzeige cpuGraphicalDisplay;
@@ -24,15 +25,18 @@ class WindowManager {
 		this.speicheranzeige = storageDisplay;
 	}
 
+
+
+
 	void EditorEintragen(Anzeige var1) {
 		int var2;
-		for(var2 = 0; var2 < this.offen.size(); ++var2) {
-			var1.addWindowMenuEntry(var2, (Anzeige)this.offen.get(var2));
+		for(var2 = 0; var2 < this.openEditorWindows.size(); ++var2) {
+			var1.addWindowMenuEntry(var2, (Anzeige)this.openEditorWindows.get(var2));
 		}
 
-		this.offen.add(var1);
-		var2 = this.offen.indexOf(var1);
-		Iterator var3 = this.offen.iterator();
+		this.openEditorWindows.add(var1);
+		var2 = this.openEditorWindows.indexOf(var1);
+		Iterator var3 = this.openEditorWindows.iterator();
 
 		while(var3.hasNext()) {
 			Anzeige var4 = (Anzeige)var3.next();
@@ -44,9 +48,9 @@ class WindowManager {
 	}
 
 	void EditorAustragen(Anzeige var1) {
-		int var2 = this.offen.indexOf(var1);
-		this.offen.remove(var1);
-		Iterator var3 = this.offen.iterator();
+		int var2 = this.openEditorWindows.indexOf(var1);
+		this.openEditorWindows.remove(var1);
+		Iterator var3 = this.openEditorWindows.iterator();
 
 		while(var3.hasNext()) {
 			Anzeige var4 = (Anzeige)var3.next();
@@ -58,8 +62,8 @@ class WindowManager {
 	}
 
 	void EditorTitelÄndern(Anzeige var1) {
-		int var2 = this.offen.indexOf(var1);
-		Iterator var3 = this.offen.iterator();
+		int var2 = this.openEditorWindows.indexOf(var1);
+		Iterator var3 = this.openEditorWindows.iterator();
 
 		while(var3.hasNext()) {
 			Anzeige var4 = (Anzeige)var3.next();
@@ -103,7 +107,7 @@ class WindowManager {
 	}
 
 	void BeendenMitteilen() {
-		for(Anzeige display : this.offen) {
+		for(Anzeige display : this.openEditorWindows) {
 			display.notifyClose();
 		}
 

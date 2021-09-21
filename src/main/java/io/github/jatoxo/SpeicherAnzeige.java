@@ -1,7 +1,5 @@
 package io.github.jatoxo;//
-// Source code recreated from a .class file by IntelliJ IDEA
-// (powered by Fernflower decompiler)
-//
+
 
 import io.github.jatoxo.model.AssemblerBefehle;
 import io.github.jatoxo.model.MemoryListener;
@@ -290,8 +288,8 @@ class SpeicherAnzeige extends Anzeige implements MemoryListener {
 		this.windowsMenu.add(memoryTrackerItem);
 	}
 
-	protected void resetDisplaySize(boolean var1) {
-		if (var1) {
+	protected void resetDisplaySize(boolean increasedSize) {
+		if (increasedSize) {
 			this.content.remove(this.scrollpane);
 			this.content.add(this.scrollpaneGross, "Center");
 			this.scrollpaneGross.invalidate();

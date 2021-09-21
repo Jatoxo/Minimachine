@@ -1,7 +1,5 @@
 //
-// Source code recreated from a .class file by IntelliJ IDEA
-// (powered by Fernflower decompiler)
-//
+
 
 package io.github.jatoxo.model;
 
@@ -25,8 +23,8 @@ class Scanner {
 	private int zahlenwert;
 	private String name;
 
-	Scanner(String var1) {
-		this.source = var1.toCharArray();
+	Scanner(String source) {
+		this.source = source.toCharArray();
 		this.pos = 0;
 		this.nextCharacter();
 	}
@@ -41,14 +39,14 @@ class Scanner {
 	}
 
 	private void Bezeichner() {
-		int var1 = this.pos - 1;
+		int start = this.pos - 1;
 
-		int var2;
-		for(var2 = 0; 'a' <= this.ch && this.ch <= 'z' || 'A' <= this.ch && this.ch <= 'Z' || '0' <= this.ch && this.ch <= '9' || this.ch == '_' || this.ch == '$'; ++var2) {
+		int i;
+		for(i = 0; 'a' <= this.ch && this.ch <= 'z' || 'A' <= this.ch && this.ch <= 'Z' || '0' <= this.ch && this.ch <= '9' || this.ch == '_' || this.ch == '$'; i++) {
 			this.nextCharacter();
 		}
 
-		this.name = new String(this.source, var1, var2);
+		this.name = new String(this.source, start, i);
 	}
 
 	private void Zahl() {

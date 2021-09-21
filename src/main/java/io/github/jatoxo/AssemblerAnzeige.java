@@ -1,7 +1,5 @@
 package io.github.jatoxo;//
-// Source code recreated from a .class file by IntelliJ IDEA
-// (powered by Fernflower decompiler)
-//
+
 
 import javax.swing.*;
 import java.awt.*;
@@ -90,8 +88,8 @@ class AssemblerAnzeige extends Anzeige {
 		});
 	}
 
-	protected void resetDisplaySize(boolean var1) {
-		if (var1) {
+	protected void resetDisplaySize(boolean increasedSize) {
+		if (increasedSize) {
 			this.FontgrößeSetzen(24);
 		} else {
 			this.FontgrößeSetzen(13);

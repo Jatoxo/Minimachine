@@ -1,7 +1,5 @@
 package io.github.jatoxo;//
-// Source code recreated from a .class file by IntelliJ IDEA
-// (powered by Fernflower decompiler)
-//
+
 
 import io.github.jatoxo.model.CpuBeobachter;
 
@@ -456,7 +454,7 @@ class CpuDisplay extends Anzeige implements CpuBeobachter {
 		this.toolsMenu.add(this.erweiterungenItem);
 	}
 
-	protected void resetDisplaySize(boolean var1) {
-		this.AnzeigegrößeSetzen(var1);
+	protected void resetDisplaySize(boolean increasedSize) {
+		this.AnzeigegrößeSetzen(increasedSize);
 	}
 }

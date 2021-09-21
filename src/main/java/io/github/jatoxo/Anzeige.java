@@ -1,7 +1,5 @@
 package io.github.jatoxo;//
-// Source code recreated from a .class file by IntelliJ IDEA
-// (powered by Fernflower decompiler)
-//
+
 
 /*
 import com.apple.eawt.AboutHandler;
@@ -17,9 +15,7 @@ import com.formdev.flatlaf.FlatLightLaf;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
+import java.awt.event.*;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -78,15 +74,11 @@ abstract class Anzeige {
 		this.controller = controller;
 		this.self = this;
 		if (erster) {
+
 			erster = false;
+			cmdKey = Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx();
+
 			isMac = System.getProperty("os.name", "").startsWith("Mac");
-			if (isMac) {
-				System.setProperty("apple.laf.useScreenMenuBar", "true");
-				//this.MacOSVorbereiten(); //Fuck mac users lmao
-				cmdKey = 256;
-			} else {
-				cmdKey = 128;
-			}
 
 			try {
 				UIManager.setLookAndFeel(new FlatLightLaf());
@@ -99,12 +91,9 @@ abstract class Anzeige {
 		this.initLayout();
 
 		URL iconURL = getClass().getResource("/img/icon.png");
-		System.out.println(iconURL);
-		ImageIcon icon = new ImageIcon(iconURL);
-		this.window.setIconImage(icon.getImage());
-
-		//this.window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-		if (isMac) {
+		if(iconURL != null) {
+			ImageIcon icon = new ImageIcon(iconURL);
+			this.window.setIconImage(icon.getImage());
 		}
 
 	}
@@ -118,19 +107,11 @@ abstract class Anzeige {
 		this.menuBar.add(this.fileMenu);
 		JMenuItem menu = new JMenuItem(R.string("file_menu_new"), 78);
 		menu.setAccelerator(KeyStroke.getKeyStroke(78, cmdKey));
-		menu.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent var1) {
-				Anzeige.this.controller.NeuAusführen();
-			}
-		});
+		menu.addActionListener(event -> Anzeige.this.controller.NeuAusführen());
 		this.fileMenu.add(menu);
 		menu = new JMenuItem(R.string("file_menu_open"), 79);
 		menu.setAccelerator(KeyStroke.getKeyStroke(79, cmdKey));
-		menu.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent var1) {
-				Anzeige.this.controller.ÖffnenAusführen();
-			}
-		});
+		menu.addActionListener(event -> Anzeige.this.controller.ÖffnenAusführen());
 
 		this.fileMenu.add(menu);
 
@@ -138,6 +119,7 @@ abstract class Anzeige {
 
 		this.closeMenuItem = new JMenuItem(R.string("file_menu_close"), 87);
 		this.closeMenuItem.setAccelerator(KeyStroke.getKeyStroke(87, cmdKey));
+
 		this.fileMenu.add(this.closeMenuItem);
 
 		this.saveMenuItem = new JMenuItem(R.string("file_menu_save"), 83);
@@ -157,11 +139,7 @@ abstract class Anzeige {
 			this.fileMenu.addSeparator();
 			menu = new JMenuItem(R.string("file_menu_quit"), 81);
 			menu.setAccelerator(KeyStroke.getKeyStroke(81, cmdKey));
-			menu.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent var1) {
-					Anzeige.this.controller.BeendenAusführen();
-				}
-			});
+			menu.addActionListener(event -> Anzeige.this.controller.BeendenAusführen());
 			this.fileMenu.add(menu);
 		}
 
@@ -172,11 +150,7 @@ abstract class Anzeige {
 		this.sizeMenuItem = new JCheckBoxMenuItem(R.string("tools_menu_increase_size"));
 		this.sizeMenuItem.setEnabled(true);
 		this.sizeMenuItem.setSelected(false);
-		this.sizeMenuItem.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent var1) {
-				Anzeige.this.resetDisplaySize(Anzeige.this.sizeMenuItem.isSelected());
-			}
-		});
+		this.sizeMenuItem.addActionListener(event -> Anzeige.this.resetDisplaySize(Anzeige.this.sizeMenuItem.isSelected()));
 		this.toolsMenu.add(this.sizeMenuItem);
 		this.windowsMenu = new JMenu(R.string("windows_menu"));
 		JMenuItem helpMenuItem = new JMenuItem(R.string("windows_menu_open_doc"), KeyEvent.VK_F1);
@@ -198,33 +172,21 @@ abstract class Anzeige {
 		this.menuBar.add(this.windowsMenu);
 		if (!isMac) {
 			menu = new JMenuItem(R.string("windows_menu_about"));
-			menu.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent var1) {
-					AboutDialog.show();
-				}
-			});
+			menu.addActionListener(event -> AboutDialog.show());
 			this.windowsMenu.add(menu);
 			this.windowsMenu.addSeparator();
 		}
 
 		menu = new JMenuItem(R.string("windows_menu_cpu"));
-		menu.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent var1) {
-				Anzeige.this.controller.CpuFensterAuswählen();
-			}
-		});
+		menu.addActionListener(event -> Anzeige.this.controller.CpuFensterAuswählen());
 		this.windowsMenu.add(menu);
 		menu = new JMenuItem(R.string("windows_menu_memory"));
-		menu.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent var1) {
-				Anzeige.this.controller.SpeicherFensterAuswählen();
-			}
-		});
+		menu.addActionListener(event -> Anzeige.this.controller.SpeicherFensterAuswählen());
 		this.windowsMenu.add(menu);
 		this.windowsMenu.addSeparator();
 	}
 
-	protected abstract void resetDisplaySize(boolean var1);
+	protected abstract void resetDisplaySize(boolean increasedSize);
 
 	private String TitelGeben() {
 		return this.window.getTitle();
@@ -267,15 +229,15 @@ abstract class Anzeige {
 	/***
 	 *  Used for the window menu. Called when clicking the displays corresponding menu entry.
 	 */
-	class WindowMenuAction implements ActionListener {
-		private Anzeige anzeige;
+	static class WindowMenuAction implements ActionListener {
+		private final Anzeige anzeige;
 
 
-		WindowMenuAction(Anzeige var2) {
-			this.anzeige = var2;
+		WindowMenuAction(Anzeige anzeige) {
+			this.anzeige = anzeige;
 		}
 
-		public void actionPerformed(ActionEvent var1) {
+		public void actionPerformed(ActionEvent event) {
 			this.anzeige.show();
 		}
 	}
