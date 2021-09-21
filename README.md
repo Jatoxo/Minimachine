@@ -1,5 +1,5 @@
 # Macromachine
-## _The ultimatly best Assembly Emulator_
+### _The ultimatly best Assembly Emulator_
 
 ![Build Status](https://app.travis-ci.com/Jojojihn/Macromachine.svg?branch=master)
 
@@ -33,7 +33,7 @@ A User [Ayara] says
 Macromachine uses a number of open source projects to work properly:
 
 - [Flat Look and Feel] - For the nice look and feel of the UI
-- [RSyntaxArea] - For proper assembly syntax highlighting
+- [RSyntaxTextArea] - For the code editor
 - [Autocomplete] - For the proper autocompletion while coding assembly
 
 And of course Macromachine itself is open source with a [public repository][mm]
@@ -65,10 +65,10 @@ We will try to handle pull requests asap.
 
 Uhhh, about that. It's not really open or closed source, just don't sell it or something but otherwise, do as you please.
 
-[mm]: <https://github.com/Jojojihn/Macromachine>
+[mm]: <https://github.com/Jatoxo/Minimachine>
 [Jatoxo]: <https://github.com/Jatoxo>
 [Ayara]: <https://github.com/Jatoxo>
 [Flat Look and Feel]: <https://www.formdev.com/flatlaf/>
-[RSyntaxArea]: <https://github.com/bobbylight/RSyntaxTextArea>
+[RSyntaxTextArea]: <https://github.com/bobbylight/RSyntaxTextArea>
 [Autocomplete]: <https://github.com/bobbylight/autocomplete>
 [Java 8]: <https://www.java.com/en/download/manual.jsp>
