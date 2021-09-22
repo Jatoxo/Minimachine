@@ -1,6 +1,0 @@
-<component name="ArtifactManager">
-  <artifact type="jar" build-on-make="true" name="Macromachine">
-    <output-path>$PROJECT_DIR$/out/artifacts/Macromachine</output-path>
-    <root id="archive" name="Macromachine.jar" />
-  </artifact>
-</component>
