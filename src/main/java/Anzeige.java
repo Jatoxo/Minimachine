@@ -85,11 +85,11 @@ abstract class Anzeige {
 				cmdKey = 128;
 			}
 
-			try {
+			/*try {
 				UIManager.setLookAndFeel(new FlatLightLaf());
 			} catch (Exception ex) {
 				ex.printStackTrace();
-			}
+			}*/
 
 		}
 		this.initMenus();
