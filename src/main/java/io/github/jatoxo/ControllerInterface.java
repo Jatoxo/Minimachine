@@ -8,6 +8,7 @@ interface ControllerInterface {
 
 	void CpuInvalidieren();
 
+	void enableUnifiedView(boolean enable);
 
 	boolean assemble(String assemblyText, StatusMelder melder);
 

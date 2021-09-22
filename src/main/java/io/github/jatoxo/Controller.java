@@ -37,6 +37,11 @@ class Controller implements ControllerInterface {
 		this.cpu.AnzeigeWiederholen();
 	}
 
+	@Override
+	public void enableUnifiedView(boolean enable) {
+		windowManager.setUnified(enable);
+	}
+
 	public boolean assemble(String assemblyText, StatusMelder melder) {
 		FehlerVerwaltung fehlerVerwaltung = new FehlerVerwaltung();
 

@@ -49,45 +49,7 @@ class SpeicherAnzeige extends Anzeige implements MemoryListener {
 		saveAsMenuItem.setEnabled(false);
 		printMenuItem.setEnabled(false);
 
-		JMenuItem menuItem = new JMenuItem(R.string("edit_menu_undo"), KeyEvent.VK_Z);
-		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Z, cmdKey));
-		menuItem.setEnabled(false);
-		editMenu.add(menuItem);
-
-		menuItem = new JMenuItem(R.string("edit_menu_redo"));
-		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Z, InputEvent.SHIFT_DOWN_MASK + cmdKey));
-		menuItem.setEnabled(false);
-		editMenu.add(menuItem);
-
-		editMenu.addSeparator();
-
-		menuItem = new JMenuItem(R.string("edit_menu_cut"), KeyEvent.VK_X);
-		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X, cmdKey));
-		menuItem.setEnabled(false);
-		editMenu.add(menuItem);
-
-		menuItem = new JMenuItem(R.string("edit_menu_copy"), KeyEvent.VK_C);
-		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, cmdKey));
-		menuItem.setEnabled(false);
-		editMenu.add(menuItem);
-
-		menuItem = new JMenuItem(R.string("edit_menu_paste"), KeyEvent.VK_V);
-		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_V, cmdKey));
-		menuItem.setEnabled(false);
-
-		editMenu.add(menuItem);
-
-		menuItem = new JMenuItem(R.string("edit_menu_select_all"), KeyEvent.VK_A);
-		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, cmdKey));
-		menuItem.setEnabled(false);
-		editMenu.add(menuItem);
-
-		toolsMenu.addSeparator();
-
-		menuItem = new JMenuItem(R.string("memory_clear_memory"), KeyEvent.VK_A);
-		menuItem.setEnabled(true);
-		menuItem.addActionListener(event -> controller.SpeicherLöschen());
-		toolsMenu.add(menuItem);
+		editMenu.setVisible(false);
 
 		toolsMenu.addSeparator();
 

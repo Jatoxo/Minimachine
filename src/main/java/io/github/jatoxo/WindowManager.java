@@ -5,25 +5,31 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 class WindowManager {
-	private ArrayList<Anzeige> openEditorWindows = new ArrayList<>();
+	private final ArrayList<Anzeige> openEditorWindows = new ArrayList<>();
 	private Anzeige cpuDisplay;
 	private Anzeige cpuSimpleDisplay;
 	private Anzeige cpuGraphicalDisplay;
 	private Anzeige cpuSimpleExtendedDisplay;
 	private Anzeige speicheranzeige;
+	private UnifiedView unifiedView;
 
-	WindowManager(Anzeige cpuDisplay, Anzeige cpuDisplay2, Anzeige cpuDisplayAdvanced, Anzeige storageDisplay) {
+	WindowManager(Anzeige cpuDisplay, Anzeige cpuDisplay2, Anzeige cpuDisplayAdvanced, Anzeige storageDisplay, UnifiedView unifiedView) {
 		this.cpuDisplay = cpuDisplay;
 		this.cpuSimpleDisplay = cpuDisplay;
 		this.cpuGraphicalDisplay = cpuDisplay2;
 		this.cpuSimpleExtendedDisplay = cpuDisplayAdvanced;
+		this.unifiedView = unifiedView;
 		//cpuDisplay2.hide();
 		cpuDisplayAdvanced.hideWindow();
 		this.speicheranzeige = storageDisplay;
 	}
 
 
-
+	void setUnified(boolean unified) {
+		if(unified) {
+			unifiedView.activate();
+		}
+	}
 
 	void EditorEintragen(Anzeige var1) {
 		int var2;

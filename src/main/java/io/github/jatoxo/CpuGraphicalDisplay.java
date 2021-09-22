@@ -8,7 +8,7 @@ import java.awt.*;
 import java.awt.event.*;
 
 class CpuGraphicalDisplay extends Anzeige implements CpuBeobachter {
-	private CpuGraphicalDisplayPane cpuGraphicalDisplayPane;
+	private final CpuGraphicalDisplayPane cpuGraphicalDisplayPane;
 
 	private JCheckBoxMenuItem erweiterungenItem;
 
@@ -23,7 +23,7 @@ class CpuGraphicalDisplay extends Anzeige implements CpuBeobachter {
 			}
 		});
 
-		setSize(600, 400);
+		setMinimumSize(contentPane.getMinimumSize());
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		setLocationRelativeTo(null);
 		setVisible(true);
@@ -54,41 +54,11 @@ class CpuGraphicalDisplay extends Anzeige implements CpuBeobachter {
 		saveAsMenuItem.setEnabled(false);
 		printMenuItem.setEnabled(false);
 
-		JMenuItem menuItem = new JMenuItem(R.string("edit_menu_undo"), KeyEvent.VK_Z);
-		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Z, cmdKey));
-		menuItem.setEnabled(false);
-		editMenu.add(menuItem);
-
-		menuItem = new JMenuItem(R.string("edit_menu_redo"));
-		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Z, InputEvent.SHIFT_DOWN_MASK + cmdKey));
-		menuItem.setEnabled(false);
-		editMenu.add(menuItem);
-
-		editMenu.addSeparator();
-
-		menuItem = new JMenuItem(R.string("edit_menu_cut"), KeyEvent.VK_X);
-		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X, cmdKey));
-		menuItem.setEnabled(false);
-		editMenu.add(menuItem);
-
-		menuItem = new JMenuItem(R.string("edit_menu_copy"), KeyEvent.VK_C);
-		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, cmdKey));
-		menuItem.setEnabled(false);
-		editMenu.add(menuItem);
-
-		menuItem = new JMenuItem(R.string("edit_menu_paste"), KeyEvent.VK_V);
-		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_V, cmdKey));
-		menuItem.setEnabled(false);
-		editMenu.add(menuItem);
-
-		menuItem = new JMenuItem(R.string("edit_menu_select_all"), KeyEvent.VK_A);
-		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, cmdKey));
-		menuItem.setEnabled(false);
-		editMenu.add(menuItem);
+		editMenu.setVisible(false);
 
 		toolsMenu.addSeparator();
 
-		menuItem = new JMenuItem(R.string("tools_menu_simple_view"));
+		JMenuItem menuItem = new JMenuItem(R.string("tools_menu_simple_view"));
 		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, cmdKey + InputEvent.ALT_DOWN_MASK));
 		menuItem.addActionListener(event -> controller.EinfacheDarstellungAnzeigen());
 		toolsMenu.add(menuItem);
@@ -128,7 +98,9 @@ class CpuGraphicalDisplay extends Anzeige implements CpuBeobachter {
 
 	protected void resetDisplaySize(boolean increasedSize) {
 		cpuGraphicalDisplayPane.setIncreaseSize(increasedSize);
+		setMinimumSize(contentPane.getMinimumSize());
 		setSize(increasedSize ? new Dimension(900, 600) : new Dimension(600, 400));
+
 	}
 
 	public static class CpuGraphicalDisplayPane extends JPanel implements CpuBeobachter {
@@ -171,6 +143,8 @@ class CpuGraphicalDisplay extends Anzeige implements CpuBeobachter {
 			panel.add(button);
 			button.addActionListener(event -> controller.MikroSchritt());
 
+			setMinimumSize(new Dimension(600, 400));
+
 			validate();
 
 		}
@@ -193,13 +167,13 @@ class CpuGraphicalDisplay extends Anzeige implements CpuBeobachter {
 				add(bildgross, "Center");
 				bildgross.invalidate();
 				bildgross.repaint();
-				setSize(900, 600);
+				setMinimumSize(new Dimension(900, 600));
 			} else {
 				remove(bildgross);
 				add(bild, "Center");
 				bild.invalidate();
 				bild.repaint();
-				setSize(600, 400);
+				setMinimumSize(new Dimension(600, 400));
 			}
 
 			validate();

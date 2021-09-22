@@ -184,6 +184,16 @@ abstract class Anzeige extends JFrame {
 				}
 			}
 		});
+
+		JCheckBoxMenuItem windowModeToggle = new JCheckBoxMenuItem("swoopp");
+		windowModeToggle.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				controller.enableUnifiedView(windowModeToggle.isSelected());
+			}
+		});
+		this.windowsMenu.add(windowModeToggle);
+
 		this.menuBar.add(this.windowsMenu);
 		if (!isMac) {
 			menu = new JMenuItem(R.string("windows_menu_about"));
