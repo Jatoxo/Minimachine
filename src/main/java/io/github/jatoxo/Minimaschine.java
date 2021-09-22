@@ -2,6 +2,7 @@ package io.github.jatoxo;//
 
 
 import io.github.jatoxo.model.Cpu;
+import io.github.jatoxo.model.MemoryListener;
 
 class Minimaschine {
 	private Minimaschine(String[] args) {
@@ -23,6 +24,7 @@ class Minimaschine {
 
 		cpuEinfach.Registrieren(cpuExtendedDisplay);
 		cpuEinfach.addMemoryListener(speicherAnzeige);
+		cpuEinfach.addMemoryListener((MemoryListener) speicherAnzeige.getContentPane());
 
 		if (!Anzeige.IstMacOS()) {
 			for(String arg : args) {
@@ -32,7 +34,7 @@ class Minimaschine {
 
 	}
 
-	public static void main(String[] var0) {
-		new Minimaschine(var0);
+	public static void main(String[] args) {
+		new Minimaschine(args);
 	}
 }

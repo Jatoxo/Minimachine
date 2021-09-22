@@ -15,6 +15,8 @@ class CpuGraphicalDisplay extends Anzeige implements CpuBeobachter {
 	CpuGraphicalDisplay(ControllerInterface controller) {
 		super(controller, R.string("window_cpu_title"));
 
+		cpuGraphicalDisplayPane = (CpuGraphicalDisplayPane) contentPane;
+
 		addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent event) {
 				controller.BeendenAusführen();

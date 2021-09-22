@@ -13,6 +13,8 @@ class AssemblerAnzeige extends Anzeige {
 	AssemblerAnzeige(ControllerInterface controller, String code) {
 		super(controller, R.string("window_assembly_title"));
 
+		assemblerAnzeigePane = (AssemblerAnzeigePane) contentPane;
+
 		addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent var1) {
 				AssemblerAnzeige.this.controller.SchließenAusführen(AssemblerAnzeige.this.self);
@@ -30,11 +32,11 @@ class AssemblerAnzeige extends Anzeige {
 	}
 
 	public JPanel getContent() {
-		if(assemblerAnzeigePane == null) {
-			assemblerAnzeigePane = new AssemblerAnzeigePane(controller);
+		if(contentPane == null) {
+			contentPane = new AssemblerAnzeigePane(controller);
 		}
 
-		return assemblerAnzeigePane;
+		return contentPane;
 	}
 
 

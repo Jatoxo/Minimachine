@@ -359,7 +359,7 @@ class Editor extends Anzeige {
 
 					Preferences prefs = Preferences.userRoot().node(this.getClass().getName());
 					prefs.put("lastFolder", lastFolder.getAbsolutePath());
-					System.out.println(lastFolder.getAbsolutePath());
+					//System.out.println(lastFolder.getAbsolutePath());
 					//TODO: Fix editor names being fucky wucky
 				} catch (Exception e) {
 					this.file = null;
@@ -475,7 +475,7 @@ class Editor extends Anzeige {
 		}
 
 		public boolean hasUnsavedChanges() {
-			return sicherungsstand.equals(codeEditor.getText());
+			return !sicherungsstand.equals(codeEditor.getText());
 		}
 
 		private void updateFontSize(int newSize) {
