@@ -31,7 +31,7 @@ class CpuExtendedDisplay extends CpuDisplay {
 	@Override
 	protected void setIncreaseSize(boolean increased) {
 		cpuExtendedDisplayPane.setIncreaseSize(increased);
-		setSize(increased ? new Dimension(900, 375) : new Dimension(600, 250));
+		setSize(increased ? new Dimension(900, 375) : new Dimension(600, 250 + 20));
 	}
 
 	public void Befehlsmeldung(String data, String address, String alu1, String alu2, String alu3, String accumulator, String stackPointer, boolean zFlag, boolean nFlag, boolean vFlag, String opMnemonic, String addr, String programCounter, String[] progAddr, String[] progMem, String[] dataAddr, String[] dataMem, String[] stackAddr, String[] stackMem, String microStepName) {

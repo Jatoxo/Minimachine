@@ -3,6 +3,8 @@ package io.github.jatoxo;//
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
+import java.util.function.Consumer;
 
 class WindowManager {
 	private final ArrayList<Anzeige> openEditorWindows = new ArrayList<>();
@@ -12,6 +14,7 @@ class WindowManager {
 	private Anzeige cpuSimpleExtendedDisplay;
 	private Anzeige speicheranzeige;
 	private UnifiedView unifiedView;
+	private boolean unified;
 
 	WindowManager(Anzeige cpuDisplay, Anzeige cpuDisplay2, Anzeige cpuDisplayAdvanced, Anzeige storageDisplay, UnifiedView unifiedView) {
 		this.cpuDisplay = cpuDisplay;
@@ -27,27 +30,59 @@ class WindowManager {
 
 	void setUnified(boolean unified) {
 		if(unified) {
-			unifiedView.activate();
+			cpuSimpleDisplay.dispose();
+			cpuSimpleExtendedDisplay.dispose();
+			cpuGraphicalDisplay.dispose();
+			speicheranzeige.dispose();
+
+			List<Editor.EditorPane> editorPanes = new ArrayList<>();
+			for(Anzeige editor : openEditorWindows) {
+				editorPanes.add((Editor.EditorPane) editor.contentPane);
+
+				editor.dispose();
+			}
+			unifiedView.activate(cpuDisplay.getContent(), editorPanes);
+
+		} else {
+			unifiedView.dispose();
+
+			cpuSimpleDisplay.setContentPane(cpuSimpleDisplay.contentPane);
+
+			cpuSimpleExtendedDisplay.setContentPane(cpuSimpleExtendedDisplay.contentPane);
+
+			cpuGraphicalDisplay.setContentPane(cpuGraphicalDisplay.contentPane);
+			cpuGraphicalDisplay.pack();
+
+			cpuDisplay.showWindow();
+
+			speicheranzeige.setContentPane(speicheranzeige.contentPane);
+			speicheranzeige.showWindow();
+
+
+			for(Anzeige editor : openEditorWindows) {
+				editor.setContentPane(editor.contentPane);
+				editor.showWindow();
+			}
 		}
+
+		this.unified = unified;
 	}
 
-	void EditorEintragen(Anzeige var1) {
-		int var2;
-		for(var2 = 0; var2 < this.openEditorWindows.size(); ++var2) {
-			var1.addWindowMenuEntry(var2, (Anzeige)this.openEditorWindows.get(var2));
+	void EditorEintragen(Anzeige editor) {
+		int index;
+		for(index = 0; index < this.openEditorWindows.size(); ++index) {
+			editor.addWindowMenuEntry(index, (Anzeige)this.openEditorWindows.get(index));
 		}
 
-		this.openEditorWindows.add(var1);
-		var2 = this.openEditorWindows.indexOf(var1);
-		Iterator var3 = this.openEditorWindows.iterator();
+		this.openEditorWindows.add(editor);
+		index = this.openEditorWindows.indexOf(editor);
 
-		while(var3.hasNext()) {
-			Anzeige var4 = (Anzeige)var3.next();
-			var4.addWindowMenuEntry(var2, var1);
+		for(Anzeige openEditors : this.openEditorWindows) {
+			openEditors.addWindowMenuEntry(index, editor);
 		}
 
-		this.cpuDisplay.addWindowMenuEntry(var2, var1);
-		this.speicheranzeige.addWindowMenuEntry(var2, var1);
+		this.cpuDisplay.addWindowMenuEntry(index, editor);
+		this.speicheranzeige.addWindowMenuEntry(index, editor);
 	}
 
 	void EditorAustragen(Anzeige var1) {

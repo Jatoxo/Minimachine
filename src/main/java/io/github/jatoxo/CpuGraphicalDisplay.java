@@ -43,7 +43,8 @@ class CpuGraphicalDisplay extends Anzeige implements CpuBeobachter {
 	}
 
 	public void Fehlermeldung(String message) {
-		JOptionPane.showMessageDialog(this, message, R.string("cpu_cpu_error"), JOptionPane.ERROR_MESSAGE);
+		cpuGraphicalDisplayPane.Fehlermeldung(message);
+		//JOptionPane.showMessageDialog(this, message, R.string("cpu_cpu_error"), JOptionPane.ERROR_MESSAGE);
 	}
 
 	protected void initMenus() {

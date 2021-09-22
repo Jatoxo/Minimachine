@@ -33,6 +33,7 @@ abstract class Anzeige extends JFrame {
 	protected JMenuItem saveAsMenuItem;
 	protected JMenuItem printMenuItem;
 	protected JCheckBoxMenuItem sizeMenuItem;
+	protected JCheckBoxMenuItem windowModeToggle;
 
 	protected ControllerInterface controller;
 	protected Anzeige self;
@@ -83,11 +84,7 @@ abstract class Anzeige extends JFrame {
 
 			isMac = System.getProperty("os.name", "").startsWith("Mac");
 
-			try {
-				UIManager.setLookAndFeel(new FlatLightLaf());
-			} catch (Exception ex) {
-				ex.printStackTrace();
-			}
+
 		}
 
 		//Swapped
@@ -160,18 +157,24 @@ abstract class Anzeige extends JFrame {
 
 		this.editMenu = new JMenu(R.string("edit_menu"));
 		this.menuBar.add(this.editMenu);
+
 		this.toolsMenu = new JMenu(R.string("tools_menu"));
 		this.menuBar.add(this.toolsMenu);
+
 		this.sizeMenuItem = new JCheckBoxMenuItem(R.string("tools_menu_increase_size"));
 		this.sizeMenuItem.setEnabled(true);
 		this.sizeMenuItem.setSelected(false);
 		this.sizeMenuItem.addActionListener(event -> Anzeige.this.resetDisplaySize(Anzeige.this.sizeMenuItem.isSelected()));
 		this.toolsMenu.add(this.sizeMenuItem);
+
 		this.windowsMenu = new JMenu(R.string("windows_menu"));
+
+		windowModeToggle = new JCheckBoxMenuItem(R.string("windows_menu_unified"));
+		windowModeToggle.addActionListener(e -> controller.enableUnifiedView(windowModeToggle.isSelected()));
+		this.windowsMenu.add(windowModeToggle);
+
 		JMenuItem helpMenuItem = new JMenuItem(R.string("windows_menu_open_doc"), KeyEvent.VK_F1);
 		helpMenuItem.setAccelerator(KeyStroke.getKeyStroke("F1"));
-
-		this.windowsMenu.add(helpMenuItem);
 		helpMenuItem.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent actionEvent) {
@@ -184,23 +187,18 @@ abstract class Anzeige extends JFrame {
 				}
 			}
 		});
-
-		JCheckBoxMenuItem windowModeToggle = new JCheckBoxMenuItem("swoopp");
-		windowModeToggle.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				controller.enableUnifiedView(windowModeToggle.isSelected());
-			}
-		});
-		this.windowsMenu.add(windowModeToggle);
+		this.windowsMenu.add(helpMenuItem);
 
 		this.menuBar.add(this.windowsMenu);
+
 		if (!isMac) {
 			menu = new JMenuItem(R.string("windows_menu_about"));
 			menu.addActionListener(event -> AboutDialog.show());
 			this.windowsMenu.add(menu);
 			this.windowsMenu.addSeparator();
 		}
+
+
 
 		menu = new JMenuItem(R.string("windows_menu_cpu"));
 		menu.addActionListener(event -> Anzeige.this.controller.CpuFensterAuswählen());
@@ -222,18 +220,19 @@ abstract class Anzeige extends JFrame {
 	void addWindowMenuEntry(int pos, Anzeige display) {
 		JMenuItem windowMenuEntry = new JMenuItem(display.TitelGeben());
 		windowMenuEntry.addActionListener(new WindowMenuAction(display));
-		this.windowsMenu.insert(windowMenuEntry, pos + 3);
+		this.windowsMenu.insert(windowMenuEntry, pos + 6);
 	}
 
 	void removeWindowMenuEntry(int pos) {
-		this.windowsMenu.remove(pos + 3);
+		this.windowsMenu.remove(pos + 6);
 	}
 
 	void editWindowMenuEntry(int var1, Anzeige var2) {
-		this.windowsMenu.getItem(var1 + 3).setText(var2.TitelGeben());
+		this.windowsMenu.getItem(var1 + 6).setText(var2.TitelGeben());
 	}
 
 	void showWindow() {
+		windowModeToggle.setSelected(false);
 		if (!this.isVisible()) {
 			this.setVisible(true);
 		}

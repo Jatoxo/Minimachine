@@ -300,6 +300,14 @@ class Editor extends Anzeige {
 			return provider;
 		}
 
+		public String getFileName() {
+			if(file != null) {
+				return file.getName();
+			} else {
+				return null;
+			}
+		}
+
 		public void assemble() {
 			status.setText("");
 			controller.assemble(codeEditor.getText(), this);
