@@ -5,172 +5,211 @@ import io.github.jatoxo.model.CpuBeobachter;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.awt.event.*;
 
 class CpuGraphicalDisplay extends Anzeige implements CpuBeobachter {
-	private CpuBild bild;
-	private CpuBildGroß bildgross;
-	private JPanel content;
+	private CpuGraphicalDisplayPane cpuGraphicalDisplayPane;
+
 	private JCheckBoxMenuItem erweiterungenItem;
 
-	CpuGraphicalDisplay(ControllerInterface var1) {
-		super(var1);
-	}
+	CpuGraphicalDisplay(ControllerInterface controller) {
+		super(controller, R.string("window_cpu_title"));
 
-	protected void initLayout() {
-		this.window = new JFrame(R.string("window_cpu_title"));
-		this.window.setJMenuBar(this.menuBar);
-		this.content = (JPanel)this.window.getContentPane();
-		this.content.setLayout(new BorderLayout());
-		this.bildgross = new CpuBildGroß();
-		this.bildgross.setOpaque(false);
-		this.bild = new CpuBild();
-		this.bild.setOpaque(false);
-		this.content.add(this.bild, "Center");
-		JPanel var1 = new JPanel();
-		var1.setLayout(new FlowLayout());
-		this.content.add(var1, "South");
-		JButton var2 = new JButton(R.string("cpu_run"));
-		var1.add(var2);
-		var2.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent var1) {
-				CpuGraphicalDisplay.this.controller.Ausführen();
-			}
-		});
-		var2 = new JButton(R.string("cpu_step"));
-		var1.add(var2);
-		var2.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent var1) {
-				CpuGraphicalDisplay.this.controller.EinzelSchritt();
-			}
-		});
-		var2 = new JButton(R.string("cpu_micro_step"));
-		var1.add(var2);
-		var2.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent var1) {
-				CpuGraphicalDisplay.this.controller.MikroSchritt();
-			}
-		});
-		this.content.doLayout();
-
-
-		this.window.addWindowListener(new WindowAdapter() {
-			public void windowClosing(WindowEvent var1) {
+		addWindowListener(new WindowAdapter() {
+			public void windowClosing(WindowEvent event) {
 				controller.BeendenAusführen();
 			}
 		});
-		this.window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-		this.window.setSize(600, 400);
-		this.window.setLocationRelativeTo(null);
-		this.window.setVisible(true);
+
+		setSize(600, 400);
+		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+		setLocationRelativeTo(null);
+		setVisible(true);
 	}
 
-	public void Befehlsmeldung(String var1, String var2, String var3, String var4, String var5, String var6, String var7, boolean var8, boolean var9, boolean var10, String var11, String var12, String var13, String[] var14, String[] var15, String[] var16, String[] var17, String[] var18, String[] var19, String var20) {
-		this.bild.DatenSetzen(var1, var2, var3, var4, var5, var6, "Z:" + (var8 ? "*" : " ") + " N:" + (var9 ? "*" : " ") + " V:" + (var10 ? "*" : " "), var11, var12, var13, var7, var14, var15, var16, var17, var18, var19, this.erweiterungenItem.isSelected(), var20);
-		this.bildgross.DatenSetzen(var1, var2, var3, var4, var5, var6, "Z:" + (var8 ? "*" : " ") + " N:" + (var9 ? "*" : " ") + " V:" + (var10 ? "*" : " "), var11, var12, var13, var7, var14, var15, var16, var17, var18, var19, this.erweiterungenItem.isSelected(), var20);
+	public JPanel getContent() {
+		if(contentPane == null) {
+			contentPane = new CpuGraphicalDisplayPane(controller);
+		}
+
+		return contentPane;
+
 	}
 
-	public void Fehlermeldung(String var1) {
-		JOptionPane.showMessageDialog(this.window, var1, "CPU-Fehler", 0);
+	public void Befehlsmeldung(String data, String address, String alu1, String alu2, String alu3, String accumulator, String stackPointer, boolean zFlag, boolean nFlag, boolean vFlag, String opMnemonic, String addr, String programCounter, String[] progAddr, String[] progMem, String[] dataAddr, String[] dataMem, String[] stackAddr, String[] stackMem, String microStepName) {
+		cpuGraphicalDisplayPane.Befehlsmeldung(data, address, alu1, alu2, alu3, accumulator, stackPointer, zFlag, nFlag, vFlag, opMnemonic, addr, programCounter, progAddr, progMem, dataAddr, dataMem, stackAddr, stackMem, microStepName);
+	}
+
+	public void Fehlermeldung(String message) {
+		JOptionPane.showMessageDialog(this, message, R.string("cpu_cpu_error"), JOptionPane.ERROR_MESSAGE);
 	}
 
 	protected void initMenus() {
 		super.initMenus();
-		this.closeMenuItem.setEnabled(false);
-		this.saveMenuItem.setEnabled(false);
-		this.saveAsMenuItem.setEnabled(false);
-		this.printMenuItem.setEnabled(false);
-		JMenuItem var1 = new JMenuItem(R.string("edit_menu_undo"), 90);
-		var1.setAccelerator(KeyStroke.getKeyStroke(90, cmdKey));
-		var1.setEnabled(false);
-		this.editMenu.add(var1);
-		var1 = new JMenuItem(R.string("edit_menu_redo"));
-		var1.setAccelerator(KeyStroke.getKeyStroke(90, 64 + cmdKey));
-		var1.setEnabled(false);
-		this.editMenu.add(var1);
-		this.editMenu.addSeparator();
-		var1 = new JMenuItem(R.string("edit_menu_cut"), 88);
-		var1.setAccelerator(KeyStroke.getKeyStroke(88, cmdKey));
-		var1.setEnabled(false);
-		this.editMenu.add(var1);
-		var1 = new JMenuItem(R.string("edit_menu_copy"), 67);
-		var1.setAccelerator(KeyStroke.getKeyStroke(67, cmdKey));
-		var1.setEnabled(false);
-		this.editMenu.add(var1);
-		var1 = new JMenuItem(R.string("edit_menu_paste"), 86);
-		var1.setAccelerator(KeyStroke.getKeyStroke(86, cmdKey));
-		var1.setEnabled(false);
-		this.editMenu.add(var1);
-		var1 = new JMenuItem(R.string("edit_menu_select_all"), 65);
-		var1.setAccelerator(KeyStroke.getKeyStroke(65, cmdKey));
-		var1.setEnabled(false);
-		this.editMenu.add(var1);
-		this.toolsMenu.addSeparator();
-		var1 = new JMenuItem(R.string("tools_menu_simple_view"));
-		var1.setAccelerator(KeyStroke.getKeyStroke(69, cmdKey + 512));
-		var1.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent var1) {
-				CpuGraphicalDisplay.this.controller.EinfacheDarstellungAnzeigen();
+
+		closeMenuItem.setEnabled(false);
+		saveMenuItem.setEnabled(false);
+		saveAsMenuItem.setEnabled(false);
+		printMenuItem.setEnabled(false);
+
+		JMenuItem menuItem = new JMenuItem(R.string("edit_menu_undo"), KeyEvent.VK_Z);
+		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Z, cmdKey));
+		menuItem.setEnabled(false);
+		editMenu.add(menuItem);
+
+		menuItem = new JMenuItem(R.string("edit_menu_redo"));
+		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Z, InputEvent.SHIFT_DOWN_MASK + cmdKey));
+		menuItem.setEnabled(false);
+		editMenu.add(menuItem);
+
+		editMenu.addSeparator();
+
+		menuItem = new JMenuItem(R.string("edit_menu_cut"), KeyEvent.VK_X);
+		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X, cmdKey));
+		menuItem.setEnabled(false);
+		editMenu.add(menuItem);
+
+		menuItem = new JMenuItem(R.string("edit_menu_copy"), KeyEvent.VK_C);
+		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, cmdKey));
+		menuItem.setEnabled(false);
+		editMenu.add(menuItem);
+
+		menuItem = new JMenuItem(R.string("edit_menu_paste"), KeyEvent.VK_V);
+		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_V, cmdKey));
+		menuItem.setEnabled(false);
+		editMenu.add(menuItem);
+
+		menuItem = new JMenuItem(R.string("edit_menu_select_all"), KeyEvent.VK_A);
+		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, cmdKey));
+		menuItem.setEnabled(false);
+		editMenu.add(menuItem);
+
+		toolsMenu.addSeparator();
+
+		menuItem = new JMenuItem(R.string("tools_menu_simple_view"));
+		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, cmdKey + InputEvent.ALT_DOWN_MASK));
+		menuItem.addActionListener(event -> controller.EinfacheDarstellungAnzeigen());
+		toolsMenu.add(menuItem);
+
+		menuItem = new JMenuItem(R.string("tools_menu_graphical_view"));
+		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_D, cmdKey + InputEvent.ALT_DOWN_MASK));
+		menuItem.addActionListener(event -> controller.DetailDarstellungAnzeigen());
+		toolsMenu.add(menuItem);
+
+		toolsMenu.addSeparator();
+
+		menuItem = new JMenuItem(R.string("tools_menu_set_timeout"));
+		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, cmdKey + InputEvent.ALT_DOWN_MASK));
+		menuItem.addActionListener(event -> SetTimeoutDialog.show(controller));
+		toolsMenu.add(menuItem);
+
+		toolsMenu.addSeparator();
+
+		menuItem = new JMenuItem(R.string("tools_menu_reset_cpu"));
+		menuItem.setAccelerator(KeyStroke.getKeyStroke(82, cmdKey + InputEvent.ALT_DOWN_MASK));
+		menuItem.addActionListener(event -> controller.ZurückSetzen());
+		toolsMenu.add(menuItem);
+
+		toolsMenu.addSeparator();
+
+		erweiterungenItem = new JCheckBoxMenuItem(R.string("tools_menu_extended"));
+		erweiterungenItem.setEnabled(true);
+		erweiterungenItem.setSelected(false);
+		erweiterungenItem.addActionListener(event -> {
+			controller.ErweiterungenEinschalten(erweiterungenItem.isSelected());
+			if(cpuGraphicalDisplayPane != null) {
+				cpuGraphicalDisplayPane.setExtensionsEnabled(erweiterungenItem.isSelected());
 			}
 		});
-		this.toolsMenu.add(var1);
-		var1 = new JMenuItem(R.string("tools_menu_graphical_view"));
-		var1.setAccelerator(KeyStroke.getKeyStroke(68, cmdKey + 512));
-		var1.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent var1) {
-				CpuGraphicalDisplay.this.controller.DetailDarstellungAnzeigen();
-			}
-		});
-		this.toolsMenu.add(var1);
-		this.toolsMenu.addSeparator();
-		var1 = new JMenuItem(R.string("tools_menu_set_timeout"));
-		var1.setAccelerator(KeyStroke.getKeyStroke(65, cmdKey + 512));
-		var1.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent var1) {
-				SetTimeoutDialog.show(CpuGraphicalDisplay.this.controller);
-			}
-		});
-		this.toolsMenu.add(var1);
-		this.toolsMenu.addSeparator();
-		var1 = new JMenuItem(R.string("tools_menu_reset_cpu"));
-		var1.setAccelerator(KeyStroke.getKeyStroke(82, cmdKey + 512));
-		var1.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent var1) {
-				CpuGraphicalDisplay.this.controller.ZurückSetzen();
-			}
-		});
-		this.toolsMenu.add(var1);
-		this.toolsMenu.addSeparator();
-		this.erweiterungenItem = new JCheckBoxMenuItem(R.string("tools_menu_extended"));
-		this.erweiterungenItem.setEnabled(true);
-		this.erweiterungenItem.setSelected(false);
-		this.erweiterungenItem.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent var1) {
-				CpuGraphicalDisplay.this.controller.ErweiterungenEinschalten(CpuGraphicalDisplay.this.erweiterungenItem.isSelected());
-			}
-		});
-		this.toolsMenu.add(this.erweiterungenItem);
+		toolsMenu.add(erweiterungenItem);
 	}
 
 	protected void resetDisplaySize(boolean increasedSize) {
-		if (increasedSize) {
-			this.content.remove(this.bild);
-			this.content.add(this.bildgross, "Center");
-			this.bildgross.invalidate();
-			this.bildgross.repaint();
-			this.window.setSize(900, 600);
-		} else {
-			this.content.remove(this.bildgross);
-			this.content.add(this.bild, "Center");
-			this.bild.invalidate();
-			this.bild.repaint();
-			this.window.setSize(600, 400);
+		cpuGraphicalDisplayPane.setIncreaseSize(increasedSize);
+		setSize(increasedSize ? new Dimension(900, 600) : new Dimension(600, 400));
+	}
+
+	public static class CpuGraphicalDisplayPane extends JPanel implements CpuBeobachter {
+		private ControllerInterface controller;
+
+		private boolean extensions;
+
+		private final CpuBild bild;
+		private final CpuBildGroß bildgross;
+
+
+		public CpuGraphicalDisplayPane(ControllerInterface controller) {
+			super(new BorderLayout());
+
+			this.controller = controller;
+			extensions = false;
+
+
+			bildgross = new CpuBildGroß();
+			bildgross.setOpaque(false);
+
+			bild = new CpuBild();
+			bild.setOpaque(false);
+
+			add(this.bild, "Center");
+
+			JPanel panel = new JPanel();
+			panel.setLayout(new FlowLayout());
+			add(panel, "South");
+
+			JButton button = new JButton(R.string("cpu_run"));
+			button.addActionListener(event -> controller.Ausführen());
+			panel.add(button);
+
+			button = new JButton(R.string("cpu_step"));
+			panel.add(button);
+			button.addActionListener(event -> controller.EinzelSchritt());
+
+			button = new JButton(R.string("cpu_micro_step"));
+			panel.add(button);
+			button.addActionListener(event -> controller.MikroSchritt());
+
+			validate();
+
 		}
 
-		this.content.doLayout();
-		this.content.revalidate();
+
+		@Override
+		public void Befehlsmeldung(String data, String address, String alu1, String alu2, String alu3, String accumulator, String stackPointer, boolean zFlag, boolean nFlag, boolean vFlag, String opMnemonic, String addr, String programCounter, String[] progAddr, String[] progMem, String[] dataAddr, String[] dataMem, String[] stackAddr, String[] stackMem, String microStepName) {
+			this.bild.DatenSetzen(data, address, alu1, alu2, alu3, accumulator, "Z:" + (zFlag ? "*" : " ") + " N:" + (nFlag ? "*" : " ") + " V:" + (vFlag ? "*" : " "), opMnemonic, addr, programCounter, stackPointer, progAddr, progMem, dataAddr, dataMem, stackAddr, stackMem, extensions, microStepName);
+			this.bildgross.DatenSetzen(data, address, alu1, alu2, alu3, accumulator, "Z:" + (zFlag ? "*" : " ") + " N:" + (nFlag ? "*" : " ") + " V:" + (vFlag ? "*" : " "), opMnemonic, addr, programCounter, stackPointer, progAddr, progMem, dataAddr, dataMem, stackAddr, stackMem, extensions, microStepName);
+		}
+
+		@Override
+		public void Fehlermeldung(String message) {
+			JOptionPane.showMessageDialog(this, message, R.string("cpu_cpu_error"), JOptionPane.ERROR_MESSAGE);
+		}
+
+		public void setIncreaseSize(boolean increased) {
+			if (increased) {
+				remove(bild);
+				add(bildgross, "Center");
+				bildgross.invalidate();
+				bildgross.repaint();
+				setSize(900, 600);
+			} else {
+				remove(bildgross);
+				add(bild, "Center");
+				bild.invalidate();
+				bild.repaint();
+				setSize(600, 400);
+			}
+
+			validate();
+			revalidate();
+		}
+
+
+		public void setExtensionsEnabled(boolean enable) {
+			extensions = enable;
+		}
+		public boolean isExtensionsEnabled() {
+			return extensions;
+		}
 	}
 }

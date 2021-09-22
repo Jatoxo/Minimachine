@@ -21,8 +21,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 
-abstract class Anzeige {
-	protected JFrame window;
+abstract class Anzeige extends JFrame {
+	//protected JFrame window;
 	protected JMenuBar menuBar;
 	protected JMenu fileMenu;
 	protected JMenu editMenu;
@@ -40,6 +40,7 @@ abstract class Anzeige {
 	protected static boolean isMac;
 	protected static int cmdKey;
 
+	protected JPanel contentPane;
 
 	/*
 	private void MacOSVorbereiten() {
@@ -70,7 +71,9 @@ abstract class Anzeige {
 	}
 	*/
 
-	Anzeige(ControllerInterface controller) {
+	Anzeige(ControllerInterface controller, String title) {
+		super(title);
+
 		this.controller = controller;
 		this.self = this;
 		if (erster) {
@@ -87,18 +90,30 @@ abstract class Anzeige {
 			}
 		}
 
-		this.initMenus();
+		//Swapped
 		this.initLayout();
+		this.initMenus();
+
 
 		URL iconURL = getClass().getResource("/img/icon.png");
 		if(iconURL != null) {
 			ImageIcon icon = new ImageIcon(iconURL);
-			this.window.setIconImage(icon.getImage());
+			this.setIconImage(icon.getImage());
 		}
 
 	}
 
-	protected abstract void initLayout();
+
+
+
+	private void initLayout() {
+		this.contentPane = getContent();
+		this.setContentPane(contentPane);
+
+	}
+
+
+	public abstract JPanel getContent();
 
 	protected void initMenus() {
 
@@ -184,12 +199,14 @@ abstract class Anzeige {
 		menu.addActionListener(event -> Anzeige.this.controller.SpeicherFensterAuswählen());
 		this.windowsMenu.add(menu);
 		this.windowsMenu.addSeparator();
+
+		this.setJMenuBar(menuBar);
 	}
 
 	protected abstract void resetDisplaySize(boolean increasedSize);
 
 	private String TitelGeben() {
-		return this.window.getTitle();
+		return this.getTitle();
 	}
 
 	void addWindowMenuEntry(int pos, Anzeige display) {
@@ -206,16 +223,16 @@ abstract class Anzeige {
 		this.windowsMenu.getItem(var1 + 3).setText(var2.TitelGeben());
 	}
 
-	void show() {
-		if (!this.window.isVisible()) {
-			this.window.setVisible(true);
+	void showWindow() {
+		if (!this.isVisible()) {
+			this.setVisible(true);
 		}
 
-		this.window.toFront();
+		this.toFront();
 	}
 
-	void hide() {
-		this.window.setVisible(false);
+	void hideWindow() {
+		this.setVisible(false);
 	}
 
 	void notifyClose() {
@@ -238,7 +255,7 @@ abstract class Anzeige {
 		}
 
 		public void actionPerformed(ActionEvent event) {
-			this.anzeige.show();
+			this.anzeige.showWindow();
 		}
 	}
 }

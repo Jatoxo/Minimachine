@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ResourceBundleManager">
+    <file url="file://$PROJECT_DIR$/src/main/resources/lang.properties" />
+    <file url="file://$PROJECT_DIR$/src/main/resources/lang_de.properties" />
+    <custom-resource-bundle>
+      <file value="file://$PROJECT_DIR$/src/main/resources/lang.properties" />
+      <file value="file://$PROJECT_DIR$/src/main/resources/lang_de.properties" />
+      <base-name>lang</base-name>
+    </custom-resource-bundle>
+  </component>
+</project>

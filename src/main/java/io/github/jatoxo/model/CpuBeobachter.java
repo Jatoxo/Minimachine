@@ -4,7 +4,31 @@
 package io.github.jatoxo.model;
 
 public interface CpuBeobachter {
-	void Befehlsmeldung(String var1, String var2, String var3, String var4, String var5, String var6, String var7, boolean var8, boolean var9, boolean var10, String var11, String var12, String var13, String[] var14, String[] var15, String[] var16, String[] var17, String[] var18, String[] var19, String var20);
+	/**
+	 * A report with all the relevant information about the current instruction
+	 *
+	 * @param data The value on the data bus
+	 * @param address The value on the address bus
+	 * @param alu1 First operand in the ALU
+	 * @param alu2 Second operand in the ALU
+	 * @param alu3 Result in the ALU
+	 * @param accumulator Value of the accumulator
+	 * @param stackPointer Value of the stack pointer
+	 * @param zFlag Value of the zero flag
+	 * @param nFlag Value of the negative flag
+	 * @param vFlag Value of the overflow flag
+	 * @param opMnemonic The mnemonic of the opcode
+	 * @param addr The address given to the instruction
+	 * @param programCounter The Value of the program counter
+	 * @param progAddr
+	 * @param progMem
+	 * @param dataAddr
+	 * @param dataMem
+	 * @param stackAddr
+	 * @param stackMem
+	 * @param microStepName The name of the current micro step
+	 */
+	void Befehlsmeldung(String data, String address, String alu1, String alu2, String alu3, String accumulator, String stackPointer, boolean zFlag, boolean nFlag, boolean vFlag, String opMnemonic, String addr, String programCounter, String[] progAddr, String[] progMem, String[] dataAddr, String[] dataMem, String[] stackAddr, String[] stackMem, String microStepName);
 
-	void Fehlermeldung(String var1);
+	void Fehlermeldung(String message);
 }

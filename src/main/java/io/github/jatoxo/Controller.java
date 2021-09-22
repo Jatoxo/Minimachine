@@ -3,6 +3,7 @@ package io.github.jatoxo;
 import io.github.jatoxo.model.Cpu;
 import io.github.jatoxo.model.FehlerVerwaltung;
 import io.github.jatoxo.model.SpeicherLesen;
+import io.github.jatoxo.model.StatusMelder;
 import io.github.jatoxo.model.minilanguage.ParserEinfach;
 import io.github.jatoxo.model.minilanguage.ParserErweitert;
 
@@ -36,50 +37,50 @@ class Controller implements ControllerInterface {
 		this.cpu.AnzeigeWiederholen();
 	}
 
-	public boolean assemble(String assemblyText, Editor editor) {
+	public boolean assemble(String assemblyText, StatusMelder melder) {
 		FehlerVerwaltung fehlerVerwaltung = new FehlerVerwaltung();
 
 		this.cpu.assemble(assemblyText, fehlerVerwaltung);
 
 		if (fehlerVerwaltung.FehlerAufgetreten()) {
-			editor.FehlerAnzeigen(fehlerVerwaltung.FehlertextMelden(), fehlerVerwaltung.FehlerpositionMelden());
+			melder.displayError(fehlerVerwaltung.FehlertextMelden(), fehlerVerwaltung.FehlerpositionMelden());
 		} else {
-			editor.displayStatusMessage(R.string("editor_assembly_success"));
+			melder.displayStatusMessage(R.string("editor_assembly_success"));
 			this.cpu.ZurückSetzen();
 		}
 
 		return !fehlerVerwaltung.FehlerAufgetreten();
 	}
 
-	public boolean Übersetzen(String code, Editor editor) {
-		FehlerVerwaltung var3 = new FehlerVerwaltung();
-		this.cpu.Übersetzen(code, var3);
-		if (var3.FehlerAufgetreten()) {
-			editor.FehlerAnzeigen(var3.FehlertextMelden(), var3.FehlerpositionMelden());
+	public boolean Übersetzen(String code, StatusMelder melder) {
+		FehlerVerwaltung fehlerVerwaltung = new FehlerVerwaltung();
+		this.cpu.Übersetzen(code, fehlerVerwaltung);
+		if (fehlerVerwaltung.FehlerAufgetreten()) {
+			melder.displayError(fehlerVerwaltung.FehlertextMelden(), fehlerVerwaltung.FehlerpositionMelden());
 		} else {
 			this.cpu.ZurückSetzen();
 		}
 
-		return !var3.FehlerAufgetreten();
+		return !fehlerVerwaltung.FehlerAufgetreten();
 	}
 
-	public boolean AssemblertextZeigen(String var1, Editor var2) {
-		FehlerVerwaltung var3 = new FehlerVerwaltung();
+	public boolean AssemblertextZeigen(String source, StatusMelder melder) {
+		FehlerVerwaltung fehlerVerwaltung = new FehlerVerwaltung();
 		String var5;
 		if (this.erweitert) {
-			var5 = (new ParserErweitert(var1, var3)).Parse();
+			var5 = (new ParserErweitert(source, fehlerVerwaltung)).Parse();
 		} else {
-			var5 = (new ParserEinfach(var1, var3)).Parse();
+			var5 = (new ParserEinfach(source, fehlerVerwaltung)).Parse();
 		}
 
-		if (var3.FehlerAufgetreten()) {
-			var2.FehlerAnzeigen(var3.FehlertextMelden(), var3.FehlerpositionMelden());
+		if (fehlerVerwaltung.FehlerAufgetreten()) {
+			melder.displayError(fehlerVerwaltung.FehlertextMelden(), fehlerVerwaltung.FehlerpositionMelden());
 		} else {
 			AssemblerAnzeige var4 = new AssemblerAnzeige(this, var5);
 			this.windowManager.EditorEintragen(var4);
 		}
 
-		return !var3.FehlerAufgetreten();
+		return !fehlerVerwaltung.FehlerAufgetreten();
 	}
 
 	public void SpeicherLöschen() {
@@ -105,7 +106,7 @@ class Controller implements ControllerInterface {
 	public void NeuAusführen() {
 		Editor editor = new Editor(this);
 		this.windowManager.EditorEintragen(editor);
-		editor.show();
+		editor.showWindow();
 	}
 
 	public void ÖffnenAusführen() {
@@ -118,15 +119,15 @@ class Controller implements ControllerInterface {
 		Editor editor = new Editor(this);
 		this.windowManager.EditorEintragen(editor);
 		editor.readFile(path);
-		editor.show();
+		editor.showWindow();
 	}
 
 	public void SchließenAusführen(Anzeige var1) {
 		this.windowManager.EditorAustragen(var1);
 	}
 
-	public void windowNameChanged(Anzeige var1) {
-		this.windowManager.EditorTitelÄndern(var1);
+	public void windowNameChanged(Anzeige anzeige) {
+		this.windowManager.EditorTitelÄndern(anzeige);
 	}
 
 	public void CpuFensterAuswählen() {

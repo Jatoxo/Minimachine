@@ -1,10 +1,7 @@
 package io.github.jatoxo;//
 
 
-import java.awt.*;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Iterator;
 
 class WindowManager {
@@ -20,8 +17,8 @@ class WindowManager {
 		this.cpuSimpleDisplay = cpuDisplay;
 		this.cpuGraphicalDisplay = cpuDisplay2;
 		this.cpuSimpleExtendedDisplay = cpuDisplayAdvanced;
-		cpuDisplay2.hide();
-		cpuDisplayAdvanced.hide();
+		//cpuDisplay2.hide();
+		cpuDisplayAdvanced.hideWindow();
 		this.speicheranzeige = storageDisplay;
 	}
 
@@ -61,46 +58,44 @@ class WindowManager {
 		this.speicheranzeige.removeWindowMenuEntry(var2);
 	}
 
-	void EditorTitelÄndern(Anzeige var1) {
-		int var2 = this.openEditorWindows.indexOf(var1);
-		Iterator var3 = this.openEditorWindows.iterator();
+	void EditorTitelÄndern(Anzeige anzeige) {
+		int index = this.openEditorWindows.indexOf(anzeige);
 
-		while(var3.hasNext()) {
-			Anzeige var4 = (Anzeige)var3.next();
-			var4.editWindowMenuEntry(var2, var1);
+		for(Anzeige editorWindow : this.openEditorWindows) {
+			editorWindow.editWindowMenuEntry(index, anzeige);
 		}
 
-		this.cpuDisplay.editWindowMenuEntry(var2, var1);
-		this.speicheranzeige.editWindowMenuEntry(var2, var1);
+		this.cpuDisplay.editWindowMenuEntry(index, anzeige);
+		this.speicheranzeige.editWindowMenuEntry(index, anzeige);
 	}
 
 	void CpuFensterAuswählen() {
-		this.cpuDisplay.show();
+		this.cpuDisplay.showWindow();
 	}
 
 	void SpeicherFensterAuswählen() {
-		this.speicheranzeige.show();
+		this.speicheranzeige.showWindow();
 	}
 
 	void setCpuDisplayMode(boolean graphical, boolean extended) {
 		if (graphical) {
 			this.cpuDisplay = this.cpuGraphicalDisplay;
-			this.cpuGraphicalDisplay.show();
-			this.cpuSimpleDisplay.hide();
-			this.cpuSimpleExtendedDisplay.hide();
+			this.cpuGraphicalDisplay.showWindow();
+			this.cpuSimpleDisplay.hideWindow();
+			this.cpuSimpleExtendedDisplay.hideWindow();
 
 		} else {
 			if (extended) {
 				this.cpuDisplay = this.cpuSimpleExtendedDisplay;
-				this.cpuSimpleExtendedDisplay.show();
-				this.cpuSimpleDisplay.hide();
+				this.cpuSimpleExtendedDisplay.showWindow();
+				this.cpuSimpleDisplay.hideWindow();
 			} else {
 				this.cpuDisplay = this.cpuSimpleDisplay;
-				this.cpuSimpleDisplay.show();
-				this.cpuSimpleExtendedDisplay.hide();
+				this.cpuSimpleDisplay.showWindow();
+				this.cpuSimpleExtendedDisplay.hideWindow();
 			}
 
-			this.cpuGraphicalDisplay.hide();
+			this.cpuGraphicalDisplay.hideWindow();
 			((CpuDisplay)this.cpuDisplay).erweiterungenItem.setSelected(extended);
 		}
 

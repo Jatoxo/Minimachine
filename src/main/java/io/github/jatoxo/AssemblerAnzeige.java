@@ -3,104 +3,122 @@ package io.github.jatoxo;//
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.awt.event.*;
+import java.security.Key;
 
 class AssemblerAnzeige extends Anzeige {
-	private JTextArea text;
-	private JScrollPane scroll;
+	private AssemblerAnzeigePane assemblerAnzeigePane;
 
-	AssemblerAnzeige(ControllerInterface var1, String var2) {
-		super(var1);
-		this.text.setText(var2);
-	}
 
-	protected void initLayout() {
-		this.window = new JFrame("Assemblertext");
-		this.initMenus();
-		this.window.setJMenuBar(this.menuBar);
-		this.window.setVisible(true);
-		JPanel var1 = (JPanel)this.window.getContentPane();
-		var1.setLayout(new BorderLayout());
-		this.text = new JTextArea();
-		this.text.setEditable(false);
-		this.scroll = new JScrollPane(this.text, 20, 30);
-		var1.add(this.scroll, "Center");
-		this.window.setSize(400, 200);
-		this.window.addWindowListener(new WindowAdapter() {
+	AssemblerAnzeige(ControllerInterface controller, String code) {
+		super(controller, R.string("window_assembly_title"));
+
+		addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent var1) {
 				AssemblerAnzeige.this.controller.SchließenAusführen(AssemblerAnzeige.this.self);
 			}
 		});
-		this.window.setDefaultCloseOperation(2);
+
+		assemblerAnzeigePane.setCode(code);
+
+		setVisible(true);
+		setSize(400, 200);
+		setLocationRelativeTo(null);
+
+		setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+
 	}
+
+	public JPanel getContent() {
+		if(assemblerAnzeigePane == null) {
+			assemblerAnzeigePane = new AssemblerAnzeigePane(controller);
+		}
+
+		return assemblerAnzeigePane;
+	}
+
 
 	protected void initMenus() {
 		super.initMenus();
-		this.closeMenuItem.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent var1) {
-				AssemblerAnzeige.this.controller.SchließenAusführen(AssemblerAnzeige.this.self);
-				AssemblerAnzeige.this.window.dispose();
-			}
+
+		this.closeMenuItem.addActionListener(event -> {
+			controller.SchließenAusführen(AssemblerAnzeige.this.self);
+			dispose();
 		});
+
 		this.saveMenuItem.setEnabled(false);
 		this.saveAsMenuItem.setEnabled(false);
+
 		this.printMenuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent var1) {
+				//TODO: Make this do something?
 			}
 		});
-		JMenuItem var1 = new JMenuItem(R.string("edit_menu_cut"), 88);
-		var1.setAccelerator(KeyStroke.getKeyStroke(88, 256));
-		var1.setEnabled(false);
-		this.editMenu.add(var1);
-		var1 = new JMenuItem(R.string("edit_menu_copy"), 67);
-		var1.setAccelerator(KeyStroke.getKeyStroke(67, 256));
-		var1.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent var1) {
-				AssemblerAnzeige.this.text.copy();
-			}
-		});
-		this.editMenu.add(var1);
-		var1 = new JMenuItem(R.string("edit_menu_paste"), 86);
-		var1.setAccelerator(KeyStroke.getKeyStroke(86, 256));
-		var1.setEnabled(false);
-		this.editMenu.add(var1);
-		var1 = new JMenuItem(R.string("edit_menu_select_all"), 65);
-		var1.setAccelerator(KeyStroke.getKeyStroke(65, 256));
-		var1.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent var1) {
-				AssemblerAnzeige.this.text.selectAll();
-			}
-		});
-		this.sizeMenuItem.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent var1) {
-				if (AssemblerAnzeige.this.sizeMenuItem.isSelected()) {
-					AssemblerAnzeige.this.FontgrößeSetzen(24);
-				} else {
-					AssemblerAnzeige.this.FontgrößeSetzen(13);
-				}
 
-				AssemblerAnzeige.this.text.invalidate();
-				AssemblerAnzeige.this.text.repaint();
+		JMenuItem menuItem = new JMenuItem(R.string("edit_menu_cut"), KeyEvent.VK_X);
+		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X, cmdKey));
+		menuItem.setEnabled(false);
+		this.editMenu.add(menuItem);
+		menuItem = new JMenuItem(R.string("edit_menu_copy"), KeyEvent.VK_C);
+		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, cmdKey));
+		menuItem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent var1) {
+				assemblerAnzeigePane.text.copy();
 			}
 		});
+		this.editMenu.add(menuItem);
+		menuItem = new JMenuItem(R.string("edit_menu_paste"), KeyEvent.VK_V);
+		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_V, cmdKey));
+		menuItem.setEnabled(false);
+		this.editMenu.add(menuItem);
+		menuItem = new JMenuItem(R.string("edit_menu_select_all"), KeyEvent.VK_A);
+		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, cmdKey));
+		menuItem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent event) {
+				assemblerAnzeigePane.text.selectAll();
+			}
+		});
+		this.sizeMenuItem.addActionListener(event -> assemblerAnzeigePane.setIncreasedSize(sizeMenuItem.isSelected()));
 	}
 
 	protected void resetDisplaySize(boolean increasedSize) {
-		if (increasedSize) {
-			this.FontgrößeSetzen(24);
-		} else {
-			this.FontgrößeSetzen(13);
-		}
-
-		this.text.invalidate();
-		this.text.repaint();
+		assemblerAnzeigePane.setIncreasedSize(increasedSize);
 	}
 
-	private void FontgrößeSetzen(int var1) {
-		Font var2 = this.text.getFont();
-		this.text.setFont(new Font(var2.getName(), var2.getStyle(), var1));
+
+	public static class AssemblerAnzeigePane extends JPanel {
+		private final ControllerInterface controller;
+
+		private final JTextArea text;
+		private final JScrollPane scroll;
+
+
+		public AssemblerAnzeigePane(ControllerInterface controller) {
+			super(new BorderLayout());
+
+			this.controller = controller;
+
+			this.text = new JTextArea();
+			this.text.setEditable(false);
+
+			this.scroll = new JScrollPane(this.text, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+			add(this.scroll, "Center");
+		}
+
+		public void setCode(String code) {
+			text.setText(code);
+		}
+
+		public void setIncreasedSize(boolean increased) {
+			updateFontSize(increased ? 24 : 13);
+
+			this.text.invalidate();
+			this.text.repaint();
+		}
+
+		private void updateFontSize(int newSize) {
+			Font font = this.text.getFont();
+			this.text.setFont(new Font(font.getName(), font.getStyle(), newSize));
+		}
 	}
 }

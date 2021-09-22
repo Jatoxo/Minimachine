@@ -128,7 +128,7 @@ public abstract class Cpu implements CpuMeldungsErzeuger {
 		return decimalString;
 	}
 
-	protected void Melden(String data, String address, String alu1, String alu2, String alu3, boolean var6, int var7, int var8, int var9, String microStepName) {
+	protected void Melden(String data, String address, String alu1, String alu2, String alu3, boolean lastOpMnemo, int var7, int var8, int var9, String microStepName) {
 		this.letzterDa = true;
 		this.datenWert_letzter = data;
 		this.adressWert_letzter = address;
@@ -136,19 +136,19 @@ public abstract class Cpu implements CpuMeldungsErzeuger {
 		this.alu2_letzter = alu2;
 		this.alu3_letzter = alu3;
 		this.mikro_letzter = microStepName;
-		this.opMnemo_letzter = var6;
+		this.opMnemo_letzter = lastOpMnemo;
 
-		String var11 = "" + this.a.WertGeben();
-		String var12 = "" + this.adresse;
-		String var13 = "" + (this.befehlscode + this.adressmodus * 256);
+		String accumulator = "" + this.a.WertGeben();
+		String addr = "" + this.adresse;
+		String opcode = "" + (this.befehlscode + this.adressmodus * 256);
 		if (this.hexaAnzeige) {
 			data = this.HexaString(data);
 			alu1 = this.HexaString(alu1);
 			alu2 = this.HexaString(alu2);
 			alu3 = this.HexaString(alu3);
-			var11 = this.HexaString(var11);
-			var12 = this.HexaString(var12);
-			var13 = this.HexaString(var13);
+			accumulator = this.HexaString(accumulator);
+			addr = this.HexaString(addr);
+			opcode = this.HexaString(opcode);
 			if (address.length() > 0 && !" ".equals(address)) {
 				address = address + " [" + this.HexaString(address) + "]";
 			}
@@ -200,7 +200,7 @@ public abstract class Cpu implements CpuMeldungsErzeuger {
 		String mnemonic = this.mnemos.getMnemonic(this.befehlscode);
 
 		for(CpuBeobachter listeners : this.beobachter) {
-			listeners.Befehlsmeldung(data, address, alu1, alu2, alu3, var11, this.sp.WertGeben() < 0 ? "" + (this.sp.WertGeben() + Speicher.MEMORY_SIZE) : "" + this.sp.WertGeben(), this.eqflag, this.ltflag, this.ovflag, var6 ? (this.adressmodus == 2 ? mnemonic + "I" : mnemonic) : var13, var12, "" + this.pc.WertGeben(), this.progadr, this.progmem, this.dataadr, this.datamem, this.stackadr, this.stackmem, microStepName);
+			listeners.Befehlsmeldung(data, address, alu1, alu2, alu3, accumulator, this.sp.WertGeben() < 0 ? "" + (this.sp.WertGeben() + Speicher.MEMORY_SIZE) : "" + this.sp.WertGeben(), this.eqflag, this.ltflag, this.ovflag, lastOpMnemo ? (this.adressmodus == 2 ? mnemonic + "I" : mnemonic) : opcode, addr, "" + this.pc.WertGeben(), this.progadr, this.progmem, this.dataadr, this.datamem, this.stackadr, this.stackmem, microStepName);
 		}
 
 	}

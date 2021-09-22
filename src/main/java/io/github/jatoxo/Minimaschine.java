@@ -25,8 +25,8 @@ class Minimaschine {
 		cpuEinfach.addMemoryListener(speicherAnzeige);
 
 		if (!Anzeige.IstMacOS()) {
-			for(int var10 = 0; var10 < args.length; ++var10) {
-				controller.ÖffnenAusführen(args[var10]);
+			for(String arg : args) {
+				controller.ÖffnenAusführen(arg);
 			}
 		}
 

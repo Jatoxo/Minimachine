@@ -1,17 +1,19 @@
 package io.github.jatoxo;//
 
 
+import io.github.jatoxo.model.StatusMelder;
+
 interface ControllerInterface {
 	void CpuHexaSetzen(boolean var1);
 
 	void CpuInvalidieren();
 
 
-	boolean assemble(String assemblyText, Editor editor);
+	boolean assemble(String assemblyText, StatusMelder melder);
 
-	boolean Übersetzen(String code, Editor editor);
+	boolean Übersetzen(String code, StatusMelder melder);
 
-	boolean AssemblertextZeigen(String var1, Editor var2);
+	boolean AssemblertextZeigen(String var1, StatusMelder melder);
 
 	void SpeicherLöschen();
 
